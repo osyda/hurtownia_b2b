@@ -35,6 +35,7 @@ export function TenantSidebar({ tenantSlug, tenantName, brandColor, role }: Prop
     { href: `${base}/categories`, label: 'Kategorie', icon: FolderOpen },
     { href: `${base}/customers`, label: 'Klienci', icon: Users },
     { href: `${base}/prices`, label: 'Cenniki', icon: Tags },
+    { href: `${base}/import`, label: 'Import', icon: Truck },
     { href: `${base}/settings`, label: 'Ustawienia', icon: Settings },
   ]
 

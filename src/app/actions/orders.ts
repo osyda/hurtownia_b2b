@@ -4,6 +4,8 @@ import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { OrderStatus } from '@/types/database.types'
+import { sendOrderStatusEmail } from '@/lib/email'
+import { ORDER_STATUS_LABELS } from '@/lib/utils'
 
 async function getTenantId(supabase: Awaited<ReturnType<typeof createClient>>) {
   const { data: { user } } = await supabase.auth.getUser()
@@ -17,12 +19,33 @@ export async function updateOrderStatus(tenantSlug: string, orderId: string, sta
   const tenantId = await getTenantId(supabase)
   if (!tenantId) redirect('/login')
 
-  const { error } = await supabase.from('orders')
+  const { data: order, error } = await supabase.from('orders')
     .update({ status })
     .eq('id', orderId)
     .eq('tenant_id', tenantId)
+    .select('order_number, total_gross, internal_notes, customers(company_name, email)')
+    .single()
 
   if (error) return { error: error.message }
+
+  // Send status change email to customer (fire-and-forget)
+  if (order && process.env.RESEND_API_KEY) {
+    const customer = order.customers as unknown as { company_name: string; email: string | null } | null
+    if (customer?.email) {
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://hurtownia-b2b.vercel.app'
+      sendOrderStatusEmail({
+        customerEmail: customer.email,
+        customerName: customer.company_name,
+        orderNumber: order.order_number,
+        status,
+        statusLabel: ORDER_STATUS_LABELS[status] ?? status,
+        totalGross: order.total_gross,
+        orderUrl: `${appUrl}/sklep/${tenantSlug}/zamowienia/${orderId}`,
+        note: order.internal_notes ?? undefined,
+      }).catch(() => {})
+    }
+  }
+
   revalidatePath(`/${tenantSlug}/orders/${orderId}`)
   revalidatePath(`/${tenantSlug}/orders`)
   return { success: true }

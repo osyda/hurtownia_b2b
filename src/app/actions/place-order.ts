@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { CartItem } from '@/lib/cart-store'
+import { sendNewOrderEmail } from '@/lib/email'
 
 interface PlaceOrderInput {
   tenantSlug: string
@@ -25,7 +26,7 @@ export async function placeOrder(input: PlaceOrderInput) {
   if (!items.length) return { error: 'Koszyk jest pusty' }
 
   // Get tenant id from slug
-  const { data: tenant } = await supabase.from('tenants').select('id').eq('slug', tenantSlug).single()
+  const { data: tenant } = await supabase.from('tenants').select('id, name, contact_email').eq('slug', tenantSlug).single()
   if (!tenant) return { error: 'Hurtownia nie istnieje' }
 
   // Calculate totals
@@ -88,6 +89,24 @@ export async function placeOrder(input: PlaceOrderInput) {
 
   const { error: itemsError } = await supabase.from('order_items').insert(orderItems)
   if (itemsError) return { error: itemsError.message }
+
+  // Send email notification to tenant (fire-and-forget)
+  if (tenant.contact_email && process.env.RESEND_API_KEY) {
+    const { data: customer } = await supabase
+      .from('customers')
+      .select('company_name')
+      .eq('id', customerId)
+      .single()
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://hurtownia-b2b.vercel.app'
+    sendNewOrderEmail({
+      tenantEmail: tenant.contact_email,
+      tenantName: tenant.name,
+      orderNumber,
+      customerName: customer?.company_name ?? 'Klient',
+      totalGross,
+      orderUrl: `${appUrl}/${tenantSlug}/orders/${order.id}`,
+    }).catch(() => {})
+  }
 
   return { success: true, orderId: order.id, orderNumber }
 }
