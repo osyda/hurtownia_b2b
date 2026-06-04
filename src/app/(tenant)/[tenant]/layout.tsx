@@ -1,5 +1,5 @@
 import { redirect, notFound } from 'next/navigation'
-import { createClient, createAdminClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
 import { TenantSidebar } from '@/components/tenant/tenant-sidebar'
 
 export default async function TenantLayout({
@@ -15,9 +15,7 @@ export default async function TenantLayout({
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  // Use admin client to bypass RLS
-  const adminSupabase = await createAdminClient()
-  const { data: profile } = await adminSupabase
+  const { data: profile } = await supabase
     .from('user_profiles')
     .select('role, tenant_id')
     .eq('id', user.id)
@@ -26,8 +24,7 @@ export default async function TenantLayout({
   if (!profile) redirect('/login')
   if (profile.role !== 'tenant_admin' && profile.role !== 'tenant_employee') redirect('/login')
 
-  // Fetch tenant details
-  const { data: tenant } = await adminSupabase
+  const { data: tenant } = await supabase
     .from('tenants')
     .select('slug, name, brand_color')
     .eq('id', profile.tenant_id)

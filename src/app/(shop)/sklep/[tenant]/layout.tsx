@@ -1,5 +1,5 @@
 import { redirect, notFound } from 'next/navigation'
-import { createClient, createAdminClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
 import { ShopHeader } from '@/components/shop/shop-header'
 
 export default async function ShopLayout({
@@ -15,10 +15,7 @@ export default async function ShopLayout({
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  // Use admin client to bypass RLS
-  const adminSupabase = await createAdminClient()
-
-  const { data: profile } = await adminSupabase
+  const { data: profile } = await supabase
     .from('user_profiles')
     .select('role')
     .eq('id', user.id)
@@ -26,8 +23,7 @@ export default async function ShopLayout({
 
   if (!profile || profile.role !== 'customer') redirect('/login')
 
-  // Get tenant branding
-  const { data: tenant } = await adminSupabase
+  const { data: tenant } = await supabase
     .from('tenants')
     .select('id, name, slug, logo_url, brand_color, customer_message')
     .eq('slug', tenantSlug)
@@ -36,8 +32,7 @@ export default async function ShopLayout({
 
   if (!tenant) notFound()
 
-  // Verify customer belongs to this tenant and is active
-  const { data: customer } = await adminSupabase
+  const { data: customer } = await supabase
     .from('customers')
     .select('id, company_name, status')
     .eq('user_id', user.id)

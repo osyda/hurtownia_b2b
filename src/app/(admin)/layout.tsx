@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { createClient, createAdminClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
 import { AdminSidebar } from '@/components/admin/admin-sidebar'
 
 export default async function AdminLayout({
@@ -12,15 +12,13 @@ export default async function AdminLayout({
 
   if (!user) redirect('/login')
 
-  // Use admin client to bypass RLS — ensures profile is always readable
-  const adminSupabase = await createAdminClient()
-  const { data: profile } = await adminSupabase
+  const { data: profile } = await supabase
     .from('user_profiles')
     .select('role')
     .eq('id', user.id)
     .maybeSingle()
 
-  // Redirect to /login (not /) to avoid loop with root page
+  // Redirect to /login — nie do / (to powodowało pętlę ze stroną główną)
   if (!profile || profile.role !== 'super_admin') redirect('/login')
 
   return (
