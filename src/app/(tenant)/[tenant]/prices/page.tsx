@@ -24,7 +24,7 @@ export default async function PricesPage({
 
   const [groupsRes, customersRes, productsRes] = await Promise.all([
     supabase.from('price_groups')
-      .select('id, name, description, discount_percent')
+      .select('id, name, description')
       .eq('tenant_id', tenantId)
       .order('name'),
     supabase.from('customers')

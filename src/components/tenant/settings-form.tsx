@@ -20,17 +20,15 @@ interface Tenant {
 interface DeliverySettings {
   id: string
   min_order_value: number
-  free_delivery_threshold: number | null
   delivery_days: number[]
   order_cutoff_time: string | null
-  delivery_notes: string | null
+  customer_info: string | null
 }
 
 interface PaymentMethod {
   id: string
-  name: string
+  label: string
   type: string
-  payment_days: number
   is_active: boolean
 }
 
@@ -166,25 +164,14 @@ export function SettingsForm({
           <h2 className="font-semibold text-gray-900">Dostawa i zamówienia</h2>
         </div>
         <form action={handleDeliverySubmit} className="p-5 space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <Input
-              label="Minimalna wartość zamówienia (zł netto)"
-              name="min_order_value"
-              type="number"
-              step="0.01"
-              min="0"
-              defaultValue={delivery?.min_order_value ?? 0}
-            />
-            <Input
-              label="Próg darmowej dostawy (zł netto)"
-              name="free_delivery_threshold"
-              type="number"
-              step="0.01"
-              min="0"
-              defaultValue={delivery?.free_delivery_threshold ?? ''}
-              hint="Zostaw puste jeśli nie dotyczy"
-            />
-          </div>
+          <Input
+            label="Minimalna wartość zamówienia (zł netto)"
+            name="min_order_value"
+            type="number"
+            step="0.01"
+            min="0"
+            defaultValue={delivery?.min_order_value ?? 0}
+          />
           <Input
             label="Godzina graniczna zamówień (np. 14:00)"
             name="order_cutoff_time"
@@ -211,11 +198,11 @@ export function SettingsForm({
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Uwagi do dostawy</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Informacje dla klientów</label>
             <textarea
-              name="delivery_notes"
+              name="customer_info"
               rows={2}
-              defaultValue={delivery?.delivery_notes ?? ''}
+              defaultValue={delivery?.customer_info ?? ''}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Np. dostawa do magazynu, wejście od tyłu..."
             />
@@ -240,8 +227,8 @@ export function SettingsForm({
 
         {showAddPayment && (
           <form action={handleAddPayment} className="p-5 border-b bg-gray-50">
-            <div className="grid grid-cols-3 gap-3 mb-3">
-              <Input label="Nazwa" name="name" placeholder="np. Przelew 14 dni" required />
+            <div className="grid grid-cols-2 gap-3 mb-3">
+              <Input label="Nazwa" name="label" placeholder="np. Przelew bankowy" required />
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Typ</label>
                 <select name="type" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
@@ -250,7 +237,6 @@ export function SettingsForm({
                   ))}
                 </select>
               </div>
-              <Input label="Dni płatności" name="payment_days" type="number" min="0" defaultValue="0" />
             </div>
             <div className="flex gap-2">
               <Button type="submit" size="sm" loading={isPending}>Dodaj</Button>
@@ -268,10 +254,9 @@ export function SettingsForm({
           {paymentMethods.map(pm => (
             <div key={pm.id} className="p-4 flex items-center justify-between">
               <div>
-                <div className="font-medium text-sm text-gray-900">{pm.name}</div>
+                <div className="font-medium text-sm text-gray-900">{pm.label}</div>
                 <div className="text-xs text-gray-400">
                   {PAYMENT_TYPES.find(t => t.value === pm.type)?.label}
-                  {pm.payment_days > 0 && ` · ${pm.payment_days} dni`}
                 </div>
               </div>
               <div className="flex items-center gap-3">

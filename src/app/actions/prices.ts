@@ -19,7 +19,6 @@ async function getTenantCtx(supabase: Awaited<ReturnType<typeof createClient>>) 
 const groupSchema = z.object({
   name: z.string().min(1, 'Nazwa jest wymagana'),
   description: z.string().optional(),
-  discount_percent: z.coerce.number().min(0).max(100).optional(),
 })
 
 export async function createPriceGroup(tenantSlug: string, formData: FormData) {
@@ -34,7 +33,6 @@ export async function createPriceGroup(tenantSlug: string, formData: FormData) {
     tenant_id: ctx.tenant_id,
     name: parsed.data.name,
     description: parsed.data.description || null,
-    discount_percent: parsed.data.discount_percent ?? 0,
   })
   if (error) return { error: error.message }
   revalidatePath(`/${tenantSlug}/prices`)
@@ -53,7 +51,6 @@ export async function updatePriceGroup(tenantSlug: string, groupId: string, form
     .update({
       name: parsed.data.name,
       description: parsed.data.description || null,
-      discount_percent: parsed.data.discount_percent ?? 0,
     })
     .eq('id', groupId)
     .eq('tenant_id', ctx.tenant_id)
@@ -110,11 +107,11 @@ export async function upsertProductPrice(
     product_id: productId,
     customer_id: customerId,
     price_group_id: priceGroupId,
-    price_net: priceNet,
+    price: priceNet,
   }
 
   const { error } = existing.data
-    ? await supabase.from('product_prices').update({ price_net: priceNet }).eq('id', existing.data.id)
+    ? await supabase.from('product_prices').update({ price: priceNet }).eq('id', existing.data.id)
     : await supabase.from('product_prices').insert(payload)
 
   if (error) return { error: error.message }

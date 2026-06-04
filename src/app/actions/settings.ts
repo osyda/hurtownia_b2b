@@ -47,10 +47,9 @@ export async function updateTenantSettings(tenantSlug: string, formData: FormDat
 
 const deliverySchema = z.object({
   min_order_value: z.coerce.number().min(0),
-  free_delivery_threshold: z.coerce.number().min(0).optional(),
   delivery_days: z.string().optional(),
   order_cutoff_time: z.string().optional(),
-  delivery_notes: z.string().optional(),
+  customer_info: z.string().optional(),
 })
 
 export async function upsertDeliverySettings(tenantSlug: string, formData: FormData) {
@@ -76,10 +75,9 @@ export async function upsertDeliverySettings(tenantSlug: string, formData: FormD
   const payload = {
     tenant_id: ctx.tenant_id,
     min_order_value: parsed.data.min_order_value,
-    free_delivery_threshold: parsed.data.free_delivery_threshold ?? null,
     delivery_days: deliveryDays,
     order_cutoff_time: parsed.data.order_cutoff_time || null,
-    delivery_notes: parsed.data.delivery_notes || null,
+    customer_info: parsed.data.customer_info || null,
   }
 
   const { error } = existing
@@ -92,9 +90,8 @@ export async function upsertDeliverySettings(tenantSlug: string, formData: FormD
 }
 
 const paymentMethodSchema = z.object({
-  name: z.string().min(1, 'Nazwa jest wymagana'),
+  label: z.string().min(1, 'Nazwa jest wymagana'),
   type: z.enum(['cash', 'bank_transfer', 'card', 'blik', 'credit']),
-  payment_days: z.coerce.number().min(0).optional(),
   is_active: z.coerce.boolean().optional(),
 })
 
@@ -110,9 +107,8 @@ export async function createPaymentMethod(tenantSlug: string, formData: FormData
 
   const { error } = await supabase.from('payment_methods').insert({
     tenant_id: ctx.tenant_id,
-    name: parsed.data.name,
+    label: parsed.data.label,
     type: parsed.data.type,
-    payment_days: parsed.data.payment_days ?? 0,
     is_active: true,
   })
 

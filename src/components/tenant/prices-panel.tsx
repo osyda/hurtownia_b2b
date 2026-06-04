@@ -12,7 +12,7 @@ import {
 } from '@/app/actions/prices'
 import { Plus, Trash2, Edit2, Check, X, Users, Tag } from 'lucide-react'
 
-interface PriceGroup { id: string; name: string; description: string | null; discount_percent: number }
+interface PriceGroup { id: string; name: string; description: string | null }
 interface Customer { id: string; company_name: string; price_group_id: string | null }
 interface Product { id: string; name: string; sku: string | null; base_price: number; unit: string }
 
@@ -126,12 +126,10 @@ export function PricesPanel({
 
           {showNewGroup && (
             <form action={handleCreateGroup} className="p-5 border-b bg-gray-50">
-              <div className="grid grid-cols-3 gap-3 mb-3">
+              <div className="grid grid-cols-2 gap-3 mb-3">
                 <Input label="Nazwa grupy" name="name" required />
                 <Input label="Opis (opcjonalnie)" name="description" />
-                <Input label="Rabat (%)" name="discount_percent" type="number" min="0" max="100" step="0.1" defaultValue="0" />
               </div>
-              <div className="text-xs text-gray-500 mb-3">Rabat procentowy jest stosowany od ceny bazowej produktu dla wszystkich klientów w tej grupie.</div>
               <div className="flex gap-2">
                 <Button type="submit" size="sm" loading={isPending}>Utwórz</Button>
                 <Button type="button" size="sm" variant="ghost" onClick={() => setShowNewGroup(false)}>Anuluj</Button>
@@ -150,11 +148,10 @@ export function PricesPanel({
                 {editingGroup === group.id ? (
                   <form
                     action={(fd) => handleUpdateGroup(group.id, fd)}
-                    className="p-4 grid grid-cols-3 gap-3 bg-blue-50"
+                    className="p-4 grid grid-cols-2 gap-3 bg-blue-50"
                   >
                     <Input name="name" defaultValue={group.name} required label="Nazwa" />
                     <Input name="description" defaultValue={group.description ?? ''} label="Opis" />
-                    <Input name="discount_percent" type="number" min="0" max="100" step="0.1" defaultValue={group.discount_percent} label="Rabat (%)" />
                     <div className="col-span-3 flex gap-2">
                       <Button type="submit" size="sm" loading={isPending}>
                         <Check className="h-4 w-4" />
@@ -171,8 +168,7 @@ export function PricesPanel({
                     <div>
                       <div className="font-medium text-sm text-gray-900">{group.name}</div>
                       <div className="text-xs text-gray-400">
-                        {group.discount_percent > 0 ? `Rabat ${group.discount_percent}%` : 'Bez rabatu bazowego'}
-                        {group.description && ` · ${group.description}`}
+                        {group.description ?? 'Brak opisu'}
                       </div>
                       <div className="text-xs text-gray-400 mt-0.5">
                         {customers.filter(c => c.price_group_id === group.id).length} klientów
