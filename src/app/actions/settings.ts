@@ -91,7 +91,7 @@ export async function upsertDeliverySettings(tenantSlug: string, formData: FormD
 
 const paymentMethodSchema = z.object({
   label: z.string().min(1, 'Nazwa jest wymagana'),
-  type: z.enum(['cash', 'bank_transfer', 'card', 'blik', 'credit']),
+  type: z.enum(['cash_on_delivery', 'transfer_7', 'transfer_14', 'transfer_30', 'card_on_delivery', 'blik_on_delivery']),
   is_active: z.coerce.boolean().optional(),
 })
 

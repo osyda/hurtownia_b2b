@@ -34,11 +34,12 @@ interface PaymentMethod {
 
 const DAY_NAMES = ['Niedz', 'Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob']
 const PAYMENT_TYPES = [
-  { value: 'cash', label: 'Gotówka' },
-  { value: 'bank_transfer', label: 'Przelew' },
-  { value: 'card', label: 'Karta' },
-  { value: 'blik', label: 'BLIK' },
-  { value: 'credit', label: 'Kredyt kupiecki' },
+  { value: 'cash_on_delivery', label: 'Gotówka przy odbiorze' },
+  { value: 'transfer_7', label: 'Przelew 7 dni' },
+  { value: 'transfer_14', label: 'Przelew 14 dni' },
+  { value: 'transfer_30', label: 'Przelew 30 dni' },
+  { value: 'card_on_delivery', label: 'Karta przy odbiorze' },
+  { value: 'blik_on_delivery', label: 'BLIK przy odbiorze' },
 ]
 
 export function SettingsForm({
