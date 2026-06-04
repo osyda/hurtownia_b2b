@@ -6,20 +6,14 @@ import { cn } from '@/lib/utils'
 import {
   LayoutDashboard,
   Building2,
-  Users,
-  ShoppingCart,
-  Settings,
   LogOut,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 
 const navItems = [
-  { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/admin/tenants', label: 'Hurtownie', icon: Building2 },
-  { href: '/admin/users', label: 'Użytkownicy', icon: Users },
-  { href: '/admin/orders', label: 'Zamówienia', icon: ShoppingCart },
-  { href: '/admin/settings', label: 'Ustawienia', icon: Settings },
+  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/tenants', label: 'Hurtownie', icon: Building2 },
 ]
 
 export function AdminSidebar() {

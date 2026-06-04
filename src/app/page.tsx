@@ -16,7 +16,7 @@ export default async function RootPage() {
   if (!profile) redirect('/login')
 
   if (profile.role === 'super_admin') {
-    redirect('/admin/dashboard')
+    redirect('/dashboard')
   }
 
   if (profile.role === 'tenant_admin' || profile.role === 'tenant_employee') {
