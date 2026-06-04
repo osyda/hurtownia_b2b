@@ -40,7 +40,7 @@ export default async function TenantLayout({
         brandColor={tenant.brand_color}
         role={profile.role}
       />
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
         {children}
       </main>
     </div>

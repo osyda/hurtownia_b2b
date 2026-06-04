@@ -42,10 +42,10 @@ export default async function AdminDashboardPage() {
   ]
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       <h1 className="text-2xl font-bold text-gray-900 mb-6">Dashboard</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 mb-6">
         {cards.map(card => (
           <div key={card.label} className="bg-white rounded-xl border p-5">
             <div className="flex items-center justify-between mb-3">

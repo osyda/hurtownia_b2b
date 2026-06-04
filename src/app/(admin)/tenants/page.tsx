@@ -21,14 +21,14 @@ export default async function AdminTenantsPage() {
     s === 'active' ? 'bg-green-100 text-green-700' : s === 'inactive' ? 'bg-gray-100 text-gray-600' : 'bg-red-100 text-red-700'
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Hurtownie</h1>
           <p className="text-sm text-gray-500 mt-1">{tenants?.length ?? 0} hurtowni w systemie</p>
         </div>
         <Link
-          href="/admin/tenants/new"
+          href="/tenants/new"
           className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
         >
           <Plus className="h-4 w-4" />
@@ -50,7 +50,7 @@ export default async function AdminTenantsPage() {
             return (
               <Link
                 key={t.id}
-                href={`/admin/tenants/${t.id}`}
+                href={`/tenants/${t.id}`}
                 className="flex items-center p-5 hover:bg-gray-50 transition-colors"
               >
                 <div
