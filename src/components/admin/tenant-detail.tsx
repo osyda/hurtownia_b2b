@@ -20,7 +20,7 @@ export function TenantDetail({
   orders,
 }: {
   tenant: Tenant
-  employees: { id: string; full_name: string; email: string; role: string; created_at: string }[]
+  employees: { id: string; first_name: string | null; last_name: string | null; role: string; created_at: string }[]
   customers: { id: string; company_name: string; email: string | null; status: string; created_at: string }[]
   orders: { id: string; order_number: string; status: string; total_gross: number; created_at: string }[]
 }) {
@@ -113,8 +113,8 @@ export function TenantDetail({
             )}
             {employees.map(e => (
               <div key={e.id} className="p-3">
-                <div className="text-sm font-medium text-gray-900">{e.full_name}</div>
-                <div className="text-xs text-gray-400">{e.email} · {roleLabel(e.role)}</div>
+                <div className="text-sm font-medium text-gray-900">{[e.first_name, e.last_name].filter(Boolean).join(' ') || '—'}</div>
+                <div className="text-xs text-gray-400">{roleLabel(e.role)}</div>
               </div>
             ))}
           </div>

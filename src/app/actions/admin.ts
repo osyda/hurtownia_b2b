@@ -87,12 +87,17 @@ export async function createTenant(formData: FormData) {
     return { error: userError?.message ?? 'Błąd tworzenia konta użytkownika' }
   }
 
+  // Split "Jan Kowalski" → first_name="Jan" last_name="Kowalski"
+  const nameParts = adminParsed.data.full_name.trim().split(/\s+/)
+  const firstName = nameParts[0]
+  const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : null
+
   // Create user profile via admin client (bypasses RLS)
   const { error: profileError } = await adminSupabase.from('user_profiles').insert({
     id: newUser.user.id,
     tenant_id: tenant.id,
-    full_name: adminParsed.data.full_name,
-    email: adminParsed.data.email,
+    first_name: firstName,
+    last_name: lastName,
     role: 'tenant_admin',
   })
 
@@ -180,8 +185,7 @@ export async function inviteCustomerUser(
   const { error: profileError } = await adminSupabase.from('user_profiles').insert({
     id: newUser.user.id,
     tenant_id: customer?.tenant_id ?? profile.tenant_id,
-    email,
-    full_name: customer?.company_name ?? 'Klient',
+    first_name: customer?.company_name ?? 'Klient',
     role: 'customer',
   })
 
