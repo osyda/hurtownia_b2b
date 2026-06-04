@@ -284,7 +284,7 @@ Dane klienta:
 - adresy dostaw,
 - status,
 - grupa cenowa,
-- warunki płatności,
+- formy płatności (przypisane przez hurtownię, np. gotówka, przelew 7 dni, przelew 14 dni, karta/BLIK),
 - minimalna wartość zamówienia.
 
 5. Cenniki
@@ -425,6 +425,7 @@ Koszyk powinien pokazywać:
 Klient powinien wybrać:
 - adres dostawy,
 - datę dostawy,
+- formę płatności (jeśli hurtownia przypisała mu więcej niż jedną),
 - ewentualne uwagi.
 
 Po potwierdzeniu zamówienia:
@@ -492,7 +493,41 @@ System powinien mieć:
 - możliwość rozwoju pod audyt i profesjonalne wdrożenia.
 
 ============================================================
-10. IMPORT, EKSPORT I PRZYSZŁE INTEGRACJE
+10. STANY MAGAZYNOWE
+============================================================
+
+Hurtownie korzystają z różnych systemów i różne mają możliwości techniczne.
+System musi być elastyczny jeśli chodzi o aktualizację stanów magazynowych.
+
+Model dostępności produktu:
+każdy produkt posiada flagę dostępności (dostępny / niedostępny) oraz opcjonalnie
+informację o stanie magazynowym. Brak stanu nie blokuje zamawiania — hurtownia
+decyduje, co pokazuje klientom.
+
+Obsługiwane sposoby aktualizacji stanów:
+
+1. Ręczny import pliku (Excel / CSV)
+   - hurtownia wgrywa plik codziennie lub kiedy chce,
+   - system nadpisuje stany na podstawie SKU / kodu produktu,
+   - format pliku powinien być opisany i dostępny jako szablon do pobrania.
+
+2. API (dla hurtowni z zaawansowanymi systemami)
+   - platforma udostępnia endpoint do aktualizacji stanów,
+   - hurtownia integruje swój system (np. Subiekt, WF-Mag, Comarch itp.) z API platformy,
+   - aktualizacja może być automatyczna, np. co noc lub po każdej zmianie.
+
+3. Ręczna edycja w panelu
+   - hurtownia edytuje stany bezpośrednio w panelu administracyjnym,
+   - rozwiązanie dla małych hurtowni bez żadnego systemu zewnętrznego.
+
+Ważne:
+- system nie może wymuszać jednego sposobu — każda hurtownia wybiera metodę odpowiednią dla siebie,
+- architektura powinna zakładać, że importy będą się powtarzać regularnie,
+- w pierwszej wersji wystarczy ręczny import pliku + ręczna edycja,
+- API do stanów magazynowych może być kolejnym etapem.
+
+============================================================
+10A. IMPORT, EKSPORT I PRZYSZŁE INTEGRACJE
 ============================================================
 
 System powinien być przygotowany do integracji z obecnym oprogramowaniem hurtowni.
@@ -506,6 +541,7 @@ Na początku wystarczające mogą być:
 - import produktów,
 - import klientów,
 - import cenników,
+- import stanów magazynowych,
 - eksport zamówień.
 
 Obsługiwane kierunki rozwoju:
@@ -514,27 +550,74 @@ Obsługiwane kierunki rozwoju:
 - XML,
 - API,
 - integracje indywidualne,
-- integracje z systemami magazynowo-handlowymi.
+- integracje z systemami magazynowo-handlowymi (Subiekt, WF-Mag, Comarch itp.).
 
 Ważne:
 system powinien mieć strukturę gotową pod przyszłe integracje, ale nie powinien być od początku przeciążony zbędnymi modułami ERP.
 
 ============================================================
-11. POWIADOMIENIA E-MAIL
+11. FORMY PŁATNOŚCI
+============================================================
+
+Hurtownia ustala każdemu klientowi dostępne formy płatności.
+Nie ma jednej globalnej formy — to jest ustawienie per klient.
+
+Przykładowe formy płatności:
+- gotówka przy dostawie,
+- przelew 7 dni,
+- przelew 14 dni,
+- przelew 30 dni,
+- karta / BLIK przy dostawie.
+
+Zasady działania:
+- hurtownia przypisuje klientowi jedną lub więcej form płatności,
+- jeśli klient ma więcej niż jedną formę, wybiera ją przy składaniu zamówienia,
+- jeśli klient ma tylko jedną formę, jest ona ustawiana automatycznie bez wyboru,
+- wybrana forma płatności jest widoczna w szczegółach zamówienia po obu stronach,
+- forma płatności trafia do maila z potwierdzeniem zamówienia.
+
+Forma płatności jest częścią profilu klienta hurtowni i może być zmieniana przez hurtownię w dowolnym momencie.
+
+============================================================
+12. POWIADOMIENIA E-MAIL I PRZEPŁYW ZAMÓWIENIA
 ============================================================
 
 System powinien obsługiwać automatyczne wiadomości e-mail.
 
-Przykładowe maile:
-- zaproszenie użytkownika,
+Przepływ po złożeniu zamówienia przez klienta:
+
+1. Do hurtowni — mail o nowym zamówieniu
+   - temat: nowe zamówienie od [nazwa klienta],
+   - treść: pełne szczegóły zamówienia (produkty, ilości, ceny, suma, adres, termin dostawy, uwagi, forma płatności),
+   - bezpośredni link do zamówienia w panelu hurtowni,
+   - hurtownia może kliknąć link i od razu zarządzać zamówieniem.
+
+2. Do klienta — potwierdzenie złożenia zamówienia
+   - temat: potwierdzenie zamówienia nr [numer],
+   - treść: podsumowanie złożonego zamówienia (produkty, ilości, ceny, suma, adres, termin dostawy),
+   - adnotacja: "Zamówione ilości mogą zostać skorygowane przez hurtownię na etapie kompletowania zamówienia. O ostatecznych ilościach zostaniesz poinformowany.",
+   - forma płatności.
+
+Korekta ilości przez hurtownię:
+
+Hurtownia ma możliwość edycji ilości w zamówieniu po jego przyjęciu.
+Przykład: klient zamówił 10 kg schabu, hurtownia skompletowała 10,4 kg.
+
+Zasady:
+- hurtownia wpisuje rzeczywistą ilość przy każdej pozycji,
+- system automatycznie przelicza wartość pozycji i całe zamówienie,
+- zmiana ilości przez hurtownię jest rejestrowana w historii zamówienia (kto zmienił, kiedy, z jakiej ilości na jaką),
+- po skorygowaniu ilości klient powinien otrzymać powiadomienie e-mail z zaktualizowanym zamówieniem,
+- jeśli hurtownia pominie produkt (ilość 0), pozycja jest oznaczona jako niedostarczona.
+
+Pozostałe maile systemowe:
+- zaproszenie użytkownika do platformy,
 - potwierdzenie założenia konta,
 - reset hasła,
-- potwierdzenie złożenia zamówienia,
-- informacja dla hurtowni o nowym zamówieniu,
-- informacja o zmianie statusu zamówienia,
-- ewentualny raport dzienny.
+- informacja o zmianie statusu zamówienia (opcjonalnie — hurtownia decyduje które statusy wysyłają maila),
+- mail do klienta z zaktualizowanymi ilościami po korekcie przez hurtownię.
 
-Maile powinny być estetyczne, profesjonalne i zgodne z brandingiem platformy albo hurtowni.
+Maile powinny być estetyczne, profesjonalne i zgodne z brandingiem hurtowni (logo, kolor, nazwa).
 
 ============================================================
 12. PLATFORMA I NARZĘDZIA — INFORMACJA KONTEKSTOWA
@@ -587,6 +670,50 @@ Wymagania jakościowe:
 - możliwość pracy etapami.
 
 ============================================================
+13A. LOGI SYSTEMOWE
+============================================================
+
+System powinien rejestrować zdarzenia istotne dla bezpieczeństwa, audytu i diagnozowania problemów.
+
+Logowane zdarzenia:
+
+Konta i logowanie:
+- logowanie użytkownika (sukces i nieudana próba),
+- wylogowanie,
+- reset hasła,
+- zmiana hasła,
+- utworzenie konta,
+- dezaktywacja / usunięcie konta.
+
+Zamówienia:
+- złożenie zamówienia przez klienta,
+- zmiana statusu zamówienia (kto zmienił, kiedy, z jakiego na jaki),
+- korekta ilości przez hurtownię (kto, kiedy, która pozycja, stara i nowa wartość),
+- anulowanie zamówienia.
+
+Produkty i ceny:
+- dodanie / edycja / usunięcie produktu,
+- zmiana ceny produktu lub cennika,
+- zmiana stanu magazynowego (kto i kiedy zaktualizował).
+
+Klienci:
+- dodanie klienta,
+- zmiana danych klienta (w szczególności grupy cenowej i formy płatności),
+- dezaktywacja klienta.
+
+Import danych:
+- każda operacja importu (kto, kiedy, ile rekordów, czy był błąd).
+
+Minimalne dane każdego logu:
+- czas zdarzenia,
+- użytkownik (ID + rola),
+- hurtownia (ID),
+- typ zdarzenia,
+- opis zdarzenia / zmienione wartości.
+
+Logi nie są widoczne dla klientów hurtowni. Dostęp mają administratorzy hurtowni i super admin.
+
+============================================================
 14. ZAKRES PIERWSZEJ WERSJI PRODUKCYJNEJ
 ============================================================
 
@@ -611,7 +738,9 @@ Zakres pierwszej wersji:
 15. Statusy zamówień.
 16. Powiadomienia e-mail.
 17. Import/eksport danych.
-18. Podstawowe logi.
+18. Logi systemowe (patrz sekcja 13A).
+18a. Formy płatności per klient.
+18b. Stany magazynowe (import ręczny + edycja w panelu).
 19. Przygotowanie pod przyszłe integracje.
 20. Responsywny, nowoczesny interfejs.
 
