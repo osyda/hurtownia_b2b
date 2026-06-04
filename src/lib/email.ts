@@ -1,8 +1,11 @@
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 const FROM = process.env.RESEND_FROM || 'B2B Connect <noreply@b2bconnect.pl>'
+
+function getResend(): Resend | null {
+  if (!process.env.RESEND_API_KEY) return null
+  return new Resend(process.env.RESEND_API_KEY)
+}
 
 export async function sendNewOrderEmail({
   tenantEmail,
@@ -19,6 +22,8 @@ export async function sendNewOrderEmail({
   totalGross: number
   orderUrl: string
 }) {
+  const resend = getResend()
+  if (!resend) return
   const amount = new Intl.NumberFormat('pl-PL', { style: 'currency', currency: 'PLN' }).format(totalGross)
   await resend.emails.send({
     from: FROM,
@@ -61,6 +66,8 @@ export async function sendOrderStatusEmail({
   orderUrl: string
   note?: string
 }) {
+  const resend = getResend()
+  if (!resend) return
   const amount = new Intl.NumberFormat('pl-PL', { style: 'currency', currency: 'PLN' }).format(totalGross)
   const subject = status === 'confirmed'
     ? `Zamówienie ${orderNumber} potwierdzone`
@@ -103,6 +110,8 @@ export async function sendCustomerInviteEmail({
   tenantName: string
   loginUrl: string
 }) {
+  const resend = getResend()
+  if (!resend) return
   await resend.emails.send({
     from: FROM,
     to: customerEmail,
