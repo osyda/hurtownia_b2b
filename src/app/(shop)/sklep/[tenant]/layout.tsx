@@ -1,5 +1,5 @@
 import { redirect, notFound } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { ShopHeader } from '@/components/shop/shop-header'
 
 export default async function ShopLayout({
@@ -13,34 +13,36 @@ export default async function ShopLayout({
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect(`/login`)
+  if (!user) redirect('/login')
 
-  // Verify it's a customer role
-  const { data: profile } = await supabase
+  // Use admin client to bypass RLS
+  const adminSupabase = await createAdminClient()
+
+  const { data: profile } = await adminSupabase
     .from('user_profiles')
     .select('role')
     .eq('id', user.id)
-    .single()
+    .maybeSingle()
 
-  if (!profile || profile.role !== 'customer') redirect('/')
+  if (!profile || profile.role !== 'customer') redirect('/login')
 
   // Get tenant branding
-  const { data: tenant } = await supabase
+  const { data: tenant } = await adminSupabase
     .from('tenants')
     .select('id, name, slug, logo_url, brand_color, customer_message')
     .eq('slug', tenantSlug)
     .eq('status', 'active')
-    .single()
+    .maybeSingle()
 
   if (!tenant) notFound()
 
-  // Verify customer belongs to this tenant
-  const { data: customer } = await supabase
+  // Verify customer belongs to this tenant and is active
+  const { data: customer } = await adminSupabase
     .from('customers')
     .select('id, company_name, status')
     .eq('user_id', user.id)
     .eq('tenant_id', tenant.id)
-    .single()
+    .maybeSingle()
 
   if (!customer || customer.status === 'inactive') redirect('/login')
 

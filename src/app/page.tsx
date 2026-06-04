@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 
 export default async function RootPage() {
   const supabase = await createClient()
@@ -7,11 +7,13 @@ export default async function RootPage() {
 
   if (!user) redirect('/login')
 
-  const { data: profile } = await supabase
+  // Use admin client to bypass potential RLS issues on user_profiles
+  const adminSupabase = await createAdminClient()
+  const { data: profile } = await adminSupabase
     .from('user_profiles')
-    .select('role, tenant_id, tenants(slug)')
+    .select('role, tenant_id')
     .eq('id', user.id)
-    .single()
+    .maybeSingle()
 
   if (!profile) {
     await supabase.auth.signOut()
@@ -23,21 +25,28 @@ export default async function RootPage() {
   }
 
   if (profile.role === 'tenant_admin' || profile.role === 'tenant_employee') {
-    const tenant = (profile.tenants as unknown as { slug: string } | null)
+    if (!profile.tenant_id) {
+      await supabase.auth.signOut()
+      redirect('/login')
+    }
+    const { data: tenant } = await adminSupabase
+      .from('tenants')
+      .select('slug')
+      .eq('id', profile.tenant_id)
+      .maybeSingle()
     if (tenant?.slug) redirect(`/${tenant.slug}/dashboard`)
-    // Brak tenanta — wyloguj
     await supabase.auth.signOut()
     redirect('/login')
   }
 
   if (profile.role === 'customer') {
-    const { data: customer } = await supabase
+    const { data: customer } = await adminSupabase
       .from('customers')
       .select('tenant_id, tenants(slug)')
       .eq('user_id', user.id)
-      .single()
-    const tenant = (customer?.tenants as unknown as { slug: string } | null)
-    if (tenant?.slug) redirect(`/sklep/${tenant.slug}`)
+      .maybeSingle()
+    const tenantSlug = (customer?.tenants as unknown as { slug: string } | null)?.slug
+    if (tenantSlug) redirect(`/sklep/${tenantSlug}`)
     await supabase.auth.signOut()
     redirect('/login')
   }

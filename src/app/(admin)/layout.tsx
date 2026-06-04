@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { AdminSidebar } from '@/components/admin/admin-sidebar'
 
 export default async function AdminLayout({
@@ -12,13 +12,16 @@ export default async function AdminLayout({
 
   if (!user) redirect('/login')
 
-  const { data: profile } = await supabase
+  // Use admin client to bypass RLS — ensures profile is always readable
+  const adminSupabase = await createAdminClient()
+  const { data: profile } = await adminSupabase
     .from('user_profiles')
     .select('role')
     .eq('id', user.id)
-    .single()
+    .maybeSingle()
 
-  if (profile?.role !== 'super_admin') redirect('/')
+  // Redirect to /login (not /) to avoid loop with root page
+  if (!profile || profile.role !== 'super_admin') redirect('/login')
 
   return (
     <div className="flex h-screen bg-gray-50">
