@@ -13,7 +13,10 @@ export default async function RootPage() {
     .eq('id', user.id)
     .single()
 
-  if (!profile) redirect('/login')
+  if (!profile) {
+    await supabase.auth.signOut()
+    redirect('/login')
+  }
 
   if (profile.role === 'super_admin') {
     redirect('/admin/dashboard')
@@ -22,6 +25,9 @@ export default async function RootPage() {
   if (profile.role === 'tenant_admin' || profile.role === 'tenant_employee') {
     const tenant = (profile.tenants as unknown as { slug: string } | null)
     if (tenant?.slug) redirect(`/${tenant.slug}/dashboard`)
+    // Brak tenanta — wyloguj
+    await supabase.auth.signOut()
+    redirect('/login')
   }
 
   if (profile.role === 'customer') {
@@ -32,7 +38,10 @@ export default async function RootPage() {
       .single()
     const tenant = (customer?.tenants as unknown as { slug: string } | null)
     if (tenant?.slug) redirect(`/sklep/${tenant.slug}`)
+    await supabase.auth.signOut()
+    redirect('/login')
   }
 
+  await supabase.auth.signOut()
   redirect('/login')
 }
