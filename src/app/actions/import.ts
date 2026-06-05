@@ -92,7 +92,7 @@ export async function importProducts(tenantSlug: string, rows: ImportRow[]) {
       vat_rate: row.vat_rate ?? 23,
       min_order_qty: row.min_order_qty ?? 1,
       order_multiple: row.order_multiple ?? 1,
-      stock_qty: row.stock_qty ?? 0,
+      stock_quantity: row.stock_qty ?? 0,
       stock_status: (row.stock_status as 'available' | 'unavailable' | 'limited') || 'available',
       status: 'active' as const,
     }
@@ -173,7 +173,7 @@ export async function importStockLevels(tenantSlug: string, rows: { sku: string;
 
     const { error } = await supabase.from('products')
       .update({
-        stock_qty: row.stock_qty,
+        stock_quantity: row.stock_qty,
         stock_status: (row.stock_status as 'available' | 'unavailable' | 'limited') || 'available',
       })
       .eq('tenant_id', tenantId)

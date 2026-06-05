@@ -71,7 +71,7 @@ export function ImportPanel({
     const reader = new FileReader()
     reader.onload = (ev) => {
       const data = new Uint8Array(ev.target?.result as ArrayBuffer)
-      const wb = XLSX.read(data, { type: 'array' })
+      const wb = XLSX.read(data, { type: 'array', codepage: 65001 })
       const ws = wb.Sheets[wb.SheetNames[0]]
       const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(ws, { defval: '' })
       setPreview(rows.slice(0, 5))
@@ -86,7 +86,7 @@ export function ImportPanel({
     const reader = new FileReader()
     reader.onload = (ev) => {
       const data = new Uint8Array(ev.target?.result as ArrayBuffer)
-      const wb = XLSX.read(data, { type: 'array' })
+      const wb = XLSX.read(data, { type: 'array', codepage: 65001 })
       const ws = wb.Sheets[wb.SheetNames[0]]
       const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(ws, { defval: '' })
 
