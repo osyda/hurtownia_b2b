@@ -1,0 +1,21 @@
+sku,name,unit,base_price,vat_rate,category_name,description,min_order_qty,order_multiple,stock_qty,stock_status
+NAP001,Woda mineralna niegazowana 1.5l,szt,0.89,23,Napoje,Naturalna woda mineralna niegazowana butelka 1.5l,6,6,2400,available
+NAP002,Woda mineralna gazowana 1.5l,szt,0.92,23,Napoje,Naturalna woda mineralna gazowana butelka 1.5l,6,6,1800,available
+NAP003,Sok pomarańczowy 100% 1l,szt,3.20,5,Napoje,Sok pomarańczowy tłoczony 100% bez cukru karton 1l,6,6,960,available
+NAP004,Sok jabłkowy 100% 1l,szt,2.90,5,Napoje,Sok jabłkowy tłoczony 100% bez cukru karton 1l,6,6,720,available
+NAP005,Napój gazowany cola 0.5l,szt,1.80,23,Napoje,Napój gazowany o smaku cola butelka PET 0.5l,12,12,1440,available
+KAW001,Kawa mielona 250g,op,13.50,23,Kawa i herbata,Kawa arabica mielona do ekspresu opakowanie 250g,6,6,480,available
+KAW002,Kawa rozpuszczalna 200g,op,18.90,23,Kawa i herbata,Kawa rozpuszczalna granulowana słoik 200g,6,6,360,available
+KAW003,Herbata ekspresowa 100 szt,op,7.80,23,Kawa i herbata,Herbata czarna ekspresowa koperty 100 sztuk,6,6,540,available
+SUS001,Cukier biały 1kg,szt,3.20,5,Artykuły suche,Cukier biały drobny opakowanie 1kg,10,10,2000,available
+SUS002,Mąka pszenna typ 500 1kg,szt,2.40,5,Artykuły suche,Mąka pszenna chlebowa typ 500 opakowanie 1kg,10,10,1500,available
+SUS003,Ryż biały długoziarnisty 1kg,szt,3.80,5,Artykuły suche,Ryż biały długoziarnisty opakowanie 1kg,6,6,900,available
+SUS004,Makaron spaghetti 500g,szt,2.60,5,Artykuły suche,Makaron spaghetti z pszenicy durum opakowanie 500g,6,6,1200,available
+SUS005,Olej rzepakowy 1l,szt,5.90,5,Artykuły suche,Rafinowany olej rzepakowy butelka 1l,6,6,600,available
+MLK001,Mleko UHT 3.2% 1l,szt,2.80,5,Nabiał i jaja,Mleko UHT pełne 3.2% tłuszczu karton 1l,6,12,1800,available
+MLK002,Masło ekstra 82% 200g,szt,5.40,5,Nabiał i jaja,Masło ekstra o zawartości tłuszczu 82% kostka 200g,10,10,800,available
+MLK003,Ser żółty gouda plastry 150g,op,6.90,5,Nabiał i jaja,Ser żółty gouda w plastrach opakowanie 150g,6,6,480,low_stock
+CHE001,Płyn do mycia naczyń 500ml,szt,3.90,23,Chemia gospodarcza,Płyn do mycia naczyń cytrynowy butelka 500ml,6,6,720,available
+CHE002,Proszek do prania 1.5kg,op,19.90,23,Chemia gospodarcza,Proszek do prania do kolorów opakowanie 1.5kg,4,4,320,available
+CHE003,Papier toaletowy 3-warstwowy 8 rolek,op,8.50,23,Chemia gospodarcza,Papier toaletowy celulozowy 3-warstwowy opakowanie 8 rolek,4,4,400,available
+CHE004,Ręczniki papierowe 2-warstwowe 2 rolki,op,5.20,23,Chemia gospodarcza,Ręczniki papierowe celulozowe 2-warstwowe opakowanie 2 rolki,6,6,480,available
