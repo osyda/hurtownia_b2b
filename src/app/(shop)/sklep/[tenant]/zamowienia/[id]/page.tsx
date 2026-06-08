@@ -1,11 +1,13 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound, redirect } from 'next/navigation'
+import { headers } from 'next/headers'
 import Link from 'next/link'
 import { formatCurrency, formatDate, formatDateTime, ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from '@/lib/utils'
 import { ReorderButton } from '@/components/shop/reorder-button'
 import { InvoiceList } from '@/components/shared/invoice-list'
 import { ChevronLeft } from 'lucide-react'
 import type { OrderInvoice } from '@/types/database.types'
+import { getShopBasePath } from '@/lib/shop-routing'
 
 export default async function CustomerOrderPage({
   params,
@@ -13,6 +15,7 @@ export default async function CustomerOrderPage({
   params: Promise<{ tenant: string; id: string }>
 }) {
   const { tenant: tenantSlug, id } = await params
+  const shopBasePath = getShopBasePath(tenantSlug, (await headers()).get('host'))
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
@@ -48,7 +51,7 @@ export default async function CustomerOrderPage({
   return (
     <div className="max-w-3xl space-y-5">
       <div className="mb-6 flex items-center gap-3">
-        <Link href={`/sklep/${tenantSlug}/zamowienia`} className="text-gray-400 hover:text-gray-600">
+        <Link href={`${shopBasePath}/zamowienia`} className="text-gray-400 hover:text-gray-600">
           <ChevronLeft className="h-5 w-5" />
         </Link>
         <div>
@@ -126,9 +129,9 @@ export default async function CustomerOrderPage({
       <InvoiceList invoices={(invoices ?? []) as OrderInvoice[]} />
 
       <ReorderButton
-        tenantSlug={tenantSlug}
         brandColor={brandColor}
         items={items ?? []}
+        shopBasePath={shopBasePath}
       />
     </div>
   )

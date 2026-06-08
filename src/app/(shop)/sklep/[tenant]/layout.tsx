@@ -1,6 +1,8 @@
 import { redirect, notFound } from 'next/navigation'
+import { headers } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { ShopHeader } from '@/components/shop/shop-header'
+import { getShopBasePath } from '@/lib/shop-routing'
 
 export default async function ShopLayout({
   children,
@@ -10,6 +12,7 @@ export default async function ShopLayout({
   params: Promise<{ tenant: string }>
 }) {
   const { tenant: tenantSlug } = await params
+  const shopBasePath = getShopBasePath(tenantSlug, (await headers()).get('host'))
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
@@ -49,6 +52,7 @@ export default async function ShopLayout({
         brandColor={tenant.brand_color}
         logoUrl={tenant.logo_url}
         customerName={customer.company_name}
+        shopBasePath={shopBasePath}
       />
       <main className="mx-auto max-w-6xl px-4 py-6">
         {children}

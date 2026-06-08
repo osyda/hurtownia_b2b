@@ -14,9 +14,10 @@ interface Props {
   brandColor: string
   logoUrl: string | null
   customerName: string
+  shopBasePath: string
 }
 
-export function ShopHeader({ tenantSlug, tenantName, brandColor, logoUrl, customerName }: Props) {
+export function ShopHeader({ tenantSlug, tenantName, brandColor, logoUrl, customerName, shopBasePath }: Props) {
   const pathname = usePathname()
   const router = useRouter()
   const { itemCount, setTenant } = useCart()
@@ -32,9 +33,9 @@ export function ShopHeader({ tenantSlug, tenantName, brandColor, logoUrl, custom
     router.push('/login')
   }
 
-  const base = `/sklep/${tenantSlug}`
+  const base = shopBasePath
   const navItems = [
-    { href: base, label: 'Start', icon: Package, exact: true },
+    { href: base || '/', label: 'Start', icon: Package, exact: true },
     { href: `${base}/katalog`, label: 'Produkty', icon: Package },
     { href: `${base}/zamowienia`, label: 'Zamówienia', icon: ClipboardList },
   ]
@@ -43,7 +44,7 @@ export function ShopHeader({ tenantSlug, tenantName, brandColor, logoUrl, custom
     <header className="premium-topbar sticky top-0 z-40">
       <div className="mx-auto max-w-6xl px-4">
         <div className="flex h-16 items-center justify-between gap-4">
-          <Link href={base} className="flex min-w-0 items-center gap-3">
+          <Link href={base || '/'} className="flex min-w-0 items-center gap-3">
             {logoUrl ? (
               <img src={logoUrl} alt={tenantName} className="h-9 w-auto max-w-[140px] object-contain" />
             ) : (

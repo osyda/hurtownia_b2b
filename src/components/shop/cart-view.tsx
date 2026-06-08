@@ -22,6 +22,7 @@ interface Props {
   deliveryInfo: string | null
   deliveryDays: number[]
   cutoffTime: string
+  shopBasePath: string
 }
 
 const DAYS = ['', 'Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Niedz']
@@ -36,6 +37,7 @@ export function CartView({
   deliveryInfo,
   deliveryDays,
   cutoffTime,
+  shopBasePath,
 }: Props) {
   const router = useRouter()
   const { items, updateQty, updateNotes, removeItem, clear, totalNet, totalGross } = useCart()
@@ -131,10 +133,10 @@ export function CartView({
         </p>
         <p className="mt-1 text-sm text-gray-400">Potwierdzenie zostanie wysłane na Twój e-mail.</p>
         <div className="mt-8 flex justify-center gap-3">
-          <Link href={`/sklep/${tenantSlug}/zamowienia/${submittedOrder.id}`} className="rounded-lg px-4 py-2 text-sm font-bold text-white hover:opacity-90" style={{ backgroundColor: brandColor }}>
+          <Link href={`${shopBasePath}/zamowienia/${submittedOrder.id}`} className="rounded-lg px-4 py-2 text-sm font-bold text-white hover:opacity-90" style={{ backgroundColor: brandColor }}>
             Zobacz zamówienie
           </Link>
-          <Link href={`/sklep/${tenantSlug}/katalog`} className="rounded-lg border px-4 py-2 text-sm font-bold text-gray-700 hover:bg-gray-50">
+          <Link href={`${shopBasePath}/katalog`} className="rounded-lg border px-4 py-2 text-sm font-bold text-gray-700 hover:bg-gray-50">
             Kontynuuj zakupy
           </Link>
         </div>
@@ -148,7 +150,7 @@ export function CartView({
         <ShoppingCart className="mx-auto mb-4 h-16 w-16 text-gray-200" />
         <h1 className="text-xl font-black text-gray-900">Koszyk jest pusty</h1>
         <p className="mt-2 text-sm text-gray-500">Dodaj produkty z katalogu.</p>
-        <Link href={`/sklep/${tenantSlug}/katalog`} className="mt-6 inline-block rounded-lg px-5 py-2.5 text-sm font-bold text-white hover:opacity-90" style={{ backgroundColor: brandColor }}>
+        <Link href={`${shopBasePath}/katalog`} className="mt-6 inline-block rounded-lg px-5 py-2.5 text-sm font-bold text-white hover:opacity-90" style={{ backgroundColor: brandColor }}>
           Przeglądaj produkty
         </Link>
       </div>

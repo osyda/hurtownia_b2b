@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { OrderStatus } from '@/types/database.types'
 import { sendOrderStatusEmail } from '@/lib/email'
+import { getTenantShopUrl } from '@/lib/shop-routing'
 import { ORDER_STATUS_LABELS } from '@/lib/utils'
 
 async function getTenantId(supabase: Awaited<ReturnType<typeof createClient>>) {
@@ -32,7 +33,6 @@ export async function updateOrderStatus(tenantSlug: string, orderId: string, sta
   if (order && process.env.RESEND_API_KEY) {
     const customer = order.customers as unknown as { company_name: string; email: string | null } | null
     if (customer?.email) {
-      const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://hurtownia-b2b.vercel.app'
       sendOrderStatusEmail({
         customerEmail: customer.email,
         customerName: customer.company_name,
@@ -40,7 +40,7 @@ export async function updateOrderStatus(tenantSlug: string, orderId: string, sta
         status,
         statusLabel: ORDER_STATUS_LABELS[status] ?? status,
         totalGross: order.total_gross,
-        orderUrl: `${appUrl}/sklep/${tenantSlug}/zamowienia/${orderId}`,
+        orderUrl: getTenantShopUrl(tenantSlug, `zamowienia/${orderId}`),
         note: order.internal_notes ?? undefined,
       }).catch(() => {})
     }

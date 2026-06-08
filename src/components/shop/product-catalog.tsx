@@ -29,15 +29,15 @@ interface Category {
 }
 
 interface Props {
-  tenantSlug: string
   brandColor: string
   categories: Category[]
   products: Product[]
   searchQuery?: string
   activeCategory?: string
+  shopBasePath: string
 }
 
-export function ProductCatalog({ tenantSlug, brandColor, categories, products, searchQuery, activeCategory }: Props) {
+export function ProductCatalog({ brandColor, categories, products, searchQuery, activeCategory, shopBasePath }: Props) {
   const router = useRouter()
   const { addItem } = useCart()
   const [quantities, setQuantities] = useState<Record<string, number>>(() =>
@@ -76,7 +76,8 @@ export function ProductCatalog({ tenantSlug, brandColor, categories, products, s
     const sp = new URLSearchParams()
     if (params.q) sp.set('q', params.q)
     if (params.category) sp.set('category', params.category)
-    router.push(`/sklep/${tenantSlug}/katalog?${sp.toString()}`)
+    const query = sp.toString()
+    router.push(`${shopBasePath}/katalog${query ? `?${query}` : ''}`)
   }
 
   return (

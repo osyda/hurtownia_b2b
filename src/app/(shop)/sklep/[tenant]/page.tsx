@@ -1,12 +1,15 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import { headers } from 'next/headers'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 import { ChevronRight, ClipboardList, PackageSearch, RotateCcw, ShoppingCart, Sparkles } from 'lucide-react'
+import { getShopBasePath } from '@/lib/shop-routing'
 import { formatCurrency, formatDate, ORDER_STATUS_COLORS, ORDER_STATUS_LABELS } from '@/lib/utils'
 
 export default async function ShopDashboardPage({ params }: { params: Promise<{ tenant: string }> }) {
   const { tenant: tenantSlug } = await params
+  const shopBasePath = getShopBasePath(tenantSlug, (await headers()).get('host'))
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
@@ -41,7 +44,7 @@ export default async function ShopDashboardPage({ params }: { params: Promise<{ 
     .limit(1)
     .single()
 
-  const base = `/sklep/${tenantSlug}`
+  const base = shopBasePath
   const brandColor = tenantInfo?.brand_color ?? '#0f172a'
   const orderTotal = recentOrders?.reduce((sum, order) => sum + (order.total_gross || 0), 0) ?? 0
 

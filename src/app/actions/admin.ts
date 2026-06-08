@@ -6,6 +6,7 @@ import { redirect } from 'next/navigation'
 import { z } from 'zod'
 import { slugify } from '@/lib/utils'
 import { sendCustomerInviteEmail } from '@/lib/email'
+import { getTenantShopUrl } from '@/lib/shop-routing'
 
 async function requireSuperAdmin() {
   const supabase = await createClient()
@@ -197,12 +198,11 @@ export async function inviteCustomerUser(
   // Send invite email (fire-and-forget)
   if (process.env.RESEND_API_KEY) {
     const tenantName = (customer?.tenants as unknown as { name: string } | null)?.name ?? 'Hurtownia'
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://hurtownia-b2b.vercel.app'
     sendCustomerInviteEmail({
       customerEmail: email,
       customerName: customer?.company_name ?? 'Klient',
       tenantName,
-      loginUrl: `${appUrl}/login`,
+      loginUrl: getTenantShopUrl(tenantSlug, 'login'),
     }).catch(() => {})
   }
 

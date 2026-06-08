@@ -259,14 +259,14 @@ export async function placeOrder(input: PlaceOrderInput) {
   }
 
   if (tenant.contact_email && process.env.RESEND_API_KEY) {
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://hurtownia-b2b.vercel.app'
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://app.dostawio.pl'
     sendNewOrderEmail({
       tenantEmail: tenant.contact_email,
       tenantName: tenant.name,
       orderNumber: order.order_number,
       customerName: customer.company_name ?? 'Klient',
       totalGross,
-      orderUrl: `${appUrl}/sklep/${tenantSlug}/zamowienia/${order.id}`,
+      orderUrl: `${appUrl}/${tenantSlug}/orders/${order.id}`,
     }).catch(() => {})
   }
 

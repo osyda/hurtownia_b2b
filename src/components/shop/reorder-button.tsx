@@ -17,12 +17,12 @@ interface OrderItem {
 }
 
 interface Props {
-  tenantSlug: string
   brandColor: string
   items: OrderItem[]
+  shopBasePath: string
 }
 
-export function ReorderButton({ tenantSlug, brandColor, items }: Props) {
+export function ReorderButton({ brandColor, items, shopBasePath }: Props) {
   const { addItem, clear } = useCart()
   const router = useRouter()
 
@@ -43,7 +43,7 @@ export function ReorderButton({ tenantSlug, brandColor, items }: Props) {
       })
     }
     toast.success('Produkty dodane do koszyka')
-    router.push(`/sklep/${tenantSlug}/koszyk`)
+    router.push(`${shopBasePath}/koszyk`)
   }
 
   return (
