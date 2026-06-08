@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
-import { sendCustomerInviteEmail } from '@/lib/email'
+import { sendCustomerInviteEmail, sendTenantAdminWelcomeEmail } from '@/lib/email'
 import { slugify } from '@/lib/utils'
 import { createAdminClient, createClient } from '@/lib/supabase/server'
 import { getTenantPanelUrl, getTenantShopUrl, isReservedTenantSlug } from '@/lib/shop-routing'
@@ -138,6 +138,16 @@ export async function createTenant(formData: FormData) {
     return { error: paymentMethodsError.message }
   }
 
+  await sendTenantAdminWelcomeEmail({
+    adminEmail: adminParsed.data.email,
+    adminName: adminParsed.data.full_name,
+    tenantName: parsed.data.name,
+    panelUrl: getTenantPanelUrl(parsed.data.slug),
+    shopUrl: getTenantShopUrl(parsed.data.slug),
+  }).catch(error => {
+    console.error('[email:tenant_admin_welcome] Failed to send welcome email', error)
+  })
+
   revalidatePath('/dashboard')
   revalidatePath('/tenants')
 
@@ -231,15 +241,15 @@ export async function inviteCustomerUser(
     return { error: profileError.message }
   }
 
-  if (process.env.RESEND_API_KEY) {
-    const tenantName = (customer?.tenants as unknown as { name: string } | null)?.name ?? 'Hurtownia'
-    sendCustomerInviteEmail({
-      customerEmail: email,
-      customerName: customer?.company_name ?? 'Klient',
-      tenantName,
-      loginUrl: getTenantShopUrl(tenantSlug, 'login'),
-    }).catch(() => {})
-  }
+  const tenantName = (customer?.tenants as unknown as { name: string } | null)?.name ?? 'Hurtownia'
+  await sendCustomerInviteEmail({
+    customerEmail: email,
+    customerName: customer?.company_name ?? 'Klient',
+    tenantName,
+    loginUrl: getTenantShopUrl(tenantSlug, 'login'),
+  }).catch(error => {
+    console.error('[email:customer_invite] Failed to send customer invite', error)
+  })
 
   revalidatePath(`/${tenantSlug}/customers/${customerId}`)
   return { success: true }
