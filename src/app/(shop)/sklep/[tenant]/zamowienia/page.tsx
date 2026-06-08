@@ -1,11 +1,14 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import { headers } from 'next/headers'
 import Link from 'next/link'
 import { ClipboardList, ChevronRight } from 'lucide-react'
+import { getShopBasePath } from '@/lib/shop-routing'
 import { formatCurrency, formatDate, ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from '@/lib/utils'
 
 export default async function OrderHistoryPage({ params }: { params: Promise<{ tenant: string }> }) {
   const { tenant: tenantSlug } = await params
+  const shopBasePath = getShopBasePath(tenantSlug, (await headers()).get('host'))
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
@@ -36,7 +39,7 @@ export default async function OrderHistoryPage({ params }: { params: Promise<{ t
             return (
               <Link
                 key={order.id}
-                href={`/sklep/${tenantSlug}/zamowienia/${order.id}`}
+                href={`${shopBasePath}/zamowienia/${order.id}`}
                 className="flex items-center justify-between premium-card p-4 hover:border-blue-300 hover:shadow-sm transition-all"
               >
                 <div className="flex items-center gap-4">
@@ -67,7 +70,7 @@ export default async function OrderHistoryPage({ params }: { params: Promise<{ t
           <ClipboardList className="h-12 w-12 text-gray-200 mx-auto mb-3" />
           <p className="text-gray-500 font-medium">Brak zamówień</p>
           <p className="text-gray-400 text-sm mt-1">Twoje zamówienia pojawią się tutaj</p>
-          <Link href={`/sklep/${tenantSlug}/katalog`} className="inline-block mt-4 text-sm text-blue-600 hover:underline">
+          <Link href={`${shopBasePath}/katalog`} className="inline-block mt-4 text-sm text-blue-600 hover:underline">
             Przejdź do katalogu →
           </Link>
         </div>

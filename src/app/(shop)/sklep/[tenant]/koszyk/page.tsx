@@ -1,9 +1,12 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import { headers } from 'next/headers'
 import { CartView } from '@/components/shop/cart-view'
+import { getShopBasePath } from '@/lib/shop-routing'
 
 export default async function CartPage({ params }: { params: Promise<{ tenant: string }> }) {
   const { tenant: tenantSlug } = await params
+  const shopBasePath = getShopBasePath(tenantSlug, (await headers()).get('host'))
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
@@ -59,6 +62,7 @@ export default async function CartPage({ params }: { params: Promise<{ tenant: s
       deliveryInfo={deliverySettings?.customer_info ?? null}
       deliveryDays={deliverySettings?.delivery_days ?? [1, 2, 3, 4, 5]}
       cutoffTime={deliverySettings?.order_cutoff_time ?? '20:00:00'}
+      shopBasePath={shopBasePath}
     />
   )
 }

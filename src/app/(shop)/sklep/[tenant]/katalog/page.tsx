@@ -1,6 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import { headers } from 'next/headers'
 import { ProductCatalog } from '@/components/shop/product-catalog'
+import { getShopBasePath } from '@/lib/shop-routing'
 
 export default async function CatalogPage({
   params,
@@ -11,6 +13,7 @@ export default async function CatalogPage({
 }) {
   const { tenant: tenantSlug } = await params
   const { q, category } = await searchParams
+  const shopBasePath = getShopBasePath(tenantSlug, (await headers()).get('host'))
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
@@ -84,12 +87,12 @@ export default async function CatalogPage({
 
   return (
     <ProductCatalog
-      tenantSlug={tenantSlug}
       brandColor={(customer.tenants as unknown as { brand_color: string }).brand_color}
       categories={categories ?? []}
       products={productsWithPrices}
       searchQuery={q}
       activeCategory={category}
+      shopBasePath={shopBasePath}
     />
   )
 }

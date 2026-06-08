@@ -1,5 +1,22 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { getTenantSlugFromHost } from '@/lib/shop-routing'
+
+function copySupabaseCookies(from: NextResponse, to: NextResponse) {
+  from.cookies.getAll().forEach(cookie => {
+    to.cookies.set(cookie.name, cookie.value, {
+      domain: cookie.domain,
+      expires: cookie.expires,
+      httpOnly: cookie.httpOnly,
+      maxAge: cookie.maxAge,
+      path: cookie.path,
+      sameSite: cookie.sameSite,
+      secure: cookie.secure,
+    })
+  })
+
+  return to
+}
 
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
@@ -28,6 +45,7 @@ export async function middleware(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
 
   const pathname = request.nextUrl.pathname
+  const tenantSlug = getTenantSlugFromHost(request.headers.get('host'))
 
   // Public routes that don't require auth
   const publicRoutes = ['/login', '/reset-password', '/invite']
@@ -37,6 +55,26 @@ export async function middleware(request: NextRequest) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
+  }
+
+  if (user && tenantSlug && !isPublicRoute && !pathname.startsWith('/api')) {
+    const shopPrefix = `/sklep/${tenantSlug}`
+
+    if (pathname === shopPrefix || pathname.startsWith(`${shopPrefix}/`)) {
+      const url = request.nextUrl.clone()
+      url.pathname = pathname.slice(shopPrefix.length) || '/'
+      return copySupabaseCookies(supabaseResponse, NextResponse.redirect(url))
+    }
+
+    if (pathname.startsWith('/sklep/')) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/'
+      return copySupabaseCookies(supabaseResponse, NextResponse.redirect(url))
+    }
+
+    const url = request.nextUrl.clone()
+    url.pathname = `${shopPrefix}${pathname === '/' ? '' : pathname}`
+    return copySupabaseCookies(supabaseResponse, NextResponse.rewrite(url))
   }
 
   return supabaseResponse
