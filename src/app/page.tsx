@@ -4,11 +4,13 @@ import {
   ArrowRight,
   BadgeCheck,
   Building2,
+  CheckCircle2,
   CreditCard,
   Globe2,
   Layers3,
   PlugZap,
   ShoppingCart,
+  Store,
   Users,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
@@ -94,6 +96,27 @@ function MarketingLanding() {
     'Hurtownia dodaje klientów, towary i cenniki',
     'Klienci składają zamówienia na własnej subdomenie',
     'Integracje mogą synchronizować faktury, statusy i magazyn',
+  ]
+
+  const audiences = [
+    {
+      icon: Building2,
+      title: 'Ty jako operator platformy',
+      text: 'W app.dostawio.pl widzisz wszystkie hurtownie, ich gotowość, statusy i adresy sklepów.',
+      bullets: ['superadmin', 'onboarding hurtowni', 'kontrola uruchomienia'],
+    },
+    {
+      icon: Store,
+      title: 'Hurtownia',
+      text: 'Ta sama aplikacja prowadzi firmę do własnego panelu: produkty, klienci, płatności, dostawy i integracje.',
+      bullets: ['panel firmy', 'cenniki B2B', 'zamówienia'],
+    },
+    {
+      icon: Users,
+      title: 'Klient hurtowni',
+      text: 'Klient trafia na subdomenę hurtowni i składa zamówienie w środowisku przypisanym do tej firmy.',
+      bullets: ['*.dostawio.pl', 'katalog klienta', 'historia zamówień'],
+    },
   ]
 
   return (
@@ -255,6 +278,43 @@ function MarketingLanding() {
                 <p className="mt-3 text-sm leading-6 text-slate-500">{feature.text}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-slate-50 px-5 py-20 text-slate-950 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:items-start">
+            <div>
+              <div className="mb-3 text-sm font-black uppercase tracking-[0.18em] text-slate-400">
+                Model dostępu
+              </div>
+              <h2 className="text-3xl font-black tracking-tight md:text-5xl">
+                Jeden produkt, trzy osobne doświadczenia.
+              </h2>
+              <p className="mt-5 text-sm leading-7 text-slate-500">
+                Docelowy układ zostaje prosty: panel operacyjny na app.dostawio.pl, sklepy klientów na subdomenach
+                hurtowni i publiczna strona sprzedażowa na dostawio.pl.
+              </p>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-3">
+              {audiences.map(audience => (
+                <div key={audience.title} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+                  <audience.icon className="mb-5 h-6 w-6 text-slate-500" />
+                  <h3 className="text-lg font-black">{audience.title}</h3>
+                  <p className="mt-3 text-sm leading-6 text-slate-500">{audience.text}</p>
+                  <div className="mt-5 space-y-2">
+                    {audience.bullets.map(bullet => (
+                      <div key={bullet} className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-slate-500">
+                        <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                        {bullet}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>

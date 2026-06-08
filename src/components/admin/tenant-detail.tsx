@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { ArrowLeft, ExternalLink, Globe2, ShoppingCart, Store, Users } from 'lucide-react'
 import { toast } from 'sonner'
 import { updateTenantStatus } from '@/app/actions/admin'
+import { TenantLaunchPack } from '@/components/admin/tenant-launch-pack'
 import { OnboardingPanel } from '@/components/shared/onboarding-panel'
 import { getTenantPanelUrl, getTenantShopUrl } from '@/lib/shop-routing'
 import type { OnboardingState } from '@/lib/onboarding'
@@ -150,6 +151,14 @@ export function TenantDetail({
         state={onboarding}
         title="Gotowość tej hurtowni"
         description="Widok superadmina: kompletność konfiguracji, produkty, klienci, płatności, integracje i pierwsze zamówienie."
+      />
+
+      <TenantLaunchPack
+        tenantName={tenant.name}
+        tenantSlug={tenant.slug}
+        panelUrl={panelUrl}
+        shopUrl={shopUrl}
+        onboarding={onboarding}
       />
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
