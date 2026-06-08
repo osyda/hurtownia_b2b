@@ -36,7 +36,7 @@ export default async function AdminTenantsPage() {
         </Link>
       </div>
 
-      <div className="bg-white rounded-xl border">
+      <div className="premium-card">
         <div className="divide-y">
           {!tenants?.length && (
             <div className="p-12 text-center text-gray-400">

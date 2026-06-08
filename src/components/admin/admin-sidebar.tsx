@@ -31,31 +31,36 @@ export function AdminSidebar() {
   }
 
   const SidebarContent = () => (
-    <aside className="w-64 bg-white border-r flex flex-col h-full">
-      <div className="p-6 border-b flex items-center justify-between">
-        <div>
-          <div className="font-bold text-lg text-gray-900">B2B Connect</div>
-          <div className="text-xs text-gray-500 mt-0.5">Super Admin</div>
+    <aside className="premium-sidebar flex h-full w-64 flex-col">
+      <div className="flex items-center justify-between border-b border-white/10 p-6">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white text-sm font-black text-slate-950 shadow-lg shadow-sky-500/10">
+            B2B
+          </div>
+          <div>
+            <div className="text-lg font-bold tracking-tight text-white">B2B Connect</div>
+            <div className="mt-0.5 text-xs font-medium uppercase tracking-wide text-slate-400">Super Admin</div>
+          </div>
         </div>
         <button
           onClick={() => setOpen(false)}
-          className="md:hidden p-1 rounded-lg hover:bg-gray-100"
+          className="rounded-lg p-1 text-slate-400 transition hover:bg-white/10 md:hidden"
         >
-          <X className="h-5 w-5 text-gray-500" />
+          <X className="h-5 w-5" />
         </button>
       </div>
 
-      <nav className="flex-1 p-4 space-y-1">
+      <nav className="flex-1 space-y-1 p-4">
         {navItems.map(item => (
           <Link
             key={item.href}
             href={item.href}
             onClick={() => setOpen(false)}
             className={cn(
-              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+              'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-all',
               pathname.startsWith(item.href)
-                ? 'bg-blue-50 text-blue-700'
-                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                ? 'bg-white text-slate-950 shadow-lg shadow-sky-500/10'
+                : 'text-slate-300 hover:bg-white/10 hover:text-white'
             )}
           >
             <item.icon className="h-4 w-4" />
@@ -64,10 +69,10 @@ export function AdminSidebar() {
         ))}
       </nav>
 
-      <div className="p-4 border-t">
+      <div className="border-t border-white/10 p-4">
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 px-3 py-2.5 w-full rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-slate-300 transition hover:bg-white/10 hover:text-white"
         >
           <LogOut className="h-4 w-4" />
           Wyloguj
@@ -79,11 +84,11 @@ export function AdminSidebar() {
   return (
     <>
       {/* Mobile top bar */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-30 bg-white border-b px-4 h-14 flex items-center justify-between">
-        <div className="font-bold text-gray-900">B2B Connect</div>
+      <div className="premium-topbar fixed left-0 right-0 top-0 z-30 flex h-14 items-center justify-between px-4 md:hidden">
+        <div className="font-bold text-slate-950">B2B Connect</div>
         <button
           onClick={() => setOpen(true)}
-          className="p-2 rounded-lg hover:bg-gray-100"
+          className="rounded-lg p-2 transition hover:bg-slate-100"
         >
           <Menu className="h-5 w-5 text-gray-700" />
         </button>

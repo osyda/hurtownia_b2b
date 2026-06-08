@@ -8,9 +8,9 @@ export function LoginForm() {
   const [state, formAction, pending] = useActionState(loginAction, {})
 
   return (
-    <form action={formAction} className="space-y-4">
+    <form action={formAction} className="space-y-5">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="mb-2 block text-sm font-bold text-slate-800">
           E-mail
         </label>
         <input
@@ -18,27 +18,27 @@ export function LoginForm() {
           type="email"
           autoComplete="email"
           required
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          placeholder="twoj@email.pl"
+          className="premium-input w-full"
+          placeholder="kontakt@firma.pl"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Hasło
+        <label className="mb-2 block text-sm font-bold text-slate-800">
+          Haslo
         </label>
         <input
           name="password"
           type="password"
           autoComplete="current-password"
           required
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          placeholder="••••••••"
+          className="premium-input w-full"
+          placeholder="********"
         />
       </div>
 
       {state?.error && (
-        <p className="text-red-600 text-sm bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+        <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
           {state.error}
         </p>
       )}
@@ -46,15 +46,15 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={pending}
-        className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-medium py-2.5 rounded-lg transition-colors"
+        className="flex w-full items-center justify-center gap-2 rounded-lg bg-slate-950 py-3 font-bold text-white shadow-xl shadow-slate-900/15 transition-all hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-2xl disabled:translate-y-0 disabled:opacity-50"
       >
         {pending && <Loader2 className="h-4 w-4 animate-spin" />}
         Zaloguj się
       </button>
 
       <div className="text-center">
-        <a href="/reset-password" className="text-sm text-blue-600 hover:underline">
-          Zapomniałem hasła
+        <a href="/reset-password" className="text-sm font-semibold text-slate-600 hover:text-slate-950">
+          Zapomnialem hasla
         </a>
       </div>
     </form>

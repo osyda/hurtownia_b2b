@@ -55,14 +55,14 @@ export default async function ProductsPage({
             name="q"
             defaultValue={q}
             placeholder="Szukaj produktu..."
-            className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/15"
           />
         </div>
-        <select name="category" defaultValue={category} className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <select name="category" defaultValue={category} className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-slate-900/15">
           <option value="">Wszystkie kategorie</option>
           {categories?.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
         </select>
-        <select name="status" defaultValue={status} className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <select name="status" defaultValue={status} className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-slate-900/15">
           <option value="">Wszystkie statusy</option>
           <option value="active">Aktywne</option>
           <option value="inactive">Nieaktywne</option>
@@ -73,7 +73,7 @@ export default async function ProductsPage({
       </form>
 
       {/* Tabela */}
-      <div className="bg-white rounded-xl border overflow-hidden">
+      <div className="premium-card overflow-hidden">
         {products?.length ? (
           <table className="w-full">
             <thead className="bg-gray-50 border-b">

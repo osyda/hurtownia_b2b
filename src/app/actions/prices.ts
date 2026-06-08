@@ -84,13 +84,23 @@ export async function upsertProductPrice(
   const ctx = await getTenantCtx(supabase)
   if (!ctx?.tenant_id) redirect('/login')
 
+  const targetColumn = customerId ? 'customer_id' : 'price_group_id'
+  const targetId = customerId ?? priceGroupId
+  if (!targetId) {
+    return { error: 'Wybierz klienta albo grupe cenowa' }
+  }
+
   // Delete if price is null (reset to default)
   if (priceNet === null) {
-    await supabase.from('product_prices')
+    let deleteQuery = supabase.from('product_prices')
       .delete()
       .eq('tenant_id', ctx.tenant_id)
       .eq('product_id', productId)
-      .eq('customer_id', customerId ?? '')
+    deleteQuery = deleteQuery.eq(targetColumn, targetId)
+
+    const { error } = await deleteQuery
+    if (error) return { error: error.message }
+
     revalidatePath(`/${tenantSlug}/prices`)
     return { success: true }
   }
@@ -99,14 +109,14 @@ export async function upsertProductPrice(
     .select('id')
     .eq('tenant_id', ctx.tenant_id)
     .eq('product_id', productId)
-    .eq(customerId ? 'customer_id' : 'price_group_id', customerId ?? priceGroupId ?? '')
-    .single()
+    .eq(targetColumn, targetId)
+    .maybeSingle()
 
   const payload = {
     tenant_id: ctx.tenant_id,
     product_id: productId,
-    customer_id: customerId,
-    price_group_id: priceGroupId,
+    customer_id: customerId ? targetId : null,
+    price_group_id: customerId ? null : targetId,
     price: priceNet,
   }
 

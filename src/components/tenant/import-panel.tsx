@@ -6,21 +6,22 @@ import { PageHeader } from '@/components/ui/page-header'
 import { Button } from '@/components/ui/button'
 import { importProducts, importStockLevels } from '@/app/actions/import'
 import { Upload, Download, CheckCircle2, XCircle, Clock, AlertTriangle, FileSpreadsheet } from 'lucide-react'
-import * as XLSX from 'xlsx'
+import Papa from 'papaparse'
+import readXlsxFile from 'read-excel-file/browser'
 import { formatDateTime } from '@/lib/utils'
 
 interface ImportLog {
   id: string
   import_type: string
-  status: string
-  total_rows: number
-  success_rows: number
-  error_rows: number
+  records_total: number
+  records_ok: number
+  records_failed: number
   created_at: string
-  error_details: string[] | null
+  errors: string[] | null
 }
 
 type ImportMode = 'products' | 'stock'
+type ImportRecord = Record<string, unknown>
 
 const PRODUCTS_TEMPLATE = [
   ['sku', 'name', 'unit', 'base_price', 'vat_rate', 'category_name', 'description', 'min_order_qty', 'order_multiple', 'stock_qty', 'stock_status'],
@@ -35,10 +36,43 @@ const STOCK_TEMPLATE = [
 
 function downloadTemplate(mode: ImportMode) {
   const data = mode === 'products' ? PRODUCTS_TEMPLATE : STOCK_TEMPLATE
-  const wb = XLSX.utils.book_new()
-  const ws = XLSX.utils.aoa_to_sheet(data)
-  XLSX.utils.book_append_sheet(wb, ws, 'Import')
-  XLSX.writeFile(wb, mode === 'products' ? 'szablon_produkty.xlsx' : 'szablon_stany.xlsx')
+  const csv = Papa.unparse(data)
+  const blob = new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = mode === 'products' ? 'szablon_produkty.csv' : 'szablon_stany.csv'
+  document.body.appendChild(link)
+  link.click()
+  link.remove()
+  URL.revokeObjectURL(url)
+}
+
+function rowsToRecords(rows: unknown[][]): ImportRecord[] {
+  const [headerRow, ...dataRows] = rows
+  const headers = (headerRow ?? []).map(value => String(value ?? '').trim())
+
+  return dataRows
+    .filter(row => row.some(value => String(value ?? '').trim() !== ''))
+    .map(row => Object.fromEntries(
+      headers.map((header, index) => [header, row[index] ?? '']).filter(([header]) => header)
+    ))
+}
+
+async function parseImportFile(file: File): Promise<ImportRecord[]> {
+  if (file.name.toLowerCase().endsWith('.csv')) {
+    return new Promise((resolve, reject) => {
+      Papa.parse<ImportRecord>(file, {
+        header: true,
+        skipEmptyLines: true,
+        complete: result => resolve(result.data),
+        error: error => reject(error),
+      })
+    })
+  }
+
+  const rows = await readXlsxFile(file)
+  return rowsToRecords(rows as unknown as unknown[][])
 }
 
 function StatusIcon({ status }: { status: string }) {
@@ -46,6 +80,12 @@ function StatusIcon({ status }: { status: string }) {
   if (status === 'error') return <XCircle className="h-4 w-4 text-red-500" />
   if (status === 'partial') return <AlertTriangle className="h-4 w-4 text-orange-500" />
   return <Clock className="h-4 w-4 text-gray-400" />
+}
+
+function getImportStatus(log: ImportLog) {
+  if (log.records_failed === 0) return 'success'
+  if (log.records_ok === 0) return 'error'
+  return 'partial'
 }
 
 export function ImportPanel({
@@ -64,33 +104,28 @@ export function ImportPanel({
   const [expandedLog, setExpandedLog] = useState<string | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
 
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
     setFileName(file.name)
-    const reader = new FileReader()
-    reader.onload = (ev) => {
-      const data = new Uint8Array(ev.target?.result as ArrayBuffer)
-      const wb = XLSX.read(data, { type: 'array', codepage: 65001 })
-      const ws = wb.Sheets[wb.SheetNames[0]]
-      const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(ws, { defval: '' })
+    try {
+      const rows = await parseImportFile(file)
       setPreview(rows.slice(0, 5))
+    } catch {
+      toast.error('Nie udało się odczytać pliku')
+      setPreview(null)
+      setFileName(null)
+      if (fileRef.current) fileRef.current.value = ''
     }
-    reader.readAsArrayBuffer(file)
   }
 
   function handleImport() {
     const file = fileRef.current?.files?.[0]
     if (!file) return
 
-    const reader = new FileReader()
-    reader.onload = (ev) => {
-      const data = new Uint8Array(ev.target?.result as ArrayBuffer)
-      const wb = XLSX.read(data, { type: 'array', codepage: 65001 })
-      const ws = wb.Sheets[wb.SheetNames[0]]
-      const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(ws, { defval: '' })
-
-      startTransition(async () => {
+    startTransition(async () => {
+      try {
+        const rows = await parseImportFile(file)
         let result: { success: number; errors: string[]; total: number }
 
         if (mode === 'products') {
@@ -123,9 +158,10 @@ export function ImportPanel({
         setPreview(null)
         setFileName(null)
         if (fileRef.current) fileRef.current.value = ''
-      })
-    }
-    reader.readAsArrayBuffer(file)
+      } catch {
+        toast.error('Nie udało się odczytać pliku')
+      }
+    })
   }
 
   return (
@@ -152,7 +188,7 @@ export function ImportPanel({
       </div>
 
       {/* Upload section */}
-      <div className="bg-white rounded-xl border mb-6">
+      <div className="premium-card mb-6">
         <div className="p-5 border-b flex items-center justify-between">
           <h2 className="font-semibold text-gray-900">
             {mode === 'products' ? 'Import produktów' : 'Aktualizacja stanów magazynowych'}
@@ -183,7 +219,7 @@ export function ImportPanel({
             <input
               ref={fileRef}
               type="file"
-              accept=".xlsx,.xls,.csv"
+              accept=".xlsx,.csv"
               className="hidden"
               onChange={handleFileChange}
             />
@@ -233,7 +269,7 @@ export function ImportPanel({
       </div>
 
       {/* Import history */}
-      <div className="bg-white rounded-xl border">
+      <div className="premium-card">
         <div className="p-5 border-b">
           <h2 className="font-semibold text-gray-900">Historia importów</h2>
         </div>
@@ -241,46 +277,50 @@ export function ImportPanel({
           {importLogs.length === 0 && (
             <div className="p-8 text-center text-gray-400 text-sm">Brak historii importów</div>
           )}
-          {importLogs.map(log => (
+          {importLogs.map(log => {
+            const status = getImportStatus(log)
+
+            return (
             <div key={log.id}>
               <button
                 className="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors text-left"
                 onClick={() => setExpandedLog(expandedLog === log.id ? null : log.id)}
               >
                 <div className="flex items-center gap-3">
-                  <StatusIcon status={log.status} />
+                  <StatusIcon status={status} />
                   <div>
                     <div className="text-sm font-medium text-gray-900">
                       {log.import_type === 'products' ? 'Import produktów' : 'Aktualizacja stanów'}
                     </div>
                     <div className="text-xs text-gray-400">
-                      {formatDateTime(log.created_at)} · {log.success_rows}/{log.total_rows} wierszy
-                      {log.error_rows > 0 && ` · ${log.error_rows} błędów`}
+                      {formatDateTime(log.created_at)} · {log.records_ok}/{log.records_total} wierszy
+                      {log.records_failed > 0 && ` · ${log.records_failed} błędów`}
                     </div>
                   </div>
                 </div>
                 <div className={`text-xs px-2 py-1 rounded-full font-medium ${
-                  log.status === 'success' ? 'bg-green-100 text-green-700'
-                  : log.status === 'error' ? 'bg-red-100 text-red-700'
-                  : log.status === 'partial' ? 'bg-orange-100 text-orange-700'
+                  status === 'success' ? 'bg-green-100 text-green-700'
+                  : status === 'error' ? 'bg-red-100 text-red-700'
+                  : status === 'partial' ? 'bg-orange-100 text-orange-700'
                   : 'bg-gray-100 text-gray-600'
                 }`}>
-                  {log.status === 'success' ? 'Sukces'
-                    : log.status === 'error' ? 'Błąd'
-                    : log.status === 'partial' ? 'Częściowy'
+                  {status === 'success' ? 'Sukces'
+                    : status === 'error' ? 'Błąd'
+                    : status === 'partial' ? 'Częściowy'
                     : 'W toku'}
                 </div>
               </button>
-              {expandedLog === log.id && log.error_details && log.error_details.length > 0 && (
+              {expandedLog === log.id && log.errors && log.errors.length > 0 && (
                 <div className="px-4 pb-4 bg-red-50">
                   <div className="text-xs text-red-700 font-medium mb-1">Błędy:</div>
                   <ul className="text-xs text-red-600 space-y-0.5">
-                    {log.error_details.map((e, i) => <li key={i}>· {e}</li>)}
+                    {log.errors.map((e, i) => <li key={i}>· {e}</li>)}
                   </ul>
                 </div>
               )}
             </div>
-          ))}
+            )
+          })}
         </div>
       </div>
     </div>

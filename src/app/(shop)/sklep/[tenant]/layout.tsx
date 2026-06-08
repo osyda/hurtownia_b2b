@@ -42,7 +42,7 @@ export default async function ShopLayout({
   if (!customer || customer.status === 'inactive') redirect('/login')
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="premium-page">
       <ShopHeader
         tenantSlug={tenantSlug}
         tenantName={tenant.name}
@@ -50,7 +50,7 @@ export default async function ShopLayout({
         logoUrl={tenant.logo_url}
         customerName={customer.company_name}
       />
-      <main className="max-w-6xl mx-auto px-4 py-6">
+      <main className="mx-auto max-w-6xl px-4 py-6">
         {children}
       </main>
     </div>

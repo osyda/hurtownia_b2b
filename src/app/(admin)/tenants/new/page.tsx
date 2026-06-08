@@ -47,7 +47,7 @@ export default function NewTenantPage() {
       <PageHeader title="Nowa hurtownia" description="Utwórz nową hurtownię i konto administratora" />
 
       <form action={handleSubmit} className="space-y-6">
-        <div className="bg-white rounded-xl border p-5 space-y-4">
+        <div className="premium-card p-5 space-y-4">
           <h2 className="font-semibold text-gray-900 text-sm">Dane hurtowni</h2>
           <Input
             label="Nazwa hurtowni"
@@ -88,7 +88,7 @@ export default function NewTenantPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border p-5 space-y-4">
+        <div className="premium-card p-5 space-y-4">
           <h2 className="font-semibold text-gray-900 text-sm">Konto administratora hurtowni</h2>
           <Input
             label="Imię i nazwisko"

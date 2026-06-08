@@ -29,7 +29,7 @@ export default async function ImportPage({
 
   const { data: importLogs } = await supabase
     .from('import_logs')
-    .select('id, import_type, status, total_rows, success_rows, error_rows, created_at, error_details')
+    .select('id, import_type, records_total, records_ok, records_failed, created_at, errors')
     .eq('tenant_id', profile.tenant_id)
     .order('created_at', { ascending: false })
     .limit(10)

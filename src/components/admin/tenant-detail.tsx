@@ -102,7 +102,7 @@ export function TenantDetail({
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Employees */}
-        <div className="bg-white rounded-xl border">
+        <div className="premium-card">
           <div className="p-4 border-b flex items-center gap-2">
             <Users className="h-4 w-4 text-gray-400" />
             <h2 className="font-semibold text-sm text-gray-900">Pracownicy ({employees.length})</h2>
@@ -121,7 +121,7 @@ export function TenantDetail({
         </div>
 
         {/* Customers */}
-        <div className="bg-white rounded-xl border">
+        <div className="premium-card">
           <div className="p-4 border-b flex items-center gap-2">
             <Users className="h-4 w-4 text-gray-400" />
             <h2 className="font-semibold text-sm text-gray-900">Klienci ({customers.length})</h2>
@@ -147,7 +147,7 @@ export function TenantDetail({
         </div>
 
         {/* Orders */}
-        <div className="bg-white rounded-xl border">
+        <div className="premium-card">
           <div className="p-4 border-b flex items-center gap-2">
             <ShoppingCart className="h-4 w-4 text-gray-400" />
             <h2 className="font-semibold text-sm text-gray-900">Ostatnie zamówienia</h2>

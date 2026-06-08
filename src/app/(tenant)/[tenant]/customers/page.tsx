@@ -49,9 +49,9 @@ export default async function CustomersPage({
       <form className="flex gap-3 mb-6">
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-          <input name="q" defaultValue={q} placeholder="Szukaj klienta..." className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <input name="q" defaultValue={q} placeholder="Szukaj klienta..." className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/15" />
         </div>
-        <select name="status" defaultValue={status} className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <select name="status" defaultValue={status} className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-slate-900/15">
           <option value="">Wszystkie statusy</option>
           <option value="active">Aktywni</option>
           <option value="pending">Oczekujący</option>
@@ -60,7 +60,7 @@ export default async function CustomersPage({
         <button type="submit" className="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Filtruj</button>
       </form>
 
-      <div className="bg-white rounded-xl border overflow-hidden">
+      <div className="premium-card overflow-hidden">
         {customers?.length ? (
           <table className="w-full">
             <thead className="bg-gray-50 border-b">
