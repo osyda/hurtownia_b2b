@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, ExternalLink, Globe2, KeyRound, Store } from 'lucide-react'
+import { ArrowLeft, ExternalLink, Globe2, KeyRound, ListChecks, Store } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { toast } from 'sonner'
 import { createTenant } from '@/app/actions/admin'
@@ -73,7 +73,7 @@ export default function NewTenantPage() {
           <div className="premium-card space-y-4 p-5">
             <div>
               <h2 className="text-sm font-black uppercase tracking-[0.16em] text-slate-400">Dane hurtowni</h2>
-              <p className="mt-1 text-sm text-slate-500">Te informacje tworzą konto firmy i jej publiczny adres sklepu.</p>
+              <p className="mt-1 text-sm text-slate-500">Te informacje tworzą konto firmy i publiczny adres sklepu.</p>
             </div>
 
             <Input
@@ -162,6 +162,15 @@ export default function NewTenantPage() {
                 System doda też domyślne metody płatności: przelew 7/14/30 dni i gotówkę przy dostawie.
               </div>
             </div>
+          </div>
+
+          <div className="premium-card p-5">
+            <ListChecks className="mb-5 h-5 w-5 text-slate-500" />
+            <h2 className="text-lg font-black tracking-tight text-slate-950">Po utworzeniu</h2>
+            <p className="mt-3 text-sm leading-6 text-slate-500">
+              Szczegóły hurtowni pokażą checklistę: dane firmy, płatności, dostawy, produkty, klienta,
+              cenniki, integrację i pierwsze zamówienie testowe.
+            </p>
           </div>
 
           <div className="premium-card p-5">
