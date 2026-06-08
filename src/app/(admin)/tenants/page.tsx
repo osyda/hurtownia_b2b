@@ -2,7 +2,12 @@ import Link from 'next/link'
 import { Building2, Plus, Store } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { getTenantShopUrl } from '@/lib/shop-routing'
+import { buildTenantOnboarding } from '@/lib/onboarding'
 import { formatDateTime } from '@/lib/utils'
+
+function relationCount(value: unknown) {
+  return (value as { count: number }[] | null)?.[0]?.count ?? 0
+}
 
 export default async function AdminTenantsPage() {
   const supabase = await createClient()
@@ -10,9 +15,16 @@ export default async function AdminTenantsPage() {
   const { data: tenants } = await supabase
     .from('tenants')
     .select(`
-      id, name, slug, brand_color, status, contact_email, created_at,
+      id, name, slug, brand_color, status, contact_email, contact_phone, created_at,
       user_profiles(count),
-      customers(count)
+      customers(count),
+      categories(count),
+      products(count),
+      payment_methods(count),
+      price_groups(count),
+      tenant_integrations(count),
+      orders(count),
+      delivery_settings(count)
     `)
     .order('created_at', { ascending: false })
 
@@ -52,15 +64,28 @@ export default async function AdminTenantsPage() {
           )}
 
           {tenants?.map(tenant => {
-            const employees = (tenant.user_profiles as unknown as { count: number }[])?.[0]?.count ?? 0
-            const customers = (tenant.customers as unknown as { count: number }[])?.[0]?.count ?? 0
+            const employees = relationCount(tenant.user_profiles)
+            const customers = relationCount(tenant.customers)
             const shopUrl = getTenantShopUrl(tenant.slug)
+            const onboarding = buildTenantOnboarding({
+              tenant,
+              counts: {
+                categories: relationCount(tenant.categories),
+                products: relationCount(tenant.products),
+                customers,
+                paymentMethods: relationCount(tenant.payment_methods),
+                priceGroups: relationCount(tenant.price_groups),
+                integrations: relationCount(tenant.tenant_integrations),
+                orders: relationCount(tenant.orders),
+              },
+              hasDeliverySettings: relationCount(tenant.delivery_settings) > 0,
+            }, tenant.slug)
 
             return (
               <Link
                 key={tenant.id}
                 href={`/tenants/${tenant.id}`}
-                className="grid gap-4 p-5 transition hover:bg-slate-50 md:grid-cols-[auto_1fr_auto] md:items-center"
+                className="grid gap-4 p-5 transition hover:bg-slate-50 lg:grid-cols-[auto_1fr_220px_auto] lg:items-center"
               >
                 <div
                   className="flex h-11 w-11 items-center justify-center rounded-lg text-base font-black text-white"
@@ -75,6 +100,9 @@ export default async function AdminTenantsPage() {
                     <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${statusColor(tenant.status)}`}>
                       {statusLabel(tenant.status)}
                     </span>
+                    <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-bold text-slate-600">
+                      {onboarding.label}
+                    </span>
                   </div>
                   <div className="mt-1 flex min-w-0 items-center gap-2 text-xs text-slate-500">
                     <Store className="h-3.5 w-3.5 shrink-0" />
@@ -85,7 +113,17 @@ export default async function AdminTenantsPage() {
                   )}
                 </div>
 
-                <div className="text-left text-xs text-slate-500 md:text-right">
+                <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+                  <div className="mb-2 flex items-center justify-between gap-3">
+                    <span className="text-xs font-black uppercase tracking-[0.14em] text-slate-400">Gotowość</span>
+                    <span className="text-sm font-black text-slate-950">{onboarding.score}%</span>
+                  </div>
+                  <div className="h-1.5 overflow-hidden rounded-full bg-slate-200">
+                    <div className="h-full rounded-full bg-slate-950" style={{ width: `${onboarding.score}%` }} />
+                  </div>
+                </div>
+
+                <div className="text-left text-xs text-slate-500 lg:text-right">
                   <div className="font-semibold">{employees} pracowników · {customers} klientów</div>
                   <div className="mt-0.5 text-slate-400">dodana {formatDateTime(tenant.created_at)}</div>
                 </div>

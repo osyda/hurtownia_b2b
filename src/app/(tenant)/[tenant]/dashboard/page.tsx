@@ -1,7 +1,9 @@
-import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import { Clock, Package, ShoppingCart, Sparkles, TrendingUp, Users } from 'lucide-react'
+import { OnboardingPanel } from '@/components/shared/onboarding-panel'
+import { createClient } from '@/lib/supabase/server'
+import { buildTenantOnboarding } from '@/lib/onboarding'
 import { formatCurrency, formatDateTime, ORDER_STATUS_COLORS, ORDER_STATUS_LABELS } from '@/lib/utils'
 
 export default async function TenantDashboardPage({
@@ -27,7 +29,25 @@ export default async function TenantDashboardPage({
   const today = new Date()
   today.setHours(0, 0, 0, 0)
 
-  const [todayOrders, totalCustomers, totalProducts, newOrders, recentOrders] = await Promise.all([
+  const [
+    tenantRes,
+    todayOrders,
+    totalCustomers,
+    totalProducts,
+    totalCategories,
+    paymentMethods,
+    deliverySettings,
+    integrations,
+    priceGroups,
+    allOrders,
+    assignedPaymentMethods,
+    newOrders,
+    recentOrders,
+  ] = await Promise.all([
+    supabase.from('tenants')
+      .select('id, name, slug, brand_color, contact_email, contact_phone')
+      .eq('id', tenantId)
+      .single(),
     supabase.from('orders').select('id, total_gross', { count: 'exact' })
       .eq('tenant_id', tenantId)
       .gte('created_at', today.toISOString()),
@@ -35,6 +55,20 @@ export default async function TenantDashboardPage({
       .eq('tenant_id', tenantId).eq('status', 'active'),
     supabase.from('products').select('id', { count: 'exact', head: true })
       .eq('tenant_id', tenantId).eq('status', 'active'),
+    supabase.from('categories').select('id', { count: 'exact', head: true })
+      .eq('tenant_id', tenantId).eq('is_active', true),
+    supabase.from('payment_methods').select('id', { count: 'exact', head: true })
+      .eq('tenant_id', tenantId).eq('is_active', true),
+    supabase.from('delivery_settings').select('id').eq('tenant_id', tenantId).maybeSingle(),
+    supabase.from('tenant_integrations').select('id', { count: 'exact', head: true })
+      .eq('tenant_id', tenantId).eq('is_active', true),
+    supabase.from('price_groups').select('id', { count: 'exact', head: true })
+      .eq('tenant_id', tenantId),
+    supabase.from('orders').select('id', { count: 'exact', head: true })
+      .eq('tenant_id', tenantId),
+    supabase.from('customer_payment_methods')
+      .select('customer_id, customers!inner(tenant_id)', { count: 'exact', head: true })
+      .eq('customers.tenant_id', tenantId),
     supabase.from('orders').select('id', { count: 'exact', head: true })
       .eq('tenant_id', tenantId).eq('status', 'new'),
     supabase.from('orders')
@@ -45,6 +79,27 @@ export default async function TenantDashboardPage({
   ])
 
   const todayRevenue = todayOrders.data?.reduce((sum, order) => sum + (order.total_gross || 0), 0) ?? 0
+
+  const onboarding = buildTenantOnboarding({
+    tenant: tenantRes.data ?? {
+      name: null,
+      slug: tenantSlug,
+      contact_email: null,
+      contact_phone: null,
+      brand_color: null,
+    },
+    counts: {
+      categories: totalCategories.count ?? 0,
+      products: totalProducts.count ?? 0,
+      customers: totalCustomers.count ?? 0,
+      paymentMethods: paymentMethods.count ?? 0,
+      priceGroups: priceGroups.count ?? 0,
+      integrations: integrations.count ?? 0,
+      orders: allOrders.count ?? 0,
+      customerPaymentAssignments: assignedPaymentMethods.count ?? 0,
+    },
+    hasDeliverySettings: Boolean(deliverySettings.data),
+  }, tenantSlug)
 
   const cards = [
     { label: 'Zamówienia dziś', value: todayOrders.count ?? 0, sub: formatCurrency(todayRevenue), icon: ShoppingCart, accent: 'from-sky-500 to-cyan-400' },
@@ -93,6 +148,8 @@ export default async function TenantDashboardPage({
           </div>
         ))}
       </div>
+
+      <OnboardingPanel state={onboarding} />
 
       <section className="premium-card overflow-hidden">
         <div className="flex items-center justify-between border-b border-slate-200/80 bg-white px-5 py-4">

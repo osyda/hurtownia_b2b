@@ -1,23 +1,60 @@
 import Link from 'next/link'
-import { Building2, ChevronRight, Globe2, ShoppingCart, Sparkles, TrendingUp, Users } from 'lucide-react'
+import { Building2, ChevronRight, Globe2, Gauge, ShoppingCart, Sparkles, TrendingUp, Users } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { buildTenantOnboarding } from '@/lib/onboarding'
 import { formatCurrency, formatDateTime, ORDER_STATUS_COLORS, ORDER_STATUS_LABELS } from '@/lib/utils'
 
+function relationCount(value: unknown) {
+  return (value as { count: number }[] | null)?.[0]?.count ?? 0
+}
+
 async function getStats(supabase: Awaited<ReturnType<typeof createClient>>) {
-  const [tenants, customers, orders] = await Promise.all([
+  const [tenants, customers, orders, tenantReadiness] = await Promise.all([
     supabase.from('tenants').select('id', { count: 'exact', head: true }).eq('status', 'active'),
     supabase.from('customers').select('id', { count: 'exact', head: true }).eq('status', 'active'),
     supabase.from('orders').select('id, total_gross', { count: 'exact' })
       .gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()),
+    supabase.from('tenants').select(`
+      id, name, slug, contact_email, contact_phone, brand_color,
+      customers(count),
+      categories(count),
+      products(count),
+      payment_methods(count),
+      price_groups(count),
+      tenant_integrations(count),
+      orders(count),
+      delivery_settings(count)
+    `),
   ])
 
   const totalRevenue = orders.data?.reduce((sum, order) => sum + (order.total_gross || 0), 0) ?? 0
+  const readinessStates = (tenantReadiness.data ?? []).map(tenant =>
+    buildTenantOnboarding({
+      tenant,
+      counts: {
+        categories: relationCount(tenant.categories),
+        products: relationCount(tenant.products),
+        customers: relationCount(tenant.customers),
+        paymentMethods: relationCount(tenant.payment_methods),
+        priceGroups: relationCount(tenant.price_groups),
+        integrations: relationCount(tenant.tenant_integrations),
+        orders: relationCount(tenant.orders),
+      },
+      hasDeliverySettings: relationCount(tenant.delivery_settings) > 0,
+    }, tenant.slug)
+  )
+  const averageReadiness = readinessStates.length
+    ? Math.round(readinessStates.reduce((sum, state) => sum + state.score, 0) / readinessStates.length)
+    : 0
+  const operationalTenants = readinessStates.filter(state => state.score >= 70).length
 
   return {
     activeTenants: tenants.count ?? 0,
     activeCustomers: customers.count ?? 0,
     ordersLast30Days: orders.count ?? 0,
     revenueLast30Days: totalRevenue,
+    averageReadiness,
+    operationalTenants,
   }
 }
 
@@ -33,6 +70,7 @@ export default async function AdminDashboardPage() {
 
   const cards = [
     { label: 'Aktywne hurtownie', value: stats.activeTenants, detail: 'działające konta', icon: Building2, accent: 'from-sky-500 to-cyan-400' },
+    { label: 'Gotowość platformy', value: `${stats.averageReadiness}%`, detail: `${stats.operationalTenants} hurtowni operacyjnie`, icon: Gauge, accent: 'from-violet-500 to-sky-500' },
     { label: 'Aktywni klienci', value: stats.activeCustomers, detail: 'z dostępem B2B', icon: Users, accent: 'from-emerald-500 to-teal-400' },
     { label: 'Zamówienia 30 dni', value: stats.ordersLast30Days, detail: 'ostatni miesiąc', icon: ShoppingCart, accent: 'from-amber-500 to-orange-400' },
     {
@@ -57,7 +95,7 @@ export default async function AdminDashboardPage() {
               Centrum dowodzenia platformą B2B.
             </h1>
             <p className="mt-4 max-w-xl text-sm leading-6 text-slate-300 md:text-base">
-              Podgląd aktywnych hurtowni, klientów, zamówień i obrotu z ostatnich 30 dni.
+              Podgląd hurtowni, klientów, zamówień, obrotu i gotowości wdrożeniowej całej platformy.
             </p>
           </div>
           <Link
@@ -70,7 +108,7 @@ export default async function AdminDashboardPage() {
         </div>
       </section>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-5">
         {cards.map(card => (
           <div key={card.label} className="premium-stat-card overflow-hidden">
             <div className="mb-5 flex items-center justify-between">

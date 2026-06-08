@@ -6,7 +6,9 @@ import { useRouter } from 'next/navigation'
 import { ArrowLeft, ExternalLink, Globe2, ShoppingCart, Store, Users } from 'lucide-react'
 import { toast } from 'sonner'
 import { updateTenantStatus } from '@/app/actions/admin'
+import { OnboardingPanel } from '@/components/shared/onboarding-panel'
 import { getTenantPanelUrl, getTenantShopUrl } from '@/lib/shop-routing'
+import type { OnboardingState } from '@/lib/onboarding'
 import { formatCurrency, formatDateTime, ORDER_STATUS_COLORS, ORDER_STATUS_LABELS } from '@/lib/utils'
 
 interface Tenant {
@@ -25,11 +27,13 @@ export function TenantDetail({
   employees,
   customers,
   orders,
+  onboarding,
 }: {
   tenant: Tenant
   employees: { id: string; first_name: string | null; last_name: string | null; role: string; created_at: string }[]
   customers: { id: string; company_name: string; email: string | null; status: string; created_at: string }[]
   orders: { id: string; order_number: string; status: string; total_gross: number; created_at: string }[]
+  onboarding: OnboardingState
 }) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
@@ -83,6 +87,9 @@ export function TenantDetail({
                 <h1 className="text-2xl font-black tracking-tight text-slate-950">{tenant.name}</h1>
                 <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${statusColor(tenant.status)}`}>
                   {statusLabel(tenant.status)}
+                </span>
+                <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-bold text-slate-600">
+                  {onboarding.score}% gotowości
                 </span>
               </div>
               <div className="mt-1 text-sm text-slate-500">
@@ -138,6 +145,12 @@ export function TenantDetail({
           <AddressCard label="Panel hurtowni" value={panelUrl} />
         </div>
       </section>
+
+      <OnboardingPanel
+        state={onboarding}
+        title="Gotowość tej hurtowni"
+        description="Widok superadmina: kompletność konfiguracji, produkty, klienci, płatności, integracje i pierwsze zamówienie."
+      />
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <section className="premium-card overflow-hidden">

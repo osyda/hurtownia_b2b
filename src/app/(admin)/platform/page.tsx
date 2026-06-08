@@ -46,6 +46,7 @@ export default async function PlatformPage() {
     '*.dostawio.pl obsługuje sklepy hurtowni',
     'nowe hurtownie dostają domyślne formy płatności',
     'slugi hurtowni nie mogą kolidować z subdomenami systemowymi',
+    'API integracyjne działa poza sesją panelu i przyjmuje tokeny konektorów',
   ]
 
   return (
@@ -60,8 +61,8 @@ export default async function PlatformPage() {
             Centrum konfiguracji platformy.
           </h1>
           <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-300 md:text-base">
-            To jest warstwa właścicielska: domeny, model SaaS, automatyczne adresy hurtowni i przygotowanie
-            pod integracje sprzedażowo-magazynowe.
+            To jest warstwa właścicielska: domeny, model SaaS, automatyczne adresy hurtowni,
+            onboarding i przygotowanie pod integracje sprzedażowo-magazynowe.
           </p>
         </div>
       </section>
@@ -96,7 +97,7 @@ export default async function PlatformPage() {
       <section className="premium-card overflow-hidden">
         <div className="border-b border-slate-200/80 bg-white px-5 py-4">
           <h2 className="text-lg font-black tracking-tight text-slate-950">Status fundamentu Dostawio</h2>
-          <p className="mt-1 text-sm text-slate-500">Elementy, które są już przygotowane pod model multi-tenant.</p>
+          <p className="mt-1 text-sm text-slate-500">Elementy przygotowane pod model multi-tenant i pierwsze wdrożenia hurtowni.</p>
         </div>
         <div className="grid gap-4 p-5 lg:grid-cols-2">
           {checklist.map(item => (
@@ -111,10 +112,10 @@ export default async function PlatformPage() {
       <section className="premium-card p-5">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <h2 className="text-lg font-black tracking-tight text-slate-950">Następny etap</h2>
+            <h2 className="text-lg font-black tracking-tight text-slate-950">Następny etap produktu</h2>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-500">
-              Po tym fundamencie można bezpiecznie rozbudować onboarding hurtowni, konfigurację integracji API,
-              mapowanie produktów i synchronizację faktur z systemów sprzedażowych.
+              Teraz centrum ciężkości to domknięcie ścieżki wdrożenia: szybkie tworzenie hurtowni,
+              checklisty, testowe zamówienie, instrukcja integratora i raport gotowości po stronie superadmina.
             </p>
           </div>
           <div className="rounded-lg bg-slate-950 px-4 py-3 text-sm font-black text-white">
