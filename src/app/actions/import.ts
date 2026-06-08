@@ -41,10 +41,9 @@ export async function importProducts(tenantSlug: string, rows: ImportRow[]) {
   const { data: logEntry } = await supabase.from('import_logs').insert({
     tenant_id: tenantId,
     import_type: 'products',
-    status: 'processing',
-    total_rows: rows.length,
-    success_rows: 0,
-    error_rows: 0,
+    records_total: rows.length,
+    records_ok: 0,
+    records_failed: 0,
   }).select('id').single()
 
   // Get existing categories for lookup
@@ -128,10 +127,9 @@ export async function importProducts(tenantSlug: string, rows: ImportRow[]) {
   // Update import log
   if (logEntry) {
     await supabase.from('import_logs').update({
-      status: errors.length === 0 ? 'success' : (successRows > 0 ? 'partial' : 'error'),
-      success_rows: successRows,
-      error_rows: errors.length,
-      error_details: errors.length > 0 ? errors : null,
+      records_ok: successRows,
+      records_failed: errors.length,
+      errors: errors.length > 0 ? errors : null,
     }).eq('id', logEntry.id)
   }
 
@@ -156,10 +154,9 @@ export async function importStockLevels(tenantSlug: string, rows: { sku: string;
   const { data: logEntry } = await supabase.from('import_logs').insert({
     tenant_id: tenantId,
     import_type: 'stock',
-    status: 'processing',
-    total_rows: rows.length,
-    success_rows: 0,
-    error_rows: 0,
+    records_total: rows.length,
+    records_ok: 0,
+    records_failed: 0,
   }).select('id').single()
 
   for (let i = 0; i < rows.length; i++) {
@@ -188,10 +185,9 @@ export async function importStockLevels(tenantSlug: string, rows: { sku: string;
 
   if (logEntry) {
     await supabase.from('import_logs').update({
-      status: errors.length === 0 ? 'success' : (successRows > 0 ? 'partial' : 'error'),
-      success_rows: successRows,
-      error_rows: errors.length,
-      error_details: errors.length > 0 ? errors : null,
+      records_ok: successRows,
+      records_failed: errors.length,
+      errors: errors.length > 0 ? errors : null,
     }).eq('id', logEntry.id)
   }
 

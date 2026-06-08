@@ -58,7 +58,7 @@ export function OrderDetail({ tenantSlug, order, items }: Props) {
   return (
     <div className="space-y-6">
       {/* Pozycje zamówienia */}
-      <div className="bg-white rounded-xl border overflow-hidden">
+      <div className="premium-card overflow-hidden">
         <div className="p-4 border-b flex items-center justify-between">
           <h2 className="font-semibold text-gray-900">Pozycje zamówienia</h2>
           <span className="text-sm text-gray-400">{items.length} pozycji</span>
@@ -95,7 +95,7 @@ export function OrderDetail({ tenantSlug, order, items }: Props) {
                         min="0"
                         value={qtys[item.id]}
                         onChange={e => setQtys(prev => ({ ...prev, [item.id]: e.target.value }))}
-                        className="w-24 px-2 py-1 border border-gray-300 rounded-lg text-sm text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-24 px-2 py-1 border border-gray-300 rounded-lg text-sm text-center focus:outline-none focus:ring-2 focus:ring-slate-900/15"
                       />
                       <span className="text-xs text-gray-400">{item.product_unit}</span>
                     </div>
@@ -117,7 +117,7 @@ export function OrderDetail({ tenantSlug, order, items }: Props) {
       </div>
 
       {/* Zmiana statusu */}
-      <div className="bg-white rounded-xl border p-4">
+      <div className="premium-card p-4">
         <h2 className="font-semibold text-gray-900 mb-3">Zmień status zamówienia</h2>
         <div className="flex flex-wrap gap-2">
           {STATUS_FLOW.map(s => (
@@ -138,13 +138,13 @@ export function OrderDetail({ tenantSlug, order, items }: Props) {
       </div>
 
       {/* Notatka wewnętrzna */}
-      <div className="bg-white rounded-xl border p-4">
+      <div className="premium-card p-4">
         <h2 className="font-semibold text-gray-900 mb-3">Notatka wewnętrzna</h2>
         <textarea
           value={note}
           onChange={e => setNote(e.target.value)}
           rows={3}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/15 resize-none"
           placeholder="Notatka widoczna tylko dla hurtowni..."
         />
         <div className="flex justify-end mt-2">

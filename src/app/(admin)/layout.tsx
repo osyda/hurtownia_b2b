@@ -22,7 +22,7 @@ export default async function AdminLayout({
   if (!profile || profile.role !== 'super_admin') redirect('/login')
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="premium-page flex h-screen">
       <AdminSidebar />
       <main className="flex-1 overflow-y-auto pt-14 md:pt-0">
         {children}

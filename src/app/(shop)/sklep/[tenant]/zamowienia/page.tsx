@@ -37,7 +37,7 @@ export default async function OrderHistoryPage({ params }: { params: Promise<{ t
               <Link
                 key={order.id}
                 href={`/sklep/${tenantSlug}/zamowienia/${order.id}`}
-                className="flex items-center justify-between bg-white rounded-xl border p-4 hover:border-blue-300 hover:shadow-sm transition-all"
+                className="flex items-center justify-between premium-card p-4 hover:border-blue-300 hover:shadow-sm transition-all"
               >
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -63,7 +63,7 @@ export default async function OrderHistoryPage({ params }: { params: Promise<{ t
           })}
         </div>
       ) : (
-        <div className="bg-white rounded-xl border p-16 text-center">
+        <div className="premium-card p-16 text-center">
           <ClipboardList className="h-12 w-12 text-gray-200 mx-auto mb-3" />
           <p className="text-gray-500 font-medium">Brak zamówień</p>
           <p className="text-gray-400 text-sm mt-1">Twoje zamówienia pojawią się tutaj</p>

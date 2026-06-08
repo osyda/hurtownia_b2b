@@ -33,7 +33,7 @@ export default async function TenantLayout({
   if (!tenant || tenant.slug !== tenantSlug) notFound()
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="premium-page flex h-screen">
       <TenantSidebar
         tenantSlug={tenantSlug}
         tenantName={tenant.name}

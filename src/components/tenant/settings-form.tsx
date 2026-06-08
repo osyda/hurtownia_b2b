@@ -113,7 +113,7 @@ export function SettingsForm({
       <PageHeader title="Ustawienia" description="Konfiguracja hurtowni i warunków dostaw" />
 
       {/* General settings */}
-      <section className="bg-white rounded-xl border mb-6">
+      <section className="premium-card mb-6">
         <div className="p-5 border-b">
           <h2 className="font-semibold text-gray-900">Ogólne</h2>
         </div>
@@ -160,7 +160,7 @@ export function SettingsForm({
       </section>
 
       {/* Delivery settings */}
-      <section className="bg-white rounded-xl border mb-6">
+      <section className="premium-card mb-6">
         <div className="p-5 border-b">
           <h2 className="font-semibold text-gray-900">Dostawa i zamówienia</h2>
         </div>
@@ -204,7 +204,7 @@ export function SettingsForm({
               name="customer_info"
               rows={2}
               defaultValue={delivery?.customer_info ?? ''}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/15"
               placeholder="Np. dostawa do magazynu, wejście od tyłu..."
             />
           </div>
@@ -215,7 +215,7 @@ export function SettingsForm({
       </section>
 
       {/* Payment methods */}
-      <section className="bg-white rounded-xl border">
+      <section className="premium-card">
         <div className="p-5 border-b flex items-center justify-between">
           <h2 className="font-semibold text-gray-900">Metody płatności</h2>
           {isAdmin && (

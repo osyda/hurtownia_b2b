@@ -29,7 +29,7 @@ export function CustomerForm({ tenantSlug, priceGroups, customer, onSubmit }: Pr
 
   return (
     <form action={handleSubmit} className="space-y-6">
-      <div className="bg-white rounded-xl border p-6 space-y-4">
+      <div className="premium-card p-6 space-y-4">
         <h2 className="font-semibold text-gray-900">Dane firmy</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input label="Nazwa firmy" name="company_name" defaultValue={customer?.company_name} required placeholder="np. Restauracja Pod Lipą Sp. z o.o." />
@@ -41,7 +41,7 @@ export function CustomerForm({ tenantSlug, priceGroups, customer, onSubmit }: Pr
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border p-6 space-y-4">
+      <div className="premium-card p-6 space-y-4">
         <h2 className="font-semibold text-gray-900">Adres do faktury</h2>
         <Input label="Ulica i numer" name="invoice_street" defaultValue={addr?.street ?? ''} placeholder="ul. Przykładowa 1" />
         <div className="grid grid-cols-2 gap-4">
@@ -50,7 +50,7 @@ export function CustomerForm({ tenantSlug, priceGroups, customer, onSubmit }: Pr
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border p-6 space-y-4">
+      <div className="premium-card p-6 space-y-4">
         <h2 className="font-semibold text-gray-900">Warunki handlowe</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Select
@@ -74,7 +74,7 @@ export function CustomerForm({ tenantSlug, priceGroups, customer, onSubmit }: Pr
         />
         <div className="space-y-1">
           <label className="block text-sm font-medium text-gray-700">Notatki wewnętrzne</label>
-          <textarea name="internal_notes" defaultValue={customer?.internal_notes ?? ''} rows={3} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" placeholder="Tylko do wglądu dla hurtowni..." />
+          <textarea name="internal_notes" defaultValue={customer?.internal_notes ?? ''} rows={3} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/15 resize-none" placeholder="Tylko do wglądu dla hurtowni..." />
         </div>
       </div>
 

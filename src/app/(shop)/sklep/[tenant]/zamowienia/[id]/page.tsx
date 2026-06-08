@@ -61,7 +61,7 @@ export default async function CustomerOrderPage({
 
       {/* Info */}
       <div className="grid grid-cols-2 gap-4 mb-6">
-        <div className="bg-white rounded-xl border p-4 text-sm">
+        <div className="premium-card p-4 text-sm">
           <div className="text-xs text-gray-500 uppercase font-medium mb-1">Data złożenia</div>
           <div className="text-gray-900">{formatDateTime(order.created_at)}</div>
           {order.delivery_date && <>
@@ -69,7 +69,7 @@ export default async function CustomerOrderPage({
             <div className="text-gray-900">{formatDate(order.delivery_date)}</div>
           </>}
         </div>
-        <div className="bg-white rounded-xl border p-4 text-sm">
+        <div className="premium-card p-4 text-sm">
           {pm && <>
             <div className="text-xs text-gray-500 uppercase font-medium mb-1">Forma płatności</div>
             <div className="text-gray-900">{pm.label}</div>
@@ -89,7 +89,7 @@ export default async function CustomerOrderPage({
       )}
 
       {/* Pozycje */}
-      <div className="bg-white rounded-xl border overflow-hidden mb-4">
+      <div className="premium-card overflow-hidden mb-4">
         <div className="p-4 border-b font-semibold text-gray-900">Zamówione produkty</div>
         <div className="divide-y">
           {items?.map(item => (

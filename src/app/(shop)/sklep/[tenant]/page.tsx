@@ -1,8 +1,9 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ShoppingCart, ClipboardList, RotateCcw, ChevronRight } from 'lucide-react'
-import { formatCurrency, formatDate, ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from '@/lib/utils'
+import type { ReactNode } from 'react'
+import { ChevronRight, ClipboardList, RotateCcw, ShoppingCart } from 'lucide-react'
+import { formatCurrency, formatDate, ORDER_STATUS_COLORS, ORDER_STATUS_LABELS } from '@/lib/utils'
 
 export default async function ShopDashboardPage({ params }: { params: Promise<{ tenant: string }> }) {
   const { tenant: tenantSlug } = await params
@@ -19,7 +20,11 @@ export default async function ShopDashboardPage({ params }: { params: Promise<{ 
 
   if (!customer) redirect('/login')
 
-  const tenantInfo = customer.tenants as unknown as { customer_message: string | null; brand_color: string; name: string } | null
+  const tenantInfo = customer.tenants as unknown as {
+    customer_message: string | null
+    brand_color: string
+    name: string
+  } | null
 
   const { data: recentOrders } = await supabase
     .from('orders')
@@ -37,107 +42,123 @@ export default async function ShopDashboardPage({ params }: { params: Promise<{ 
     .single()
 
   const base = `/sklep/${tenantSlug}`
+  const brandColor = tenantInfo?.brand_color ?? '#0f172a'
 
   return (
     <div className="space-y-6">
-      {/* Powitanie */}
-      <div className="bg-white rounded-xl border p-6">
-        <h1 className="text-xl font-bold text-gray-900">Witaj, {customer.company_name}!</h1>
-        {tenantInfo?.customer_message && (
-          <p className="text-gray-600 mt-2 text-sm">{tenantInfo.customer_message}</p>
-        )}
-        <div className="mt-4">
+      <section className="premium-card overflow-hidden">
+        <div className="flex flex-col gap-5 p-6 md:flex-row md:items-center md:justify-between">
+          <div className="min-w-0">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+              Portal zakupowy B2B
+            </p>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-950">
+              Witaj, {customer.company_name}
+            </h1>
+            {tenantInfo?.customer_message ? (
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">{tenantInfo.customer_message}</p>
+            ) : (
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+                Szybko zloz zamowienie, sprawdz historie i ponow ostatnie zakupy.
+              </p>
+            )}
+          </div>
           <Link
             href={`${base}/katalog`}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-white font-medium text-sm transition-opacity hover:opacity-90"
-            style={{ backgroundColor: tenantInfo?.brand_color ?? '#2563eb' }}
+            className="inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:opacity-90"
+            style={{ backgroundColor: brandColor }}
           >
             <ShoppingCart className="h-4 w-4" />
-            Złóż zamówienie
+            Zloz zamowienie
           </Link>
         </div>
-      </div>
+      </section>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Ostatnie zamówienia */}
-        <div className="bg-white rounded-xl border">
-          <div className="p-4 border-b flex items-center justify-between">
-            <h2 className="font-semibold text-gray-900">Ostatnie zamówienia</h2>
-            <Link href={`${base}/zamowienia`} className="text-sm text-blue-600 hover:underline flex items-center gap-1">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <section className="premium-card overflow-hidden">
+          <div className="flex items-center justify-between border-b border-slate-200/80 p-5">
+            <h2 className="font-semibold text-slate-950">Ostatnie zamowienia</h2>
+            <Link href={`${base}/zamowienia`} className="flex items-center gap-1 text-sm font-semibold text-slate-600 hover:text-slate-950">
               Wszystkie <ChevronRight className="h-3 w-3" />
             </Link>
           </div>
-          <div className="divide-y">
+          <div className="divide-y divide-slate-100">
             {recentOrders?.length ? recentOrders.map(order => (
               <Link
                 key={order.id}
                 href={`${base}/zamowienia/${order.id}`}
-                className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
+                className="flex items-center justify-between gap-4 p-4 transition hover:bg-slate-50"
               >
-                <div>
-                  <div className="font-medium text-sm text-gray-900 font-mono">{order.order_number}</div>
-                  <div className="text-xs text-gray-400 mt-0.5">{formatDate(order.created_at)}</div>
+                <div className="min-w-0">
+                  <div className="font-mono text-sm font-semibold text-slate-950">{order.order_number}</div>
+                  <div className="mt-0.5 text-xs text-slate-400">{formatDate(order.created_at)}</div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${ORDER_STATUS_COLORS[order.status]}`}>
+                  <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${ORDER_STATUS_COLORS[order.status]}`}>
                     {ORDER_STATUS_LABELS[order.status]}
                   </span>
-                  <span className="text-sm font-medium text-gray-900">{formatCurrency(order.total_gross)}</span>
+                  <span className="text-sm font-semibold text-slate-950">{formatCurrency(order.total_gross)}</span>
                 </div>
               </Link>
             )) : (
-              <div className="p-8 text-center text-gray-400 text-sm">Brak zamówień</div>
+              <div className="p-8 text-center text-sm text-slate-400">Brak zamowien</div>
             )}
           </div>
-        </div>
+        </section>
 
-        {/* Szybkie akcje */}
-        <div className="space-y-4">
-          <Link
+        <section className="space-y-4">
+          <ActionLink
             href={`${base}/katalog`}
-            className="flex items-center gap-4 bg-white rounded-xl border p-4 hover:border-blue-300 hover:shadow-sm transition-all group"
-          >
-            <div className="p-3 rounded-xl bg-blue-50 text-blue-600 group-hover:bg-blue-100 transition-colors">
-              <ShoppingCart className="h-5 w-5" />
-            </div>
-            <div>
-              <div className="font-semibold text-gray-900">Przeglądaj produkty</div>
-              <div className="text-sm text-gray-500">Znajdź i dodaj produkty do koszyka</div>
-            </div>
-            <ChevronRight className="h-4 w-4 text-gray-400 ml-auto" />
-          </Link>
-
-          <Link
+            icon={<ShoppingCart className="h-5 w-5" />}
+            title="Przegladaj produkty"
+            description="Znajdz produkty i dodaj je do koszyka"
+            color="text-sky-700 bg-sky-50"
+          />
+          <ActionLink
             href={`${base}/zamowienia`}
-            className="flex items-center gap-4 bg-white rounded-xl border p-4 hover:border-blue-300 hover:shadow-sm transition-all group"
-          >
-            <div className="p-3 rounded-xl bg-green-50 text-green-600 group-hover:bg-green-100 transition-colors">
-              <ClipboardList className="h-5 w-5" />
-            </div>
-            <div>
-              <div className="font-semibold text-gray-900">Historia zamówień</div>
-              <div className="text-sm text-gray-500">Przeglądaj swoje poprzednie zamówienia</div>
-            </div>
-            <ChevronRight className="h-4 w-4 text-gray-400 ml-auto" />
-          </Link>
-
+            icon={<ClipboardList className="h-5 w-5" />}
+            title="Historia zamowien"
+            description="Przegladaj poprzednie zamowienia i statusy"
+            color="text-emerald-700 bg-emerald-50"
+          />
           {lastOrder && (
-            <Link
+            <ActionLink
               href={`${base}/zamowienia/${lastOrder.id}?reorder=1`}
-              className="flex items-center gap-4 bg-white rounded-xl border p-4 hover:border-blue-300 hover:shadow-sm transition-all group"
-            >
-              <div className="p-3 rounded-xl bg-orange-50 text-orange-600 group-hover:bg-orange-100 transition-colors">
-                <RotateCcw className="h-5 w-5" />
-              </div>
-              <div>
-                <div className="font-semibold text-gray-900">Zamów ponownie</div>
-                <div className="text-sm text-gray-500">Powtórz ostatnie zamówienie</div>
-              </div>
-              <ChevronRight className="h-4 w-4 text-gray-400 ml-auto" />
-            </Link>
+              icon={<RotateCcw className="h-5 w-5" />}
+              title="Zamow ponownie"
+              description="Powtorz ostatnie zamowienie"
+              color="text-amber-700 bg-amber-50"
+            />
           )}
-        </div>
+        </section>
       </div>
     </div>
+  )
+}
+
+function ActionLink({
+  href,
+  icon,
+  title,
+  description,
+  color,
+}: {
+  href: string
+  icon: ReactNode
+  title: string
+  description: string
+  color: string
+}) {
+  return (
+    <Link href={href} className="premium-card group flex items-center gap-4 p-4 transition hover:-translate-y-0.5">
+      <div className={`rounded-lg p-3 transition ${color}`}>
+        {icon}
+      </div>
+      <div className="min-w-0">
+        <div className="font-semibold text-slate-950">{title}</div>
+        <div className="text-sm text-slate-500">{description}</div>
+      </div>
+      <ChevronRight className="ml-auto h-4 w-4 text-slate-400 transition group-hover:translate-x-0.5" />
+    </Link>
   )
 }

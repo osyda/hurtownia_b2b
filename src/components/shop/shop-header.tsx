@@ -39,7 +39,7 @@ export function ShopHeader({ tenantSlug, tenantName, brandColor, logoUrl, custom
   ]
 
   return (
-    <header className="bg-white border-b shadow-sm sticky top-0 z-40">
+    <header className="premium-topbar sticky top-0 z-40">
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo / Nazwa */}
@@ -48,13 +48,13 @@ export function ShopHeader({ tenantSlug, tenantName, brandColor, logoUrl, custom
               <img src={logoUrl} alt={tenantName} className="h-8 w-auto object-contain" />
             ) : (
               <div
-                className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
+                className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg text-sm font-bold text-white shadow-sm"
                 style={{ backgroundColor: brandColor }}
               >
                 {tenantName.charAt(0).toUpperCase()}
               </div>
             )}
-            <span className="font-bold text-gray-900 hidden sm:block">{tenantName}</span>
+            <span className="hidden font-bold tracking-tight text-slate-950 sm:block">{tenantName}</span>
           </Link>
 
           {/* Nawigacja */}
@@ -66,8 +66,8 @@ export function ShopHeader({ tenantSlug, tenantName, brandColor, logoUrl, custom
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    'px-3 py-2 rounded-lg text-sm font-medium transition-colors',
-                    active ? 'text-white' : 'text-gray-600 hover:bg-gray-100'
+                    'rounded-lg px-3 py-2 text-sm font-semibold transition-all',
+                    active ? 'text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950'
                   )}
                   style={active ? { backgroundColor: brandColor } : {}}
                 >
@@ -82,25 +82,25 @@ export function ShopHeader({ tenantSlug, tenantName, brandColor, logoUrl, custom
             {/* Koszyk */}
             <Link
               href={`${base}/koszyk`}
-              className="relative flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-white transition-colors hover:opacity-90"
+              className="relative flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:opacity-90"
               style={{ backgroundColor: brandColor }}
             >
               <ShoppingCart className="h-4 w-4" />
               <span className="hidden sm:inline">Koszyk</span>
               {itemCount() > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
+                <span className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white ring-2 ring-white">
                   {itemCount()}
                 </span>
               )}
             </Link>
 
             {/* Użytkownik */}
-            <div className="flex items-center gap-1 text-sm text-gray-500">
+            <div className="flex items-center gap-1 text-sm text-slate-500">
               <User className="h-4 w-4" />
               <span className="hidden sm:block max-w-[140px] truncate">{customerName}</span>
             </div>
 
-            <button onClick={handleLogout} className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors">
+            <button onClick={handleLogout} className="rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700">
               <LogOut className="h-4 w-4" />
             </button>
           </div>
@@ -115,8 +115,8 @@ export function ShopHeader({ tenantSlug, tenantName, brandColor, logoUrl, custom
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors',
-                  active ? 'text-white' : 'text-gray-600 hover:bg-gray-100'
+                  'whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-semibold transition-all',
+                  active ? 'text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950'
                 )}
                 style={active ? { backgroundColor: brandColor } : {}}
               >

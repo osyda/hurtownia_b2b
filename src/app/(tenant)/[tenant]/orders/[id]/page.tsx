@@ -45,14 +45,14 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ te
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="bg-white rounded-xl border p-4">
+        <div className="premium-card p-4">
           <div className="text-xs font-medium text-gray-500 uppercase mb-2">Klient</div>
           <div className="font-medium text-gray-900">{customer?.company_name}</div>
           <div className="text-sm text-gray-500">{customer?.email}</div>
           <div className="text-sm text-gray-500">{customer?.phone}</div>
           {customer?.nip && <div className="text-sm text-gray-400">NIP: {customer.nip}</div>}
         </div>
-        <div className="bg-white rounded-xl border p-4">
+        <div className="premium-card p-4">
           <div className="text-xs font-medium text-gray-500 uppercase mb-2">Dostawa</div>
           <div className="font-medium text-gray-900">{order.delivery_date || 'Nie ustalono'}</div>
           {deliveryAddress && (
@@ -62,7 +62,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ te
             </div>
           )}
         </div>
-        <div className="bg-white rounded-xl border p-4">
+        <div className="premium-card p-4">
           <div className="text-xs font-medium text-gray-500 uppercase mb-2">Płatność</div>
           <div className="font-medium text-gray-900">{paymentMethod?.label || '—'}</div>
           <div className="mt-2 pt-2 border-t">

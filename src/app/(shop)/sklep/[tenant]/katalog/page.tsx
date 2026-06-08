@@ -70,7 +70,7 @@ export default async function CatalogPage({
         .in('product_id', productIds)
 
       groupPrices?.forEach(p => {
-        if (!priceMap[p.product_id]) priceMap[p.product_id] = p.price
+        if (priceMap[p.product_id] === undefined) priceMap[p.product_id] = p.price
       })
     }
   }

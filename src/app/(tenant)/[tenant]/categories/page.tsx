@@ -27,7 +27,7 @@ export default async function CategoriesPage({ params }: { params: Promise<{ ten
         action={<CategoryActions tenantSlug={tenantSlug} categories={categories ?? []} />}
       />
 
-      <div className="bg-white rounded-xl border overflow-hidden">
+      <div className="premium-card overflow-hidden">
         {categories?.length ? (
           <table className="w-full">
             <thead className="bg-gray-50 border-b">

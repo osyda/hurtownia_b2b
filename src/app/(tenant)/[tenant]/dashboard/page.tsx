@@ -1,8 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import { ShoppingCart, Users, Package, TrendingUp, Clock } from 'lucide-react'
-import { formatCurrency, formatDateTime, ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from '@/lib/utils'
 import Link from 'next/link'
+import { Clock, Package, ShoppingCart, Users } from 'lucide-react'
+import { formatCurrency, formatDateTime, ORDER_STATUS_COLORS, ORDER_STATUS_LABELS } from '@/lib/utils'
 
 export default async function TenantDashboardPage({
   params,
@@ -44,73 +44,71 @@ export default async function TenantDashboardPage({
       .limit(8),
   ])
 
-  const todayRevenue = todayOrders.data?.reduce((s, o) => s + (o.total_gross || 0), 0) ?? 0
+  const todayRevenue = todayOrders.data?.reduce((sum, order) => sum + (order.total_gross || 0), 0) ?? 0
 
   const cards = [
-    { label: 'Zamówienia dziś', value: todayOrders.count ?? 0, sub: formatCurrency(todayRevenue), icon: ShoppingCart, color: 'text-blue-600 bg-blue-50' },
-    { label: 'Nowe zamówienia', value: newOrders.count ?? 0, sub: 'oczekują na przyjęcie', icon: Clock, color: 'text-orange-600 bg-orange-50' },
-    { label: 'Aktywni klienci', value: totalCustomers.count ?? 0, sub: null, icon: Users, color: 'text-green-600 bg-green-50' },
-    { label: 'Aktywne produkty', value: totalProducts.count ?? 0, sub: null, icon: Package, color: 'text-purple-600 bg-purple-50' },
+    { label: 'Zamowienia dzis', value: todayOrders.count ?? 0, sub: formatCurrency(todayRevenue), icon: ShoppingCart, color: 'text-sky-700 bg-sky-50' },
+    { label: 'Nowe zamowienia', value: newOrders.count ?? 0, sub: 'oczekuja na przyjecie', icon: Clock, color: 'text-amber-700 bg-amber-50' },
+    { label: 'Aktywni klienci', value: totalCustomers.count ?? 0, sub: null, icon: Users, color: 'text-emerald-700 bg-emerald-50' },
+    { label: 'Aktywne produkty', value: totalProducts.count ?? 0, sub: null, icon: Package, color: 'text-slate-700 bg-slate-100' },
   ]
 
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Dashboard</h1>
+    <div className="p-4 md:p-8">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold tracking-tight text-slate-950">Dashboard</h1>
+        <p className="mt-1 text-sm text-slate-500">Dzisiejsza sprzedaz, kolejka zamowien i kondycja katalogu.</p>
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
+      <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
         {cards.map(card => (
-          <div key={card.label} className="bg-white rounded-xl border p-5">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-sm text-gray-500">{card.label}</span>
-              <div className={`p-2 rounded-lg ${card.color}`}>
+          <div key={card.label} className="premium-card p-5">
+            <div className="mb-3 flex items-center justify-between">
+              <span className="text-sm font-medium text-slate-500">{card.label}</span>
+              <div className={`rounded-lg p-2 ${card.color}`}>
                 <card.icon className="h-4 w-4" />
               </div>
             </div>
-            <div className="text-2xl font-bold text-gray-900">{card.value}</div>
-            {card.sub && <div className="text-xs text-gray-400 mt-1">{card.sub}</div>}
+            <div className="text-2xl font-bold tracking-tight text-slate-950">{card.value}</div>
+            {card.sub && <div className="mt-1 text-xs font-medium text-slate-400">{card.sub}</div>}
           </div>
         ))}
       </div>
 
-      <div className="bg-white rounded-xl border">
-        <div className="p-5 border-b flex items-center justify-between">
-          <h2 className="font-semibold text-gray-900">Ostatnie zamówienia</h2>
-          <Link
-            href={`/${tenantSlug}/orders`}
-            className="text-sm text-blue-600 hover:underline"
-          >
-            Wszystkie zamówienia
+      <div className="premium-card overflow-hidden">
+        <div className="flex items-center justify-between border-b border-slate-200/80 p-5">
+          <h2 className="font-semibold text-slate-950">Ostatnie zamowienia</h2>
+          <Link href={`/${tenantSlug}/orders`} className="text-sm font-semibold text-slate-600 hover:text-slate-950">
+            Wszystkie zamowienia
           </Link>
         </div>
-        <div className="divide-y">
+        <div className="divide-y divide-slate-100">
           {recentOrders.data?.map(order => {
             const customer = (order.customers as unknown as { company_name: string } | null)
             return (
               <Link
                 key={order.id}
                 href={`/${tenantSlug}/orders/${order.id}`}
-                className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+                className="flex items-center justify-between p-4 transition hover:bg-slate-50"
               >
-                <div className="flex items-center gap-3">
-                  <div>
-                    <div className="text-sm font-medium text-gray-900">{order.order_number}</div>
-                    <div className="text-xs text-gray-500">{customer?.company_name}</div>
-                  </div>
+                <div className="min-w-0">
+                  <div className="font-mono text-sm font-semibold text-slate-950">{order.order_number}</div>
+                  <div className="text-xs text-slate-500">{customer?.company_name}</div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <span className={`text-xs px-2 py-1 rounded-full font-medium ${ORDER_STATUS_COLORS[order.status]}`}>
+                  <span className={`rounded-full px-2 py-1 text-xs font-semibold ${ORDER_STATUS_COLORS[order.status]}`}>
                     {ORDER_STATUS_LABELS[order.status]}
                   </span>
                   <div className="text-right">
-                    <div className="text-sm font-medium text-gray-900">{formatCurrency(order.total_gross)}</div>
-                    <div className="text-xs text-gray-400">{formatDateTime(order.created_at)}</div>
+                    <div className="text-sm font-semibold text-slate-950">{formatCurrency(order.total_gross)}</div>
+                    <div className="text-xs text-slate-400">{formatDateTime(order.created_at)}</div>
                   </div>
                 </div>
               </Link>
             )
           })}
           {!recentOrders.data?.length && (
-            <div className="p-8 text-center text-gray-400 text-sm">Brak zamówień</div>
+            <div className="p-8 text-center text-sm text-slate-400">Brak zamowien</div>
           )}
         </div>
       </div>

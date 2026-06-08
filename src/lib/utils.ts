@@ -35,7 +35,7 @@ export function slugify(text: string) {
   return text
     .toLowerCase()
     .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
+    .replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/(^-|-$)/g, '')
 }
@@ -50,12 +50,12 @@ export const ORDER_STATUS_LABELS: Record<string, string> = {
 }
 
 export const ORDER_STATUS_COLORS: Record<string, string> = {
-  new: 'bg-blue-100 text-blue-800',
-  accepted: 'bg-yellow-100 text-yellow-800',
+  new: 'bg-sky-100 text-sky-800',
+  accepted: 'bg-amber-100 text-amber-800',
   in_progress: 'bg-orange-100 text-orange-800',
-  ready: 'bg-purple-100 text-purple-800',
-  delivered: 'bg-green-100 text-green-800',
-  cancelled: 'bg-gray-100 text-gray-800',
+  ready: 'bg-cyan-100 text-cyan-800',
+  delivered: 'bg-emerald-100 text-emerald-800',
+  cancelled: 'bg-slate-100 text-slate-800',
 }
 
 export const PAYMENT_METHOD_LABELS: Record<string, string> = {

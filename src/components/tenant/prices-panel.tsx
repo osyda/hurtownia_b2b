@@ -115,7 +115,7 @@ export function PricesPanel({
 
       {/* GROUPS TAB */}
       {tab === 'groups' && (
-        <div className="bg-white rounded-xl border">
+        <div className="premium-card">
           <div className="p-5 border-b flex items-center justify-between">
             <h2 className="font-semibold text-gray-900">Grupy cenowe</h2>
             <Button size="sm" variant="secondary" onClick={() => setShowNewGroup(v => !v)}>
@@ -201,7 +201,7 @@ export function PricesPanel({
       {tab === 'customers' && (
         <div className="grid grid-cols-3 gap-6">
           {/* Customer list */}
-          <div className="bg-white rounded-xl border h-fit">
+          <div className="premium-card h-fit">
             <div className="p-4 border-b">
               <h3 className="font-semibold text-sm text-gray-900">Wybierz klienta</h3>
             </div>
@@ -231,11 +231,11 @@ export function PricesPanel({
           {/* Prices for selected customer */}
           <div className="col-span-2">
             {!selectedCustomer ? (
-              <div className="bg-white rounded-xl border p-12 text-center text-gray-400">
+              <div className="premium-card p-12 text-center text-gray-400">
                 Wybierz klienta z listy
               </div>
             ) : (
-              <div className="bg-white rounded-xl border">
+              <div className="premium-card">
                 <div className="p-4 border-b">
                   <div className="flex items-center justify-between">
                     <h3 className="font-semibold text-gray-900">{selectedCustomerData?.company_name}</h3>
@@ -277,7 +277,7 @@ export function PricesPanel({
                               placeholder="domyślna"
                               value={editVal ?? ''}
                               onChange={e => setPriceEdits(prev => ({ ...prev, [p.id]: e.target.value }))}
-                              className="w-28 px-2 py-1.5 border border-gray-300 rounded-lg text-sm text-right focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              className="w-28 px-2 py-1.5 border border-gray-300 rounded-lg text-sm text-right focus:outline-none focus:ring-2 focus:ring-slate-900/15"
                             />
                           </div>
                           <span className="text-xs text-gray-400">zł</span>

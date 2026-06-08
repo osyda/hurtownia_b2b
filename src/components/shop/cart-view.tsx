@@ -140,7 +140,7 @@ export function CartView({ tenantSlug, brandColor, customerId, minOrderValue, ad
         <h1 className="text-xl font-bold text-gray-900 mb-4">Koszyk ({items.length})</h1>
 
         {items.map(item => (
-          <div key={item.productId} className="bg-white rounded-xl border p-4">
+          <div key={item.productId} className="premium-card p-4">
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1 min-w-0">
                 <div className="font-medium text-gray-900 text-sm">{item.name}</div>
@@ -170,7 +170,7 @@ export function CartView({ tenantSlug, brandColor, customerId, minOrderValue, ad
                 value={item.notes}
                 onChange={e => updateNotes(item.productId, e.target.value)}
                 placeholder="Uwaga do tej pozycji (opcjonalnie)..."
-                className="w-full text-xs px-2 py-1.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-400 text-gray-600"
+                className="w-full rounded-lg border border-slate-200 px-2 py-1.5 text-xs text-slate-600 transition focus:outline-none focus:ring-2 focus:ring-slate-900/10"
               />
             </div>
           </div>
@@ -180,7 +180,7 @@ export function CartView({ tenantSlug, brandColor, customerId, minOrderValue, ad
       {/* Checkout */}
       <div className="space-y-4">
         {/* Podsumowanie */}
-        <div className="bg-white rounded-xl border p-4 sticky top-24">
+        <div className="premium-card sticky top-24 p-4">
           <h2 className="font-semibold text-gray-900 mb-3">Podsumowanie</h2>
 
           <div className="space-y-1.5 text-sm mb-4">
@@ -199,7 +199,7 @@ export function CartView({ tenantSlug, brandColor, customerId, minOrderValue, ad
           {/* Termin dostawy */}
           <div className="space-y-1 mb-3">
             <label className="block text-xs font-medium text-gray-700">Termin dostawy</label>
-            <select value={deliveryDate} onChange={e => setDeliveryDate(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <select value={deliveryDate} onChange={e => setDeliveryDate(e.target.value)} className="premium-input w-full">
               <option value="">Do ustalenia</option>
               {deliveryDates.map(d => {
                 const date = new Date(d)
@@ -216,7 +216,7 @@ export function CartView({ tenantSlug, brandColor, customerId, minOrderValue, ad
           {addresses.length > 0 && (
             <div className="space-y-1 mb-3">
               <label className="block text-xs font-medium text-gray-700">Adres dostawy</label>
-              <select value={addressId} onChange={e => setAddressId(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <select value={addressId} onChange={e => setAddressId(e.target.value)} className="premium-input w-full">
                 {addresses.map(a => (
                   <option key={a.id} value={a.id}>{a.label ? `${a.label} — ` : ''}{a.street}, {a.city}</option>
                 ))}
@@ -228,7 +228,7 @@ export function CartView({ tenantSlug, brandColor, customerId, minOrderValue, ad
           {paymentMethods.length > 0 && (
             <div className="space-y-1 mb-3">
               <label className="block text-xs font-medium text-gray-700">Forma płatności</label>
-              <select value={paymentMethodId} onChange={e => setPaymentMethodId(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <select value={paymentMethodId} onChange={e => setPaymentMethodId(e.target.value)} className="premium-input w-full">
                 {paymentMethods.map(m => (
                   <option key={m.id} value={m.id}>{m.label}</option>
                 ))}
@@ -239,13 +239,13 @@ export function CartView({ tenantSlug, brandColor, customerId, minOrderValue, ad
           {/* Uwagi */}
           <div className="space-y-1 mb-4">
             <label className="block text-xs font-medium text-gray-700">Uwagi do zamówienia</label>
-            <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" placeholder="Opcjonalne uwagi..." />
+            <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} className="premium-input w-full resize-none" placeholder="Opcjonalne uwagi..." />
           </div>
 
           <button
             onClick={handleSubmit}
             disabled={pending || belowMin || !items.length}
-            className="w-full py-3 rounded-xl text-white font-semibold text-sm hover:opacity-90 disabled:opacity-40 transition-opacity flex items-center justify-center gap-2"
+            className="flex w-full items-center justify-center gap-2 rounded-lg py-3 text-sm font-semibold text-white shadow-sm transition-all hover:opacity-90 disabled:opacity-40"
             style={{ backgroundColor: brandColor }}
           >
             {pending ? 'Składanie zamówienia...' : 'Złóż zamówienie'}

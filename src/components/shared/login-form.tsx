@@ -10,7 +10,7 @@ export function LoginForm() {
   return (
     <form action={formAction} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="mb-1 block text-sm font-semibold text-slate-700">
           E-mail
         </label>
         <input
@@ -18,13 +18,13 @@ export function LoginForm() {
           type="email"
           autoComplete="email"
           required
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="premium-input w-full"
           placeholder="twoj@email.pl"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="mb-1 block text-sm font-semibold text-slate-700">
           Hasło
         </label>
         <input
@@ -32,13 +32,13 @@ export function LoginForm() {
           type="password"
           autoComplete="current-password"
           required
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="premium-input w-full"
           placeholder="••••••••"
         />
       </div>
 
       {state?.error && (
-        <p className="text-red-600 text-sm bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+        <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
           {state.error}
         </p>
       )}
@@ -46,14 +46,14 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={pending}
-        className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-medium py-2.5 rounded-lg transition-colors"
+        className="flex w-full items-center justify-center gap-2 rounded-lg bg-slate-950 py-2.5 font-semibold text-white shadow-sm transition-all hover:bg-slate-800 hover:shadow-md disabled:opacity-50"
       >
         {pending && <Loader2 className="h-4 w-4 animate-spin" />}
         Zaloguj się
       </button>
 
       <div className="text-center">
-        <a href="/reset-password" className="text-sm text-blue-600 hover:underline">
+        <a href="/reset-password" className="text-sm font-medium text-slate-600 hover:text-slate-950">
           Zapomniałem hasła
         </a>
       </div>
