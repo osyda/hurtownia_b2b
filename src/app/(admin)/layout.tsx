@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
 import { AdminSidebar } from '@/components/admin/admin-sidebar'
+import { createClient } from '@/lib/supabase/server'
 
 export default async function AdminLayout({
   children,
@@ -18,7 +18,7 @@ export default async function AdminLayout({
     .eq('id', user.id)
     .maybeSingle()
 
-  // Redirect to /login — nie do / (to powodowało pętlę ze stroną główną)
+  // Keep unauthorized users on the login page; / is host-aware and may render the public landing.
   if (!profile || profile.role !== 'super_admin') redirect('/login')
 
   return (

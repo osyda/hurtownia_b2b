@@ -1,8 +1,8 @@
 'use client'
 
 import { useActionState } from 'react'
-import { loginAction } from '@/app/actions/login'
 import { Loader2 } from 'lucide-react'
+import { loginAction } from '@/app/actions/login'
 
 export function LoginForm() {
   const [state, formAction, pending] = useActionState(loginAction, {})
@@ -25,7 +25,7 @@ export function LoginForm() {
 
       <div>
         <label className="mb-2 block text-sm font-bold text-slate-800">
-          Haslo
+          Hasło
         </label>
         <input
           name="password"
@@ -54,7 +54,7 @@ export function LoginForm() {
 
       <div className="text-center">
         <a href="/reset-password" className="text-sm font-semibold text-slate-600 hover:text-slate-950">
-          Zapomnialem hasla
+          Zapomniałem hasła
         </a>
       </div>
     </form>

@@ -1,7 +1,8 @@
-import { createClient } from '@/lib/supabase/server'
-import { Building2, Plus } from 'lucide-react'
-import { formatDateTime } from '@/lib/utils'
 import Link from 'next/link'
+import { Building2, Plus, Store } from 'lucide-react'
+import { createClient } from '@/lib/supabase/server'
+import { getTenantShopUrl } from '@/lib/shop-routing'
+import { formatDateTime } from '@/lib/utils'
 
 export default async function AdminTenantsPage() {
   const supabase = await createClient()
@@ -15,65 +16,78 @@ export default async function AdminTenantsPage() {
     `)
     .order('created_at', { ascending: false })
 
-  const statusLabel = (s: string) =>
-    s === 'active' ? 'Aktywna' : s === 'inactive' ? 'Nieaktywna' : 'Zawieszona'
-  const statusColor = (s: string) =>
-    s === 'active' ? 'bg-green-100 text-green-700' : s === 'inactive' ? 'bg-gray-100 text-gray-600' : 'bg-red-100 text-red-700'
+  const statusLabel = (status: string) =>
+    status === 'active' ? 'Aktywna' : status === 'inactive' ? 'Nieaktywna' : 'Zawieszona'
+
+  const statusColor = (status: string) =>
+    status === 'active'
+      ? 'bg-emerald-100 text-emerald-700'
+      : status === 'inactive'
+        ? 'bg-slate-100 text-slate-600'
+        : 'bg-red-100 text-red-700'
 
   return (
     <div className="p-4 md:p-8">
-      <div className="flex items-center justify-between mb-6">
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Hurtownie</h1>
-          <p className="text-sm text-gray-500 mt-1">{tenants?.length ?? 0} hurtowni w systemie</p>
+          <h1 className="text-2xl font-black tracking-tight text-slate-950">Hurtownie</h1>
+          <p className="mt-1 text-sm text-slate-500">{tenants?.length ?? 0} hurtowni w systemie Dostawio</p>
         </div>
         <Link
           href="/tenants/new"
-          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+          className="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-950 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-slate-800"
         >
           <Plus className="h-4 w-4" />
           Nowa hurtownia
         </Link>
       </div>
 
-      <div className="premium-card">
-        <div className="divide-y">
+      <div className="premium-card overflow-hidden">
+        <div className="divide-y divide-slate-100">
           {!tenants?.length && (
-            <div className="p-12 text-center text-gray-400">
-              <Building2 className="h-8 w-8 mx-auto mb-2 opacity-40" />
-              <div className="text-sm">Brak hurtowni — dodaj pierwszą</div>
+            <div className="p-12 text-center text-slate-400">
+              <Building2 className="mx-auto mb-2 h-8 w-8 opacity-40" />
+              <div className="text-sm">Brak hurtowni. Dodaj pierwszą, żeby uruchomić sklep na subdomenie.</div>
             </div>
           )}
-          {tenants?.map(t => {
-            const employees = (t.user_profiles as unknown as { count: number }[])?.[0]?.count ?? 0
-            const customers = (t.customers as unknown as { count: number }[])?.[0]?.count ?? 0
+
+          {tenants?.map(tenant => {
+            const employees = (tenant.user_profiles as unknown as { count: number }[])?.[0]?.count ?? 0
+            const customers = (tenant.customers as unknown as { count: number }[])?.[0]?.count ?? 0
+            const shopUrl = getTenantShopUrl(tenant.slug)
+
             return (
               <Link
-                key={t.id}
-                href={`/tenants/${t.id}`}
-                className="flex items-center p-5 hover:bg-gray-50 transition-colors"
+                key={tenant.id}
+                href={`/tenants/${tenant.id}`}
+                className="grid gap-4 p-5 transition hover:bg-slate-50 md:grid-cols-[auto_1fr_auto] md:items-center"
               >
                 <div
-                  className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-base mr-4 shrink-0"
-                  style={{ backgroundColor: t.brand_color || '#2563eb' }}
+                  className="flex h-11 w-11 items-center justify-center rounded-lg text-base font-black text-white"
+                  style={{ backgroundColor: tenant.brand_color || '#2563eb' }}
                 >
-                  {t.name.charAt(0).toUpperCase()}
+                  {tenant.name.charAt(0).toUpperCase()}
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="font-semibold text-gray-900">{t.name}</span>
-                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusColor(t.status)}`}>
-                      {statusLabel(t.status)}
+
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-black text-slate-950">{tenant.name}</span>
+                    <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${statusColor(tenant.status)}`}>
+                      {statusLabel(tenant.status)}
                     </span>
                   </div>
-                  <div className="text-xs text-gray-400 mt-0.5">
-                    slug: {t.slug}
-                    {t.contact_email && ` · ${t.contact_email}`}
+                  <div className="mt-1 flex min-w-0 items-center gap-2 text-xs text-slate-500">
+                    <Store className="h-3.5 w-3.5 shrink-0" />
+                    <span className="truncate font-mono font-semibold text-sky-700">{shopUrl}</span>
                   </div>
+                  {tenant.contact_email && (
+                    <div className="mt-1 truncate text-xs text-slate-400">{tenant.contact_email}</div>
+                  )}
                 </div>
-                <div className="text-right text-xs text-gray-500 ml-4 shrink-0">
-                  <div>{employees} pracowników · {customers} klientów</div>
-                  <div className="text-gray-400 mt-0.5">dodana {formatDateTime(t.created_at)}</div>
+
+                <div className="text-left text-xs text-slate-500 md:text-right">
+                  <div className="font-semibold">{employees} pracowników · {customers} klientów</div>
+                  <div className="mt-0.5 text-slate-400">dodana {formatDateTime(tenant.created_at)}</div>
                 </div>
               </Link>
             )

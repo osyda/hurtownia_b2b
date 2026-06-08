@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils'
 import {
   LayoutDashboard,
   Building2,
+  Globe2,
   LogOut,
   Menu,
   X,
@@ -17,6 +18,7 @@ import { useRouter } from 'next/navigation'
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/tenants', label: 'Hurtownie', icon: Building2 },
+  { href: '/platform', label: 'Platforma', icon: Globe2 },
 ]
 
 export function AdminSidebar() {
@@ -35,10 +37,10 @@ export function AdminSidebar() {
       <div className="flex items-center justify-between border-b border-white/10 p-6">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white text-sm font-black text-slate-950 shadow-lg shadow-sky-500/10">
-            B2B
+            D
           </div>
           <div>
-            <div className="text-lg font-bold tracking-tight text-white">B2B Connect</div>
+            <div className="text-lg font-bold tracking-tight text-white">Dostawio</div>
             <div className="mt-0.5 text-xs font-medium uppercase tracking-wide text-slate-400">Super Admin</div>
           </div>
         </div>
@@ -85,7 +87,7 @@ export function AdminSidebar() {
     <>
       {/* Mobile top bar */}
       <div className="premium-topbar fixed left-0 right-0 top-0 z-30 flex h-14 items-center justify-between px-4 md:hidden">
-        <div className="font-bold text-slate-950">B2B Connect</div>
+        <div className="font-bold text-slate-950">Dostawio</div>
         <button
           onClick={() => setOpen(true)}
           className="rounded-lg p-2 transition hover:bg-slate-100"
