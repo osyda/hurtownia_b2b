@@ -1,6 +1,7 @@
+import Link from 'next/link'
+import { Building2, ChevronRight, Globe2, ShoppingCart, Sparkles, TrendingUp, Users } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { formatCurrency, formatDateTime, ORDER_STATUS_COLORS, ORDER_STATUS_LABELS } from '@/lib/utils'
-import { Building2, ChevronRight, ShoppingCart, Sparkles, TrendingUp, Users } from 'lucide-react'
 
 async function getStats(supabase: Awaited<ReturnType<typeof createClient>>) {
   const [tenants, customers, orders] = await Promise.all([
@@ -50,19 +51,22 @@ export default async function AdminDashboardPage() {
           <div className="max-w-2xl">
             <div className="premium-pill mb-5">
               <Sparkles className="mr-2 h-3.5 w-3.5" />
-              Super admin control room
+              Superadmin Dostawio
             </div>
             <h1 className="text-3xl font-black tracking-tight md:text-5xl">
-              Centrum dowodzenia hurtowniami B2B.
+              Centrum dowodzenia platformą B2B.
             </h1>
             <p className="mt-4 max-w-xl text-sm leading-6 text-slate-300 md:text-base">
-              Szybki podgląd aktywnych hurtowni, klientów, zamówień i obrotu z ostatnich 30 dni.
+              Podgląd aktywnych hurtowni, klientów, zamówień i obrotu z ostatnich 30 dni.
             </p>
           </div>
-          <div className="rounded-lg border border-white/10 bg-white/10 p-4 text-right backdrop-blur">
-            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Obrót 30 dni</div>
-            <div className="mt-2 text-3xl font-black">{formatCurrency(stats.revenueLast30Days)}</div>
-          </div>
+          <Link
+            href="/platform"
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/15 bg-white/10 px-4 py-3 text-sm font-black text-white transition hover:bg-white hover:text-slate-950"
+          >
+            <Globe2 className="h-4 w-4" />
+            Konfiguracja platformy
+          </Link>
         </div>
       </section>
 
@@ -93,6 +97,7 @@ export default async function AdminDashboardPage() {
           {recentOrders?.map(order => {
             const customer = (order.customers as unknown as { company_name: string } | null)
             const tenant = (order.tenants as unknown as { name: string } | null)
+
             return (
               <div key={order.id} className="premium-table-row grid gap-3 p-4 md:grid-cols-[1.2fr_1fr_auto] md:items-center">
                 <div className="min-w-0">

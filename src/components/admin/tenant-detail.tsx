@@ -1,16 +1,23 @@
 'use client'
 
-import { useTransition } from 'react'
-import { toast } from 'sonner'
-import { useRouter } from 'next/navigation'
-import { formatCurrency, formatDateTime, ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from '@/lib/utils'
-import { updateTenantStatus } from '@/app/actions/admin'
-import { ArrowLeft, Users, ShoppingCart, ExternalLink } from 'lucide-react'
 import Link from 'next/link'
+import { useTransition } from 'react'
+import { useRouter } from 'next/navigation'
+import { ArrowLeft, ExternalLink, Globe2, ShoppingCart, Store, Users } from 'lucide-react'
+import { toast } from 'sonner'
+import { updateTenantStatus } from '@/app/actions/admin'
+import { getTenantPanelUrl, getTenantShopUrl } from '@/lib/shop-routing'
+import { formatCurrency, formatDateTime, ORDER_STATUS_COLORS, ORDER_STATUS_LABELS } from '@/lib/utils'
 
 interface Tenant {
-  id: string; name: string; slug: string; brand_color: string
-  status: string; contact_email: string | null; contact_phone: string | null; created_at: string
+  id: string
+  name: string
+  slug: string
+  brand_color: string
+  status: string
+  contact_email: string | null
+  contact_phone: string | null
+  created_at: string
 }
 
 export function TenantDetail({
@@ -27,152 +34,192 @@ export function TenantDetail({
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
+  const shopUrl = getTenantShopUrl(tenant.slug)
+  const panelUrl = getTenantPanelUrl(tenant.slug)
+
   function handleStatusChange(status: 'active' | 'inactive' | 'suspended') {
     startTransition(async () => {
       const res = await updateTenantStatus(tenant.id, status)
-      if (res?.error) toast.error(res.error)
-      else { toast.success('Status zaktualizowany'); router.refresh() }
+      if (res?.error) {
+        toast.error(res.error)
+      } else {
+        toast.success('Status zaktualizowany')
+        router.refresh()
+      }
     })
   }
 
-  const statusLabel = (s: string) =>
-    s === 'active' ? 'Aktywna' : s === 'inactive' ? 'Nieaktywna' : 'Zawieszona'
-  const statusColor = (s: string) =>
-    s === 'active' ? 'bg-green-100 text-green-700' : s === 'inactive' ? 'bg-gray-100 text-gray-600' : 'bg-red-100 text-red-700'
-  const roleLabel = (r: string) =>
-    r === 'tenant_admin' ? 'Administrator' : r === 'tenant_employee' ? 'Pracownik' : r
+  const statusLabel = (status: string) =>
+    status === 'active' ? 'Aktywna' : status === 'inactive' ? 'Nieaktywna' : 'Zawieszona'
+
+  const statusColor = (status: string) =>
+    status === 'active'
+      ? 'bg-emerald-100 text-emerald-700'
+      : status === 'inactive'
+        ? 'bg-slate-100 text-slate-600'
+        : 'bg-red-100 text-red-700'
+
+  const roleLabel = (role: string) =>
+    role === 'tenant_admin' ? 'Administrator' : role === 'tenant_employee' ? 'Pracownik' : role
 
   return (
-    <div className="p-4 md:p-8">
-      <Link href="/tenants" className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-4">
+    <div className="space-y-6 p-4 md:p-8">
+      <Link href="/tenants" className="flex items-center gap-1 text-sm text-slate-500 transition hover:text-slate-900">
         <ArrowLeft className="h-4 w-4" />
         Powrót do listy
       </Link>
 
-      {/* Header */}
-      <div className="flex items-start justify-between mb-6">
-        <div className="flex items-center gap-4">
-          <div
-            className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-lg"
-            style={{ backgroundColor: tenant.brand_color }}
-          >
-            {tenant.name.charAt(0).toUpperCase()}
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold text-gray-900">{tenant.name}</h1>
-              <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusColor(tenant.status)}`}>
-                {statusLabel(tenant.status)}
-              </span>
-            </div>
-            <div className="text-sm text-gray-500 mt-0.5">
-              slug: {tenant.slug}
-              {tenant.contact_email && ` · ${tenant.contact_email}`}
-            </div>
-          </div>
-        </div>
-        <div className="flex gap-2">
-          <Link
-            href={`/${tenant.slug}/dashboard`}
-            target="_blank"
-            className="flex items-center gap-2 text-sm text-blue-600 border border-blue-200 hover:bg-blue-50 px-3 py-2 rounded-lg transition-colors"
-          >
-            <ExternalLink className="h-4 w-4" />
-            Otwórz panel
-          </Link>
-          {tenant.status === 'active' ? (
-            <button
-              onClick={() => handleStatusChange('suspended')}
-              disabled={isPending}
-              className="text-sm text-red-600 border border-red-200 hover:bg-red-50 px-3 py-2 rounded-lg transition-colors"
+      <section className="premium-card p-5">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+          <div className="flex items-start gap-4">
+            <div
+              className="flex h-12 w-12 items-center justify-center rounded-lg text-lg font-black text-white"
+              style={{ backgroundColor: tenant.brand_color }}
             >
-              Zawieś
-            </button>
-          ) : (
-            <button
-              onClick={() => handleStatusChange('active')}
-              disabled={isPending}
-              className="text-sm text-green-600 border border-green-200 hover:bg-green-50 px-3 py-2 rounded-lg transition-colors"
-            >
-              Aktywuj
-            </button>
-          )}
-        </div>
-      </div>
+              {tenant.name.charAt(0).toUpperCase()}
+            </div>
+            <div>
+              <div className="flex flex-wrap items-center gap-2">
+                <h1 className="text-2xl font-black tracking-tight text-slate-950">{tenant.name}</h1>
+                <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${statusColor(tenant.status)}`}>
+                  {statusLabel(tenant.status)}
+                </span>
+              </div>
+              <div className="mt-1 text-sm text-slate-500">
+                slug: <span className="font-mono font-bold text-slate-700">{tenant.slug}</span>
+                {tenant.contact_email && ` · ${tenant.contact_email}`}
+              </div>
+            </div>
+          </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Employees */}
-        <div className="premium-card">
-          <div className="p-4 border-b flex items-center gap-2">
-            <Users className="h-4 w-4 text-gray-400" />
-            <h2 className="font-semibold text-sm text-gray-900">Pracownicy ({employees.length})</h2>
-          </div>
-          <div className="divide-y max-h-80 overflow-y-auto">
-            {employees.length === 0 && (
-              <div className="p-6 text-center text-gray-400 text-xs">Brak pracowników</div>
+          <div className="flex flex-wrap gap-2">
+            <a
+              href={panelUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
+            >
+              <Globe2 className="h-4 w-4" />
+              Panel
+              <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+            <a
+              href={shopUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-lg border border-sky-200 px-3 py-2 text-sm font-bold text-sky-700 transition hover:bg-sky-50"
+            >
+              <Store className="h-4 w-4" />
+              Sklep
+              <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+            {tenant.status === 'active' ? (
+              <button
+                onClick={() => handleStatusChange('suspended')}
+                disabled={isPending}
+                className="rounded-lg border border-red-200 px-3 py-2 text-sm font-bold text-red-600 transition hover:bg-red-50 disabled:opacity-50"
+              >
+                Zawieś
+              </button>
+            ) : (
+              <button
+                onClick={() => handleStatusChange('active')}
+                disabled={isPending}
+                className="rounded-lg border border-emerald-200 px-3 py-2 text-sm font-bold text-emerald-700 transition hover:bg-emerald-50 disabled:opacity-50"
+              >
+                Aktywuj
+              </button>
             )}
-            {employees.map(e => (
-              <div key={e.id} className="p-3">
-                <div className="text-sm font-medium text-gray-900">{[e.first_name, e.last_name].filter(Boolean).join(' ') || '—'}</div>
-                <div className="text-xs text-gray-400">{roleLabel(e.role)}</div>
+          </div>
+        </div>
+
+        <div className="mt-5 grid gap-3 md:grid-cols-2">
+          <AddressCard label="Sklep klienta" value={shopUrl} />
+          <AddressCard label="Panel hurtowni" value={panelUrl} />
+        </div>
+      </section>
+
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <section className="premium-card overflow-hidden">
+          <div className="flex items-center gap-2 border-b border-slate-200/80 p-4">
+            <Users className="h-4 w-4 text-slate-400" />
+            <h2 className="text-sm font-black text-slate-950">Pracownicy ({employees.length})</h2>
+          </div>
+          <div className="max-h-80 divide-y divide-slate-100 overflow-y-auto">
+            {employees.length === 0 && (
+              <div className="p-6 text-center text-xs text-slate-400">Brak pracowników</div>
+            )}
+            {employees.map(employee => (
+              <div key={employee.id} className="p-3">
+                <div className="text-sm font-bold text-slate-900">
+                  {[employee.first_name, employee.last_name].filter(Boolean).join(' ') || '-'}
+                </div>
+                <div className="text-xs text-slate-400">{roleLabel(employee.role)}</div>
               </div>
             ))}
           </div>
-        </div>
+        </section>
 
-        {/* Customers */}
-        <div className="premium-card">
-          <div className="p-4 border-b flex items-center gap-2">
-            <Users className="h-4 w-4 text-gray-400" />
-            <h2 className="font-semibold text-sm text-gray-900">Klienci ({customers.length})</h2>
+        <section className="premium-card overflow-hidden">
+          <div className="flex items-center gap-2 border-b border-slate-200/80 p-4">
+            <Users className="h-4 w-4 text-slate-400" />
+            <h2 className="text-sm font-black text-slate-950">Klienci ({customers.length})</h2>
           </div>
-          <div className="divide-y max-h-80 overflow-y-auto">
+          <div className="max-h-80 divide-y divide-slate-100 overflow-y-auto">
             {customers.length === 0 && (
-              <div className="p-6 text-center text-gray-400 text-xs">Brak klientów</div>
+              <div className="p-6 text-center text-xs text-slate-400">Brak klientów</div>
             )}
-            {customers.map(c => (
-              <div key={c.id} className="p-3">
-                <div className="text-sm font-medium text-gray-900">{c.company_name}</div>
-                <div className="text-xs text-gray-400">
-                  {c.email}
-                  <span className={`ml-2 px-1.5 py-0.5 rounded-full font-medium ${
-                    c.status === 'active' ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-500'
+            {customers.map(customer => (
+              <div key={customer.id} className="p-3">
+                <div className="text-sm font-bold text-slate-900">{customer.company_name}</div>
+                <div className="text-xs text-slate-400">
+                  {customer.email}
+                  <span className={`ml-2 rounded-full px-1.5 py-0.5 font-bold ${
+                    customer.status === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'
                   }`}>
-                    {c.status === 'active' ? 'Aktywny' : 'Nieaktywny'}
+                    {customer.status === 'active' ? 'Aktywny' : 'Nieaktywny'}
                   </span>
                 </div>
               </div>
             ))}
           </div>
-        </div>
+        </section>
 
-        {/* Orders */}
-        <div className="premium-card">
-          <div className="p-4 border-b flex items-center gap-2">
-            <ShoppingCart className="h-4 w-4 text-gray-400" />
-            <h2 className="font-semibold text-sm text-gray-900">Ostatnie zamówienia</h2>
+        <section className="premium-card overflow-hidden">
+          <div className="flex items-center gap-2 border-b border-slate-200/80 p-4">
+            <ShoppingCart className="h-4 w-4 text-slate-400" />
+            <h2 className="text-sm font-black text-slate-950">Ostatnie zamówienia</h2>
           </div>
-          <div className="divide-y max-h-80 overflow-y-auto">
+          <div className="max-h-80 divide-y divide-slate-100 overflow-y-auto">
             {orders.length === 0 && (
-              <div className="p-6 text-center text-gray-400 text-xs">Brak zamówień</div>
+              <div className="p-6 text-center text-xs text-slate-400">Brak zamówień</div>
             )}
-            {orders.map(o => (
-              <div key={o.id} className="p-3 flex justify-between items-start">
+            {orders.map(order => (
+              <div key={order.id} className="flex items-start justify-between gap-3 p-3">
                 <div>
-                  <div className="text-sm font-medium text-gray-900">{o.order_number}</div>
-                  <div className="text-xs text-gray-400">{formatDateTime(o.created_at)}</div>
+                  <div className="text-sm font-bold text-slate-900">{order.order_number}</div>
+                  <div className="text-xs text-slate-400">{formatDateTime(order.created_at)}</div>
                 </div>
                 <div className="text-right">
-                  <div className={`text-xs px-2 py-0.5 rounded-full font-medium ${ORDER_STATUS_COLORS[o.status]}`}>
-                    {ORDER_STATUS_LABELS[o.status]}
+                  <div className={`rounded-full px-2 py-0.5 text-xs font-bold ${ORDER_STATUS_COLORS[order.status]}`}>
+                    {ORDER_STATUS_LABELS[order.status]}
                   </div>
-                  <div className="text-xs font-medium text-gray-700 mt-1">{formatCurrency(o.total_gross)}</div>
+                  <div className="mt-1 text-xs font-bold text-slate-700">{formatCurrency(order.total_gross)}</div>
                 </div>
               </div>
             ))}
           </div>
-        </div>
+        </section>
       </div>
+    </div>
+  )
+}
+
+function AddressCard({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
+      <div className="text-xs font-black uppercase tracking-[0.16em] text-slate-400">{label}</div>
+      <div className="mt-2 break-all font-mono text-sm font-bold text-sky-700">{value}</div>
     </div>
   )
 }

@@ -35,7 +35,7 @@ export async function authenticateIntegration(request: Request) {
     candidate.api_token_hash && safeHashEqual(candidate.api_token_hash, tokenHash)
   )
 
-  if (!integration) return { error: 'Nieprawidlowy token API', status: 401 as const }
+  if (!integration) return { error: 'Nieprawidłowy token API', status: 401 as const }
 
   return {
     integration: {

@@ -14,10 +14,10 @@ export default function LoginPage() {
         <div className="relative z-10">
           <div className="mb-10 flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-white text-sm font-black text-slate-950">
-              B2B
+              D
             </div>
             <div>
-              <div className="text-lg font-bold tracking-tight">B2B Connect</div>
+              <div className="text-lg font-bold tracking-tight">Dostawio</div>
               <div className="text-xs font-semibold uppercase tracking-[0.24em] text-white/45">
                 Premium wholesale portal
               </div>
@@ -43,17 +43,15 @@ export default function LoginPage() {
             </div>
           ))}
         </div>
-
-        <div className="pointer-events-none absolute bottom-8 right-8 h-40 w-40 rounded-full border border-white/10" />
       </section>
 
       <main className="flex min-h-[calc(100vh-2rem)] items-center justify-center px-2 py-8 lg:min-h-[calc(100vh-3rem)] lg:px-10">
         <div className="w-full max-w-md">
           <div className="mb-7 lg:hidden">
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-slate-950 text-lg font-black text-white shadow-xl shadow-slate-900/20">
-              B2B
+              D
             </div>
-            <h1 className="text-3xl font-black tracking-tight text-slate-950">B2B Connect</h1>
+            <h1 className="text-3xl font-black tracking-tight text-slate-950">Dostawio</h1>
             <p className="mt-2 text-sm text-slate-500">Zaloguj się do portalu hurtowni.</p>
           </div>
 

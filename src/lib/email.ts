@@ -1,6 +1,6 @@
 import { Resend } from 'resend'
 
-const FROM = process.env.RESEND_FROM || 'B2B Connect <noreply@b2bconnect.pl>'
+const FROM = process.env.RESEND_FROM || 'Dostawio <noreply@dostawio.pl>'
 
 function getResend(): Resend | null {
   if (!process.env.RESEND_API_KEY) return null
@@ -24,14 +24,16 @@ export async function sendNewOrderEmail({
 }) {
   const resend = getResend()
   if (!resend) return
+
   const amount = new Intl.NumberFormat('pl-PL', { style: 'currency', currency: 'PLN' }).format(totalGross)
+
   await resend.emails.send({
     from: FROM,
     to: tenantEmail,
     subject: `Nowe zamówienie ${orderNumber} od ${customerName}`,
     html: `
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
-        <h2 style="color:#1e293b">Nowe zamówienie — ${tenantName}</h2>
+        <h2 style="color:#1e293b">Nowe zamówienie - ${tenantName}</h2>
         <p>Wpłynęło nowe zamówienie wymagające potwierdzenia.</p>
         <table style="width:100%;border-collapse:collapse;margin:16px 0">
           <tr><td style="padding:8px 0;color:#64748b">Numer zamówienia:</td><td style="font-weight:bold">${orderNumber}</td></tr>
@@ -41,7 +43,7 @@ export async function sendNewOrderEmail({
         <a href="${orderUrl}" style="display:inline-block;background:#2563eb;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:500">
           Przejdź do zamówienia
         </a>
-        <p style="color:#94a3b8;font-size:12px;margin-top:24px">Wiadomość wysłana automatycznie przez B2B Connect</p>
+        <p style="color:#94a3b8;font-size:12px;margin-top:24px">Wiadomość wysłana automatycznie przez Dostawio</p>
       </div>
     `,
   })
@@ -68,12 +70,13 @@ export async function sendOrderStatusEmail({
 }) {
   const resend = getResend()
   if (!resend) return
+
   const amount = new Intl.NumberFormat('pl-PL', { style: 'currency', currency: 'PLN' }).format(totalGross)
   const subject = status === 'confirmed'
     ? `Zamówienie ${orderNumber} potwierdzone`
     : status === 'cancelled'
-    ? `Zamówienie ${orderNumber} anulowane`
-    : `Aktualizacja zamówienia ${orderNumber} — ${statusLabel}`
+      ? `Zamówienie ${orderNumber} anulowane`
+      : `Aktualizacja zamówienia ${orderNumber} - ${statusLabel}`
 
   await resend.emails.send({
     from: FROM,
@@ -93,7 +96,7 @@ export async function sendOrderStatusEmail({
         <a href="${orderUrl}" style="display:inline-block;background:#2563eb;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:500">
           Szczegóły zamówienia
         </a>
-        <p style="color:#94a3b8;font-size:12px;margin-top:24px">Wiadomość wysłana automatycznie przez B2B Connect</p>
+        <p style="color:#94a3b8;font-size:12px;margin-top:24px">Wiadomość wysłana automatycznie przez Dostawio</p>
       </div>
     `,
   })
@@ -112,10 +115,11 @@ export async function sendCustomerInviteEmail({
 }) {
   const resend = getResend()
   if (!resend) return
+
   await resend.emails.send({
     from: FROM,
     to: customerEmail,
-    subject: `Zaproszenie do platformy B2B — ${tenantName}`,
+    subject: `Zaproszenie do platformy B2B - ${tenantName}`,
     html: `
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto">
         <h2 style="color:#1e293b">Zaproszenie do platformy B2B</h2>
@@ -125,7 +129,7 @@ export async function sendCustomerInviteEmail({
         <a href="${loginUrl}" style="display:inline-block;background:#2563eb;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:500">
           Zaloguj się do platformy
         </a>
-        <p style="color:#94a3b8;font-size:12px;margin-top:24px">Wiadomość wysłana automatycznie przez B2B Connect</p>
+        <p style="color:#94a3b8;font-size:12px;margin-top:24px">Wiadomość wysłana automatycznie przez Dostawio</p>
       </div>
     `,
   })

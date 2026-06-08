@@ -6,8 +6,8 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'B2B Connect — Platforma zamówień dla hurtowni',
-  description: 'Profesjonalna platforma B2B dla hurtowni regionalnych',
+  title: 'Dostawio.pl - platforma zamówień B2B dla hurtowni',
+  description: 'Premium platforma B2B dla hurtowni, klientów, cenników, zamówień i integracji.',
 }
 
 export default function RootLayout({
