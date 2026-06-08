@@ -14,9 +14,11 @@ export default async function EditCustomerPage({ params }: { params: Promise<{ t
   const { data: profile } = await supabase.from('user_profiles').select('tenant_id, role').eq('id', user.id).single()
   if (!profile?.tenant_id) redirect('/login')
 
-  const [{ data: customer }, { data: priceGroups }] = await Promise.all([
+  const [{ data: customer }, { data: priceGroups }, { data: paymentMethods }, { data: customerPaymentMethods }] = await Promise.all([
     supabase.from('customers').select('*').eq('id', id).eq('tenant_id', profile.tenant_id).single(),
     supabase.from('price_groups').select('*').eq('tenant_id', profile.tenant_id).order('name'),
+    supabase.from('payment_methods').select('*').eq('tenant_id', profile.tenant_id).order('sort_order').order('created_at'),
+    supabase.from('customer_payment_methods').select('payment_method_id').eq('customer_id', id),
   ])
 
   if (!customer) notFound()
@@ -40,7 +42,14 @@ export default async function EditCustomerPage({ params }: { params: Promise<{ t
           </div>
         )}
       </div>
-      <CustomerForm tenantSlug={tenantSlug} priceGroups={priceGroups ?? []} customer={customer} onSubmit={submitAction} />
+      <CustomerForm
+        tenantSlug={tenantSlug}
+        priceGroups={priceGroups ?? []}
+        paymentMethods={paymentMethods ?? []}
+        selectedPaymentMethodIds={(customerPaymentMethods ?? []).map(item => item.payment_method_id)}
+        customer={customer}
+        onSubmit={submitAction}
+      />
     </div>
   )
 }
