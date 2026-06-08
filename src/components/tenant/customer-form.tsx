@@ -6,19 +6,29 @@ import { Input } from '@/components/ui/input'
 import { Select } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
-import { Customer, PriceGroup } from '@/types/database.types'
+import { Customer, PaymentMethod, PriceGroup } from '@/types/database.types'
 
 interface Props {
   tenantSlug: string
   priceGroups: PriceGroup[]
+  paymentMethods: PaymentMethod[]
+  selectedPaymentMethodIds?: string[]
   customer?: Customer
   onSubmit: (formData: FormData) => Promise<{ error?: string } | void>
 }
 
-export function CustomerForm({ tenantSlug, priceGroups, customer, onSubmit }: Props) {
+export function CustomerForm({
+  tenantSlug,
+  priceGroups,
+  paymentMethods,
+  selectedPaymentMethodIds = [],
+  customer,
+  onSubmit,
+}: Props) {
   const [pending, startTransition] = useTransition()
   const router = useRouter()
   const addr = customer?.invoice_address as { street?: string; city?: string; postal_code?: string } | null
+  const selectedPayments = new Set(selectedPaymentMethodIds)
 
   function handleSubmit(formData: FormData) {
     startTransition(async () => {
@@ -76,6 +86,49 @@ export function CustomerForm({ tenantSlug, priceGroups, customer, onSubmit }: Pr
           <label className="block text-sm font-medium text-gray-700">Notatki wewnętrzne</label>
           <textarea name="internal_notes" defaultValue={customer?.internal_notes ?? ''} rows={3} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/15 resize-none" placeholder="Tylko do wglądu dla hurtowni..." />
         </div>
+      </div>
+
+      <div className="premium-card p-6 space-y-4">
+        <div>
+          <h2 className="font-semibold text-gray-900">Formy płatności dla klienta</h2>
+          <p className="mt-1 text-sm text-gray-500">
+            Zaznaczone formy pojawią się klientowi przy składaniu zamówienia.
+          </p>
+        </div>
+
+        {paymentMethods.length === 0 ? (
+          <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm font-medium text-amber-800">
+            Brak metod płatności w ustawieniach hurtowni. Dodaj je w sekcji Ustawienia, a potem przypisz klientowi.
+          </div>
+        ) : (
+          <div className="grid gap-2 md:grid-cols-2">
+            {paymentMethods.map(method => (
+              <label
+                key={method.id}
+                className={`flex items-start gap-3 rounded-lg border p-3 text-sm transition ${
+                  method.is_active
+                    ? 'cursor-pointer border-slate-200 bg-white hover:bg-slate-50'
+                    : 'cursor-not-allowed border-slate-100 bg-slate-50 opacity-60'
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  name="payment_method_ids"
+                  value={method.id}
+                  defaultChecked={selectedPayments.has(method.id)}
+                  disabled={!method.is_active}
+                  className="mt-0.5"
+                />
+                <span>
+                  <span className="block font-semibold text-gray-900">{method.label}</span>
+                  <span className="text-xs text-gray-500">
+                    {method.is_active ? 'Aktywna' : 'Nieaktywna'}
+                  </span>
+                </span>
+              </label>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="flex items-center justify-between">
