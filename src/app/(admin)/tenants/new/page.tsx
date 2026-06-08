@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, ExternalLink, Globe2, KeyRound, ListChecks, Store } from 'lucide-react'
+import { ArrowLeft, BadgeCheck, CheckCircle2, ExternalLink, Globe2, KeyRound, ListChecks, Rocket, Store } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { toast } from 'sonner'
 import { createTenant } from '@/app/actions/admin'
@@ -25,6 +25,17 @@ export default function NewTenantPage() {
   const shopUrl = getTenantShopUrl(previewSlug)
   const panelUrl = getTenantPanelUrl(previewSlug)
   const slugReserved = slug ? isReservedTenantSlug(slug) : false
+  const launchChecklist = [
+    'utworzenie firmy i administratora',
+    'domyślne formy płatności',
+    'adres panelu i sklepu na subdomenie',
+    'checklista gotowości po wejściu w szczegóły',
+  ]
+  const setupCards = [
+    { label: 'Panel platformy', value: 'app.dostawio.pl', icon: Globe2 },
+    { label: 'Sklep klienta', value: `${previewSlug}.dostawio.pl`, icon: Store },
+    { label: 'Start operacyjny', value: 'launch pack po utworzeniu', icon: Rocket },
+  ]
 
   function handleNameChange(e: React.ChangeEvent<HTMLInputElement>) {
     setName(e.target.value)
@@ -67,6 +78,16 @@ export default function NewTenantPage() {
         title="Nowa hurtownia"
         description="Utwórz konto hurtowni, administratora oraz gotowy sklep klienta na subdomenie Dostawio."
       />
+
+      <div className="mb-6 grid gap-3 md:grid-cols-3">
+        {setupCards.map(({ label, value, icon: Icon }) => (
+          <div key={label} className="premium-card p-4">
+            <Icon className="mb-4 h-5 w-5 text-slate-500" />
+            <div className="text-xs font-black uppercase tracking-[0.16em] text-slate-400">{label}</div>
+            <div className="mt-2 break-all font-mono text-sm font-black text-slate-950">{value}</div>
+          </div>
+        ))}
+      </div>
 
       <form action={handleSubmit} className="grid gap-6 lg:grid-cols-[1fr_0.72fr]">
         <div className="space-y-6">
@@ -171,6 +192,14 @@ export default function NewTenantPage() {
               Szczegóły hurtowni pokażą checklistę: dane firmy, płatności, dostawy, produkty, klienta,
               cenniki, integrację i pierwsze zamówienie testowe.
             </p>
+            <div className="mt-4 space-y-2">
+              {launchChecklist.map(item => (
+                <div key={item} className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                  {item}
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="premium-card p-5">
@@ -179,6 +208,14 @@ export default function NewTenantPage() {
             <p className="mt-3 text-sm leading-6 text-slate-500">
               Ty widzisz wszystkie hurtownie jako superadmin. Hurtownia widzi tylko swoje dane.
               Klient trafia do sklepu przypisanego do swojej hurtowni.
+            </p>
+          </div>
+
+          <div className="rounded-lg border border-sky-200 bg-sky-50 p-5">
+            <BadgeCheck className="mb-4 h-5 w-5 text-sky-700" />
+            <h2 className="text-sm font-black uppercase tracking-[0.16em] text-sky-900">Standard Dostawio</h2>
+            <p className="mt-2 text-sm leading-6 text-sky-800">
+              Po zapisie przejdziesz prosto do szczegółów hurtowni, gdzie widać wynik gotowości i następny krok.
             </p>
           </div>
 
