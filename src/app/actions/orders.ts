@@ -29,11 +29,10 @@ export async function updateOrderStatus(tenantSlug: string, orderId: string, sta
 
   if (error) return { error: error.message }
 
-  // Send status change email to customer (fire-and-forget)
-  if (order && process.env.RESEND_API_KEY) {
+  if (order) {
     const customer = order.customers as unknown as { company_name: string; email: string | null } | null
     if (customer?.email) {
-      sendOrderStatusEmail({
+      await sendOrderStatusEmail({
         customerEmail: customer.email,
         customerName: customer.company_name,
         orderNumber: order.order_number,
@@ -42,7 +41,9 @@ export async function updateOrderStatus(tenantSlug: string, orderId: string, sta
         totalGross: order.total_gross,
         orderUrl: getTenantShopUrl(tenantSlug, `zamowienia/${orderId}`),
         note: order.internal_notes ?? undefined,
-      }).catch(() => {})
+      }).catch(error => {
+        console.error('[email:order_status] Failed to send order status email', error)
+      })
     }
   }
 
