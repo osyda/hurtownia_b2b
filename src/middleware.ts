@@ -1,6 +1,6 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
-import { getTenantSlugFromHost } from '@/lib/shop-routing'
+import { getTenantSlugFromHost, isPlatformMarketingHost } from '@/lib/shop-routing'
 
 function copySupabaseCookies(from: NextResponse, to: NextResponse) {
   from.cookies.getAll().forEach(cookie => {
@@ -45,13 +45,15 @@ export async function middleware(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
 
   const pathname = request.nextUrl.pathname
-  const tenantSlug = getTenantSlugFromHost(request.headers.get('host'))
+  const host = request.headers.get('host')
+  const tenantSlug = getTenantSlugFromHost(host)
+  const isMarketingLanding = isPlatformMarketingHost(host) && pathname === '/'
 
   // Public routes that don't require auth
   const publicRoutes = ['/login', '/reset-password', '/invite']
   const isPublicRoute = publicRoutes.some(r => pathname.startsWith(r))
 
-  if (!user && !isPublicRoute) {
+  if (!user && !isPublicRoute && !isMarketingLanding) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
