@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { ShoppingCart, Package, ClipboardList, LogOut, User } from 'lucide-react'
+import { ClipboardList, LogOut, Package, ShoppingCart, User } from 'lucide-react'
 import { useCart } from '@/lib/cart-store'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
@@ -20,6 +20,7 @@ export function ShopHeader({ tenantSlug, tenantName, brandColor, logoUrl, custom
   const pathname = usePathname()
   const router = useRouter()
   const { itemCount, setTenant } = useCart()
+  const count = itemCount()
 
   useEffect(() => {
     setTenant(tenantSlug)
@@ -33,32 +34,33 @@ export function ShopHeader({ tenantSlug, tenantName, brandColor, logoUrl, custom
 
   const base = `/sklep/${tenantSlug}`
   const navItems = [
-    { href: base, label: 'Strona główna', icon: Package, exact: true },
+    { href: base, label: 'Start', icon: Package, exact: true },
     { href: `${base}/katalog`, label: 'Produkty', icon: Package },
-    { href: `${base}/zamowienia`, label: 'Moje zamówienia', icon: ClipboardList },
+    { href: `${base}/zamowienia`, label: 'Zamowienia', icon: ClipboardList },
   ]
 
   return (
     <header className="premium-topbar sticky top-0 z-40">
-      <div className="max-w-6xl mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo / Nazwa */}
-          <Link href={base} className="flex items-center gap-3">
+      <div className="mx-auto max-w-6xl px-4">
+        <div className="flex h-16 items-center justify-between gap-4">
+          <Link href={base} className="flex min-w-0 items-center gap-3">
             {logoUrl ? (
-              <img src={logoUrl} alt={tenantName} className="h-8 w-auto object-contain" />
+              <img src={logoUrl} alt={tenantName} className="h-9 w-auto max-w-[140px] object-contain" />
             ) : (
               <div
-                className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg text-sm font-bold text-white shadow-sm"
+                className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg text-sm font-black text-white shadow-lg shadow-slate-900/10"
                 style={{ backgroundColor: brandColor }}
               >
                 {tenantName.charAt(0).toUpperCase()}
               </div>
             )}
-            <span className="hidden font-bold tracking-tight text-slate-950 sm:block">{tenantName}</span>
+            <div className="hidden min-w-0 sm:block">
+              <div className="truncate text-sm font-black tracking-tight text-slate-950">{tenantName}</div>
+              <div className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">B2B Store</div>
+            </div>
           </Link>
 
-          {/* Nawigacja */}
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden items-center rounded-lg border border-slate-200/80 bg-white p-1 shadow-sm md:flex">
             {navItems.map(item => {
               const active = item.exact ? pathname === item.href : pathname.startsWith(item.href)
               return (
@@ -66,48 +68,52 @@ export function ShopHeader({ tenantSlug, tenantName, brandColor, logoUrl, custom
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    'rounded-lg px-3 py-2 text-sm font-semibold transition-all',
+                    'flex items-center gap-2 rounded-md px-3 py-2 text-sm font-bold transition-all',
                     active ? 'text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950'
                   )}
                   style={active ? { backgroundColor: brandColor } : {}}
                 >
+                  <item.icon className="h-4 w-4" />
                   {item.label}
                 </Link>
               )
             })}
           </nav>
 
-          {/* Prawa strona */}
-          <div className="flex items-center gap-3">
-            {/* Koszyk */}
+          <div className="flex items-center gap-2">
             <Link
               href={`${base}/koszyk`}
-              className="relative flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:opacity-90"
-              style={{ backgroundColor: brandColor }}
+              className="relative flex items-center gap-2 rounded-lg bg-slate-950 px-3 py-2 text-sm font-black text-white shadow-lg shadow-slate-900/10 transition-all hover:-translate-y-0.5 hover:bg-slate-800"
             >
               <ShoppingCart className="h-4 w-4" />
               <span className="hidden sm:inline">Koszyk</span>
-              {itemCount() > 0 && (
-                <span className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white ring-2 ring-white">
-                  {itemCount()}
+              {count > 0 && (
+                <span
+                  className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-xs font-black text-white ring-2 ring-white"
+                  style={{ backgroundColor: brandColor }}
+                >
+                  {count}
                 </span>
               )}
             </Link>
 
-            {/* Użytkownik */}
-            <div className="flex items-center gap-1 text-sm text-slate-500">
-              <User className="h-4 w-4" />
-              <span className="hidden sm:block max-w-[140px] truncate">{customerName}</span>
+            <div className="hidden items-center gap-2 rounded-lg border border-slate-200/80 bg-white px-3 py-2 text-sm font-semibold text-slate-600 lg:flex">
+              <User className="h-4 w-4 text-slate-400" />
+              <span className="max-w-[150px] truncate">{customerName}</span>
             </div>
 
-            <button onClick={handleLogout} className="rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700">
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="rounded-lg border border-slate-200/80 bg-white p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+              aria-label="Wyloguj"
+            >
               <LogOut className="h-4 w-4" />
             </button>
           </div>
         </div>
 
-        {/* Mobile nav */}
-        <nav className="flex md:hidden gap-1 pb-2 overflow-x-auto">
+        <nav className="flex gap-2 overflow-x-auto pb-3 md:hidden">
           {navItems.map(item => {
             const active = item.exact ? pathname === item.href : pathname.startsWith(item.href)
             return (
@@ -115,11 +121,12 @@ export function ShopHeader({ tenantSlug, tenantName, brandColor, logoUrl, custom
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-semibold transition-all',
-                  active ? 'text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950'
+                  'flex items-center gap-2 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-bold transition-all',
+                  active ? 'text-white shadow-sm' : 'border border-slate-200/80 bg-white text-slate-600'
                 )}
                 style={active ? { backgroundColor: brandColor } : {}}
               >
+                <item.icon className="h-4 w-4" />
                 {item.label}
               </Link>
             )

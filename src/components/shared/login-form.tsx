@@ -8,9 +8,9 @@ export function LoginForm() {
   const [state, formAction, pending] = useActionState(loginAction, {})
 
   return (
-    <form action={formAction} className="space-y-4">
+    <form action={formAction} className="space-y-5">
       <div>
-        <label className="mb-1 block text-sm font-semibold text-slate-700">
+        <label className="mb-2 block text-sm font-bold text-slate-800">
           E-mail
         </label>
         <input
@@ -19,13 +19,13 @@ export function LoginForm() {
           autoComplete="email"
           required
           className="premium-input w-full"
-          placeholder="twoj@email.pl"
+          placeholder="kontakt@firma.pl"
         />
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-semibold text-slate-700">
-          Hasło
+        <label className="mb-2 block text-sm font-bold text-slate-800">
+          Haslo
         </label>
         <input
           name="password"
@@ -33,7 +33,7 @@ export function LoginForm() {
           autoComplete="current-password"
           required
           className="premium-input w-full"
-          placeholder="••••••••"
+          placeholder="********"
         />
       </div>
 
@@ -46,15 +46,15 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={pending}
-        className="flex w-full items-center justify-center gap-2 rounded-lg bg-slate-950 py-2.5 font-semibold text-white shadow-sm transition-all hover:bg-slate-800 hover:shadow-md disabled:opacity-50"
+        className="flex w-full items-center justify-center gap-2 rounded-lg bg-slate-950 py-3 font-bold text-white shadow-xl shadow-slate-900/15 transition-all hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-2xl disabled:translate-y-0 disabled:opacity-50"
       >
         {pending && <Loader2 className="h-4 w-4 animate-spin" />}
-        Zaloguj się
+        Zaloguj sie
       </button>
 
       <div className="text-center">
-        <a href="/reset-password" className="text-sm font-medium text-slate-600 hover:text-slate-950">
-          Zapomniałem hasła
+        <a href="/reset-password" className="text-sm font-semibold text-slate-600 hover:text-slate-950">
+          Zapomnialem hasla
         </a>
       </div>
     </form>

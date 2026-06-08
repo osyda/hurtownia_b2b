@@ -51,16 +51,16 @@ export function TenantSidebar({ tenantSlug, tenantName, brandColor, role }: Prop
 
   const SidebarContent = () => (
     <aside className="premium-sidebar flex h-full w-64 flex-col">
-      <div className="flex items-center justify-between border-b border-slate-200/80 p-5" style={{ borderBottomColor: brandColor + '30' }}>
+      <div className="flex items-center justify-between border-b border-white/10 p-5">
         <div className="flex items-center gap-3">
           <div
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-sm font-bold text-white shadow-sm"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-sm font-black text-white shadow-lg shadow-sky-500/10 ring-1 ring-white/20"
             style={{ backgroundColor: brandColor }}
           >
             {tenantName.charAt(0).toUpperCase()}
           </div>
           <div>
-            <div className="text-sm font-bold leading-tight text-slate-950">{tenantName}</div>
+            <div className="max-w-[150px] truncate text-sm font-bold leading-tight text-white">{tenantName}</div>
             <div className="mt-0.5 text-xs font-medium uppercase tracking-wide text-slate-400">
               {role === 'tenant_admin' ? 'Administrator' : 'Pracownik'}
             </div>
@@ -68,9 +68,9 @@ export function TenantSidebar({ tenantSlug, tenantName, brandColor, role }: Prop
         </div>
         <button
           onClick={() => setOpen(false)}
-          className="rounded-lg p-1 text-slate-500 transition hover:bg-slate-100 md:hidden"
+          className="rounded-lg p-1 text-slate-400 transition hover:bg-white/10 md:hidden"
         >
-          <X className="h-5 w-5 text-gray-500" />
+          <X className="h-5 w-5" />
         </button>
       </div>
 
@@ -83,8 +83,8 @@ export function TenantSidebar({ tenantSlug, tenantName, brandColor, role }: Prop
             className={cn(
               'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-all',
               pathname.startsWith(item.href)
-                ? 'text-white shadow-sm'
-                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950'
+                ? 'text-white shadow-lg shadow-sky-500/10 ring-1 ring-white/15'
+                : 'text-slate-300 hover:bg-white/10 hover:text-white'
             )}
             style={pathname.startsWith(item.href) ? { backgroundColor: brandColor } : {}}
           >
@@ -94,10 +94,10 @@ export function TenantSidebar({ tenantSlug, tenantName, brandColor, role }: Prop
         ))}
       </nav>
 
-      <div className="border-t border-slate-200/80 p-4">
+      <div className="border-t border-white/10 p-4">
         <button
           onClick={handleLogout}
-          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-950"
+          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-slate-300 transition hover:bg-white/10 hover:text-white"
         >
           <LogOut className="h-4 w-4" />
           Wyloguj

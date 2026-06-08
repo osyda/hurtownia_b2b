@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
-import { Building2, ShoppingCart, TrendingUp, Users } from 'lucide-react'
+import { formatCurrency, formatDateTime, ORDER_STATUS_COLORS, ORDER_STATUS_LABELS } from '@/lib/utils'
+import { Building2, ChevronRight, ShoppingCart, Sparkles, TrendingUp, Users } from 'lucide-react'
 
 async function getStats(supabase: Awaited<ReturnType<typeof createClient>>) {
   const [tenants, customers, orders] = await Promise.all([
@@ -30,70 +31,94 @@ export default async function AdminDashboardPage() {
     .limit(10)
 
   const cards = [
-    { label: 'Aktywne hurtownie', value: stats.activeTenants, icon: Building2, color: 'text-sky-700 bg-sky-50' },
-    { label: 'Aktywni klienci', value: stats.activeCustomers, icon: Users, color: 'text-emerald-700 bg-emerald-50' },
-    { label: 'Zamowienia (30 dni)', value: stats.ordersLast30Days, icon: ShoppingCart, color: 'text-amber-700 bg-amber-50' },
+    { label: 'Aktywne hurtownie', value: stats.activeTenants, detail: 'dzialajace konta', icon: Building2, accent: 'from-sky-500 to-cyan-400' },
+    { label: 'Aktywni klienci', value: stats.activeCustomers, detail: 'z dostepem B2B', icon: Users, accent: 'from-emerald-500 to-teal-400' },
+    { label: 'Zamowienia 30 dni', value: stats.ordersLast30Days, detail: 'ostatni miesiac', icon: ShoppingCart, accent: 'from-amber-500 to-orange-400' },
     {
-      label: 'Obrot (30 dni)',
-      value: new Intl.NumberFormat('pl-PL', { style: 'currency', currency: 'PLN' }).format(stats.revenueLast30Days),
+      label: 'Obrot 30 dni',
+      value: formatCurrency(stats.revenueLast30Days),
+      detail: 'wartosc brutto',
       icon: TrendingUp,
-      color: 'text-slate-700 bg-slate-100',
+      accent: 'from-slate-700 to-slate-500',
     },
   ]
 
   return (
-    <div className="p-4 md:p-8">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold tracking-tight text-slate-950">Dashboard</h1>
-        <p className="mt-1 text-sm text-slate-500">Centralny pulpit kontroli hurtowni i zamowien B2B.</p>
-      </div>
-
-      <div className="mb-6 grid grid-cols-2 gap-3 xl:grid-cols-4">
-        {cards.map(card => (
-          <div key={card.label} className="premium-card p-5">
-            <div className="mb-3 flex items-center justify-between">
-              <span className="text-sm font-medium text-slate-500">{card.label}</span>
-              <div className={cn('rounded-lg p-2', card.color)}>
-                <card.icon className="h-4 w-4" />
-              </div>
+    <div className="space-y-7 p-4 md:p-8">
+      <section className="premium-hero p-6 md:p-8">
+        <div className="relative z-10 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-2xl">
+            <div className="premium-pill mb-5">
+              <Sparkles className="mr-2 h-3.5 w-3.5" />
+              Super admin control room
             </div>
-            <div className="text-2xl font-bold tracking-tight text-slate-950">{card.value}</div>
+            <h1 className="text-3xl font-black tracking-tight md:text-5xl">
+              Centrum dowodzenia hurtowniami B2B.
+            </h1>
+            <p className="mt-4 max-w-xl text-sm leading-6 text-slate-300 md:text-base">
+              Szybki podglad aktywnych hurtowni, klientow, zamowien i obrotu z ostatnich 30 dni.
+            </p>
+          </div>
+          <div className="rounded-lg border border-white/10 bg-white/10 p-4 text-right backdrop-blur">
+            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Obrot 30 dni</div>
+            <div className="mt-2 text-3xl font-black">{formatCurrency(stats.revenueLast30Days)}</div>
+          </div>
+        </div>
+      </section>
+
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {cards.map(card => (
+          <div key={card.label} className="premium-stat-card overflow-hidden">
+            <div className="mb-5 flex items-center justify-between">
+              <div className={`rounded-lg bg-gradient-to-br ${card.accent} p-2.5 text-white shadow-lg shadow-slate-900/10`}>
+                <card.icon className="h-5 w-5" />
+              </div>
+              <ChevronRight className="h-4 w-4 text-slate-300" />
+            </div>
+            <div className="text-sm font-bold uppercase tracking-[0.14em] text-slate-400">{card.label}</div>
+            <div className="mt-2 text-3xl font-black tracking-tight text-slate-950">{card.value}</div>
+            <div className="mt-2 text-sm font-medium text-slate-500">{card.detail}</div>
           </div>
         ))}
       </div>
 
-      <div className="premium-card overflow-hidden">
-        <div className="border-b border-slate-200/80 p-5">
-          <h2 className="font-semibold text-slate-950">Ostatnie zamowienia</h2>
+      <section className="premium-card overflow-hidden">
+        <div className="flex items-center justify-between border-b border-slate-200/80 bg-white px-5 py-4">
+          <div>
+            <h2 className="text-lg font-black tracking-tight text-slate-950">Ostatnie zamowienia</h2>
+            <p className="text-sm text-slate-500">Najnowsza aktywnosc ze wszystkich hurtowni.</p>
+          </div>
         </div>
         <div className="divide-y divide-slate-100">
           {recentOrders?.map(order => {
             const customer = (order.customers as unknown as { company_name: string } | null)
             const tenant = (order.tenants as unknown as { name: string } | null)
             return (
-              <div key={order.id} className="flex items-center justify-between p-4 transition hover:bg-slate-50">
+              <div key={order.id} className="premium-table-row grid gap-3 p-4 md:grid-cols-[1.2fr_1fr_auto] md:items-center">
                 <div className="min-w-0">
-                  <span className="font-mono text-sm font-semibold text-slate-950">{order.order_number}</span>
-                  <span className="mx-2 text-slate-300">·</span>
-                  <span className="text-sm text-slate-600">{customer?.company_name}</span>
-                  <span className="mx-2 text-slate-300">·</span>
-                  <span className="text-xs text-slate-400">{tenant?.name}</span>
+                  <div className="font-mono text-sm font-black text-slate-950">{order.order_number}</div>
+                  <div className="mt-1 truncate text-sm text-slate-500">{customer?.company_name ?? 'Klient'}</div>
                 </div>
-                <div className="text-sm font-semibold text-slate-950">
-                  {new Intl.NumberFormat('pl-PL', { style: 'currency', currency: 'PLN' }).format(order.total_gross)}
+                <div className="min-w-0">
+                  <div className="truncate text-sm font-semibold text-slate-700">{tenant?.name ?? 'Hurtownia'}</div>
+                  <div className="mt-1 text-xs text-slate-400">{formatDateTime(order.created_at)}</div>
+                </div>
+                <div className="flex items-center justify-between gap-4 md:justify-end">
+                  <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${ORDER_STATUS_COLORS[order.status]}`}>
+                    {ORDER_STATUS_LABELS[order.status]}
+                  </span>
+                  <div className="text-right text-sm font-black text-slate-950">
+                    {formatCurrency(order.total_gross)}
+                  </div>
                 </div>
               </div>
             )
           })}
           {!recentOrders?.length && (
-            <div className="p-8 text-center text-sm text-slate-400">Brak zamowien</div>
+            <div className="p-10 text-center text-sm text-slate-400">Brak zamowien</div>
           )}
         </div>
-      </div>
+      </section>
     </div>
   )
-}
-
-function cn(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
 }
