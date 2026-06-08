@@ -36,7 +36,7 @@ export function ShopHeader({ tenantSlug, tenantName, brandColor, logoUrl, custom
   const navItems = [
     { href: base, label: 'Start', icon: Package, exact: true },
     { href: `${base}/katalog`, label: 'Produkty', icon: Package },
-    { href: `${base}/zamowienia`, label: 'Zamowienia', icon: ClipboardList },
+    { href: `${base}/zamowienia`, label: 'Zamówienia', icon: ClipboardList },
   ]
 
   return (

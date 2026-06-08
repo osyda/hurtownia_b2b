@@ -13,6 +13,7 @@ import {
   Tags,
   Truck,
   Settings,
+  PlugZap,
   LogOut,
   Menu,
   X,
@@ -40,6 +41,7 @@ export function TenantSidebar({ tenantSlug, tenantName, brandColor, role }: Prop
     { href: `${base}/customers`, label: 'Klienci', icon: Users },
     { href: `${base}/prices`, label: 'Cenniki', icon: Tags },
     { href: `${base}/import`, label: 'Import', icon: Truck },
+    { href: `${base}/integrations`, label: 'Integracje', icon: PlugZap },
     { href: `${base}/settings`, label: 'Ustawienia', icon: Settings },
   ]
 

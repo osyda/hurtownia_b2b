@@ -58,7 +58,7 @@ export default async function ShopDashboardPage({ params }: { params: Promise<{ 
               Witaj, {customer.company_name}
             </h1>
             <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-300 md:text-base">
-              {tenantInfo?.customer_message || 'Szybko zamow produkty, sprawdz status i powtorz ostatnie zakupy.'}
+              {tenantInfo?.customer_message || 'Szybko zamów produkty, sprawdź status i powtórz ostatnie zakupy.'}
             </p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <Link
@@ -67,20 +67,20 @@ export default async function ShopDashboardPage({ params }: { params: Promise<{ 
                 style={{ backgroundColor: brandColor }}
               >
                 <ShoppingCart className="h-4 w-4" />
-                Zloz zamowienie
+                Złóż zamówienie
               </Link>
               <Link
                 href={`${base}/zamowienia`}
                 className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/15 bg-white/10 px-5 py-3 text-sm font-bold text-white backdrop-blur transition hover:bg-white/15"
               >
-                Historia zamowien
+                Historia zamówień
                 <ChevronRight className="h-4 w-4" />
               </Link>
             </div>
           </div>
 
           <div className="rounded-lg border border-white/10 bg-white/10 p-5 backdrop-blur">
-            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Ostatnie zamowienia</div>
+            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Ostatnie zamówienia</div>
             <div className="mt-2 text-4xl font-black">{recentOrders?.length ?? 0}</div>
             <div className="mt-2 text-sm text-slate-300">{formatCurrency(orderTotal)} w ostatnich pozycjach</div>
           </div>
@@ -91,30 +91,30 @@ export default async function ShopDashboardPage({ params }: { params: Promise<{ 
         <ActionLink
           href={`${base}/katalog`}
           icon={<PackageSearch className="h-5 w-5" />}
-          title="Przegladaj katalog"
-          description="Produkty, ceny i dostepnosc"
+          title="Przeglądaj katalog"
+          description="Produkty, ceny i dostępność"
           color="from-sky-500 to-cyan-400"
         />
         <ActionLink
           href={`${base}/zamowienia`}
           icon={<ClipboardList className="h-5 w-5" />}
-          title="Historia zamowien"
-          description="Statusy i szczegoly dostaw"
+          title="Historia zamówień"
+          description="Statusy i szczegóły dostaw"
           color="from-emerald-500 to-teal-400"
         />
         {lastOrder ? (
           <ActionLink
             href={`${base}/zamowienia/${lastOrder.id}?reorder=1`}
             icon={<RotateCcw className="h-5 w-5" />}
-            title="Zamow ponownie"
-            description="Powtorz ostatni koszyk"
+            title="Zamów ponownie"
+            description="Powtórz ostatni koszyk"
             color="from-amber-500 to-orange-400"
           />
         ) : (
           <ActionLink
             href={`${base}/katalog`}
             icon={<ShoppingCart className="h-5 w-5" />}
-            title="Pierwsze zamowienie"
+            title="Pierwsze zamówienie"
             description="Rozpocznij od katalogu"
             color="from-slate-700 to-slate-500"
           />
@@ -124,8 +124,8 @@ export default async function ShopDashboardPage({ params }: { params: Promise<{ 
       <section className="premium-card overflow-hidden">
         <div className="flex items-center justify-between border-b border-slate-200/80 bg-white px-5 py-4">
           <div>
-            <h2 className="text-lg font-black tracking-tight text-slate-950">Ostatnie zamowienia</h2>
-            <p className="text-sm text-slate-500">Szybki podglad statusow i wartosci.</p>
+            <h2 className="text-lg font-black tracking-tight text-slate-950">Ostatnie zamówienia</h2>
+            <p className="text-sm text-slate-500">Szybki podgląd statusów i wartości.</p>
           </div>
           <Link href={`${base}/zamowienia`} className="rounded-lg bg-slate-950 px-3 py-2 text-sm font-bold text-white transition hover:bg-slate-800">
             Wszystkie
@@ -148,7 +148,7 @@ export default async function ShopDashboardPage({ params }: { params: Promise<{ 
               <span className="text-sm font-black text-slate-950 md:text-right">{formatCurrency(order.total_gross)}</span>
             </Link>
           )) : (
-            <div className="p-10 text-center text-sm text-slate-400">Brak zamowien</div>
+            <div className="p-10 text-center text-sm text-slate-400">Brak zamówień</div>
           )}
         </div>
       </section>

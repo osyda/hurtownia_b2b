@@ -7,6 +7,7 @@ export type PaymentMethodType = 'cash_on_delivery' | 'transfer_7' | 'transfer_14
 export type StockStatus = 'available' | 'unavailable' | 'limited'
 export type ImportType = 'products' | 'customers' | 'prices' | 'stock'
 export type VisibilityRuleType = 'hidden_from' | 'visible_only_to'
+export type IntegrationProvider = 'generic_rest' | 'baselinker' | 'insert_subiekt' | 'comarch_optima' | 'comarch_xl' | 'enova365' | 'symfonia' | 'wapro' | 'custom'
 
 export interface Tenant {
   id: string
@@ -163,6 +164,56 @@ export interface Order {
   total_gross: number
   fulfilled_by: string | null
   fulfilled_at: string | null
+  integration_id?: string | null
+  external_order_id?: string | null
+  external_order_number?: string | null
+  external_order_status?: string | null
+  exported_at?: string | null
+  external_payload?: Record<string, unknown>
+  created_at: string
+  updated_at: string
+}
+
+export interface TenantIntegration {
+  id: string
+  tenant_id: string
+  provider: IntegrationProvider
+  name: string
+  is_active: boolean
+  connection_status: 'not_configured' | 'ready' | 'error' | 'paused'
+  sync_mode: 'api_pull' | 'webhook_push' | 'middleware' | 'manual'
+  config: Record<string, unknown>
+  api_token_hash: string | null
+  webhook_secret_hash: string | null
+  last_order_export_at: string | null
+  last_invoice_import_at: string | null
+  last_error: string | null
+  created_by: string | null
+  updated_by: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface OrderInvoice {
+  id: string
+  tenant_id: string
+  order_id: string
+  integration_id: string | null
+  external_invoice_id: string | null
+  invoice_number: string
+  invoice_type: 'invoice' | 'correction' | 'proforma' | 'receipt'
+  invoice_date: string | null
+  sale_date: string | null
+  due_date: string | null
+  payment_method_label: string | null
+  payment_status: 'unknown' | 'unpaid' | 'partial' | 'paid' | 'overdue'
+  currency: string
+  total_net: number | null
+  total_vat: number | null
+  total_gross: number | null
+  pdf_url: string | null
+  pdf_storage_path: string | null
+  raw_payload: Record<string, unknown>
   created_at: string
   updated_at: string
 }

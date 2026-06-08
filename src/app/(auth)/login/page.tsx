@@ -4,8 +4,8 @@ import { PackageCheck, ShieldCheck, Sparkles, Truck } from 'lucide-react'
 export default function LoginPage() {
   const highlights = [
     { icon: PackageCheck, label: 'Katalog', value: 'produkty i ceny' },
-    { icon: Truck, label: 'Zamowienia', value: 'statusy i dostawy' },
-    { icon: ShieldCheck, label: 'Bezpieczenstwo', value: 'role i RLS' },
+    { icon: Truck, label: 'Zamówienia', value: 'statusy i dostawy' },
+    { icon: ShieldCheck, label: 'Bezpieczeństwo', value: 'role i RLS' },
   ]
 
   return (
@@ -26,11 +26,11 @@ export default function LoginPage() {
 
           <div className="premium-pill mb-5">Panel zakupowy dla hurtowni</div>
           <h1 className="max-w-2xl text-5xl font-black leading-[1.02] tracking-tight">
-            Zamowienia B2B, cenniki i klienci w jednym eleganckim systemie.
+            Zamówienia B2B, cenniki i klienci w jednym eleganckim systemie.
           </h1>
           <p className="mt-5 max-w-xl text-base leading-7 text-slate-300">
-            Portal dla hurtowni, ktory wyglada profesjonalnie od pierwszego logowania i daje szybka
-            kontrole nad sprzedaza.
+            Portal dla hurtowni, który wygląda profesjonalnie od pierwszego logowania i daje szybką
+            kontrolę nad sprzedażą.
           </p>
         </div>
 
@@ -54,7 +54,7 @@ export default function LoginPage() {
               B2B
             </div>
             <h1 className="text-3xl font-black tracking-tight text-slate-950">B2B Connect</h1>
-            <p className="mt-2 text-sm text-slate-500">Zaloguj sie do portalu hurtowni.</p>
+            <p className="mt-2 text-sm text-slate-500">Zaloguj się do portalu hurtowni.</p>
           </div>
 
           <div className="premium-card overflow-hidden">
@@ -64,7 +64,7 @@ export default function LoginPage() {
               </div>
               <h2 className="text-2xl font-black tracking-tight">Witaj ponownie</h2>
               <p className="mt-2 text-sm leading-6 text-slate-300">
-                Zaloguj sie, aby zarzadzac zamowieniami, katalogiem i klientami.
+                Zaloguj się, aby zarządzać zamówieniami, katalogiem i klientami.
               </p>
             </div>
             <div className="p-8">

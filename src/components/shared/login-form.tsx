@@ -49,7 +49,7 @@ export function LoginForm() {
         className="flex w-full items-center justify-center gap-2 rounded-lg bg-slate-950 py-3 font-bold text-white shadow-xl shadow-slate-900/15 transition-all hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-2xl disabled:translate-y-0 disabled:opacity-50"
       >
         {pending && <Loader2 className="h-4 w-4 animate-spin" />}
-        Zaloguj sie
+        Zaloguj się
       </button>
 
       <div className="text-center">

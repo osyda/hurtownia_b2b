@@ -31,13 +31,13 @@ export default async function AdminDashboardPage() {
     .limit(10)
 
   const cards = [
-    { label: 'Aktywne hurtownie', value: stats.activeTenants, detail: 'dzialajace konta', icon: Building2, accent: 'from-sky-500 to-cyan-400' },
-    { label: 'Aktywni klienci', value: stats.activeCustomers, detail: 'z dostepem B2B', icon: Users, accent: 'from-emerald-500 to-teal-400' },
-    { label: 'Zamowienia 30 dni', value: stats.ordersLast30Days, detail: 'ostatni miesiac', icon: ShoppingCart, accent: 'from-amber-500 to-orange-400' },
+    { label: 'Aktywne hurtownie', value: stats.activeTenants, detail: 'działające konta', icon: Building2, accent: 'from-sky-500 to-cyan-400' },
+    { label: 'Aktywni klienci', value: stats.activeCustomers, detail: 'z dostępem B2B', icon: Users, accent: 'from-emerald-500 to-teal-400' },
+    { label: 'Zamówienia 30 dni', value: stats.ordersLast30Days, detail: 'ostatni miesiąc', icon: ShoppingCart, accent: 'from-amber-500 to-orange-400' },
     {
-      label: 'Obrot 30 dni',
+      label: 'Obrót 30 dni',
       value: formatCurrency(stats.revenueLast30Days),
-      detail: 'wartosc brutto',
+      detail: 'wartość brutto',
       icon: TrendingUp,
       accent: 'from-slate-700 to-slate-500',
     },
@@ -56,11 +56,11 @@ export default async function AdminDashboardPage() {
               Centrum dowodzenia hurtowniami B2B.
             </h1>
             <p className="mt-4 max-w-xl text-sm leading-6 text-slate-300 md:text-base">
-              Szybki podglad aktywnych hurtowni, klientow, zamowien i obrotu z ostatnich 30 dni.
+              Szybki podgląd aktywnych hurtowni, klientów, zamówień i obrotu z ostatnich 30 dni.
             </p>
           </div>
           <div className="rounded-lg border border-white/10 bg-white/10 p-4 text-right backdrop-blur">
-            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Obrot 30 dni</div>
+            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Obrót 30 dni</div>
             <div className="mt-2 text-3xl font-black">{formatCurrency(stats.revenueLast30Days)}</div>
           </div>
         </div>
@@ -85,8 +85,8 @@ export default async function AdminDashboardPage() {
       <section className="premium-card overflow-hidden">
         <div className="flex items-center justify-between border-b border-slate-200/80 bg-white px-5 py-4">
           <div>
-            <h2 className="text-lg font-black tracking-tight text-slate-950">Ostatnie zamowienia</h2>
-            <p className="text-sm text-slate-500">Najnowsza aktywnosc ze wszystkich hurtowni.</p>
+            <h2 className="text-lg font-black tracking-tight text-slate-950">Ostatnie zamówienia</h2>
+            <p className="text-sm text-slate-500">Najnowsza aktywność ze wszystkich hurtowni.</p>
           </div>
         </div>
         <div className="divide-y divide-slate-100">
@@ -115,7 +115,7 @@ export default async function AdminDashboardPage() {
             )
           })}
           {!recentOrders?.length && (
-            <div className="p-10 text-center text-sm text-slate-400">Brak zamowien</div>
+            <div className="p-10 text-center text-sm text-slate-400">Brak zamówień</div>
           )}
         </div>
       </section>

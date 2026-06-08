@@ -47,9 +47,9 @@ export default async function TenantDashboardPage({
   const todayRevenue = todayOrders.data?.reduce((sum, order) => sum + (order.total_gross || 0), 0) ?? 0
 
   const cards = [
-    { label: 'Zamowienia dzis', value: todayOrders.count ?? 0, sub: formatCurrency(todayRevenue), icon: ShoppingCart, accent: 'from-sky-500 to-cyan-400' },
-    { label: 'Nowe zamowienia', value: newOrders.count ?? 0, sub: 'do obslugi', icon: Clock, accent: 'from-amber-500 to-orange-400' },
-    { label: 'Aktywni klienci', value: totalCustomers.count ?? 0, sub: 'kupujacy B2B', icon: Users, accent: 'from-emerald-500 to-teal-400' },
+    { label: 'Zamówienia dziś', value: todayOrders.count ?? 0, sub: formatCurrency(todayRevenue), icon: ShoppingCart, accent: 'from-sky-500 to-cyan-400' },
+    { label: 'Nowe zamówienia', value: newOrders.count ?? 0, sub: 'do obsługi', icon: Clock, accent: 'from-amber-500 to-orange-400' },
+    { label: 'Aktywni klienci', value: totalCustomers.count ?? 0, sub: 'kupujący B2B', icon: Users, accent: 'from-emerald-500 to-teal-400' },
     { label: 'Aktywne produkty', value: totalProducts.count ?? 0, sub: 'w katalogu', icon: Package, accent: 'from-slate-700 to-slate-500' },
   ]
 
@@ -60,19 +60,19 @@ export default async function TenantDashboardPage({
           <div>
             <div className="premium-pill mb-5">
               <Sparkles className="mr-2 h-3.5 w-3.5" />
-              Dzisiejszy pulpit sprzedazy
+              Dzisiejszy pulpit sprzedaży
             </div>
             <h1 className="text-3xl font-black tracking-tight md:text-5xl">
-              Zamowienia, klienci i katalog pod pelna kontrola.
+              Zamówienia, klienci i katalog pod pełną kontrolą.
             </h1>
             <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-300 md:text-base">
-              Monitoruj kolejke zamowien, obrot dnia i aktywnosc klientow bez przeklikiwania sie przez raporty.
+              Monitoruj kolejkę zamówień, obrót dnia i aktywność klientów bez przeklikiwania się przez raporty.
             </p>
           </div>
           <div className="rounded-lg border border-white/10 bg-white/10 p-5 backdrop-blur">
-            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Sprzedaz dzis</div>
+            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Sprzedaż dziś</div>
             <div className="mt-2 text-4xl font-black">{formatCurrency(todayRevenue)}</div>
-            <div className="mt-2 text-sm text-slate-300">{todayOrders.count ?? 0} zamowien od polnocy</div>
+            <div className="mt-2 text-sm text-slate-300">{todayOrders.count ?? 0} zamówień od północy</div>
           </div>
         </div>
       </section>
@@ -97,8 +97,8 @@ export default async function TenantDashboardPage({
       <section className="premium-card overflow-hidden">
         <div className="flex items-center justify-between border-b border-slate-200/80 bg-white px-5 py-4">
           <div>
-            <h2 className="text-lg font-black tracking-tight text-slate-950">Ostatnie zamowienia</h2>
-            <p className="text-sm text-slate-500">Najnowsze zamowienia klientow i ich status.</p>
+            <h2 className="text-lg font-black tracking-tight text-slate-950">Ostatnie zamówienia</h2>
+            <p className="text-sm text-slate-500">Najnowsze zamówienia klientów i ich status.</p>
           </div>
           <Link href={`/${tenantSlug}/orders`} className="rounded-lg bg-slate-950 px-3 py-2 text-sm font-bold text-white transition hover:bg-slate-800">
             Wszystkie
@@ -128,7 +128,7 @@ export default async function TenantDashboardPage({
             )
           })}
           {!recentOrders.data?.length && (
-            <div className="p-10 text-center text-sm text-slate-400">Brak zamowien</div>
+            <div className="p-10 text-center text-sm text-slate-400">Brak zamówień</div>
           )}
         </div>
       </section>

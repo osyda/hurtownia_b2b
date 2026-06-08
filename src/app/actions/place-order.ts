@@ -62,19 +62,28 @@ export async function placeOrder(input: PlaceOrderInput) {
       .eq('customer_id', customer.id)
       .maybeSingle()
 
-    if (!address) return { error: 'Wybrany adres dostawy jest niedostepny' }
+    if (!address) return { error: 'Wybrany adres dostawy jest niedostępny' }
   }
 
-  if (paymentMethodId) {
-    const { data: paymentMethod } = await supabase
-      .from('payment_methods')
-      .select('id')
-      .eq('id', paymentMethodId)
-      .eq('tenant_id', tenant.id)
-      .eq('is_active', true)
-      .maybeSingle()
+  if (!paymentMethodId) {
+    return { error: 'Wybierz formę płatności' }
+  }
 
-    if (!paymentMethod) return { error: 'Wybrana metoda platnosci jest niedostepna' }
+  const { data: paymentAssignment } = await supabase
+    .from('customer_payment_methods')
+    .select('payment_methods!inner(id, tenant_id, is_active)')
+    .eq('customer_id', customer.id)
+    .eq('payment_method_id', paymentMethodId)
+    .maybeSingle()
+
+  const assignedPaymentMethod = paymentAssignment?.payment_methods as unknown as {
+    id: string
+    tenant_id: string
+    is_active: boolean
+  } | null
+
+  if (!assignedPaymentMethod || assignedPaymentMethod.tenant_id !== tenant.id || !assignedPaymentMethod.is_active) {
+    return { error: 'Wybrana metoda płatności jest niedostępna dla tego klienta' }
   }
 
   const productIds = Array.from(new Set(items.map(item => item.productId)))
@@ -93,7 +102,7 @@ export async function placeOrder(input: PlaceOrderInput) {
 
   if (productsError) return { error: productsError.message }
   if (!products || products.length !== productIds.length) {
-    return { error: 'Niektore produkty sa niedostepne albo zostaly ukryte' }
+    return { error: 'Niektóre produkty są niedostępne albo zostały ukryte' }
   }
 
   const priceMap: Record<string, number> = {}
@@ -147,16 +156,16 @@ export async function placeOrder(input: PlaceOrderInput) {
       const stockQuantity = product.stock_quantity === null ? null : Number(product.stock_quantity)
 
       if (!Number.isFinite(qty) || qty <= 0 || qty < minQty) {
-        throw new Error(`Niepoprawna ilosc dla produktu: ${product.name}`)
+        throw new Error(`Niepoprawna ilość dla produktu: ${product.name}`)
       }
 
       const multipleUnits = (qty - minQty) / multiple
       if (Math.abs(multipleUnits - Math.round(multipleUnits)) > 0.000001) {
-        throw new Error(`Ilosc produktu ${product.name} musi byc zgodna z wielokrotnoscia zamowienia`)
+        throw new Error(`Ilość produktu ${product.name} musi być zgodna z wielokrotnością zamówienia`)
       }
 
       if (product.stock_status === 'unavailable') {
-        throw new Error(`Produkt ${product.name} jest niedostepny`)
+        throw new Error(`Produkt ${product.name} jest niedostępny`)
       }
 
       if (stockQuantity !== null && qty > stockQuantity) {
@@ -182,7 +191,7 @@ export async function placeOrder(input: PlaceOrderInput) {
       }
     })
   } catch (error) {
-    return { error: error instanceof Error ? error.message : 'Nie udalo sie przeliczyc koszyka' }
+    return { error: error instanceof Error ? error.message : 'Nie udało się przeliczyć koszyka' }
   }
 
   subtotalNet = Number(subtotalNet.toFixed(2))
@@ -218,7 +227,7 @@ export async function placeOrder(input: PlaceOrderInput) {
         delivery_date: deliveryDate || null,
         delivery_address_id: deliveryAddressId || null,
         delivery_address: deliveryAddress,
-        payment_method_id: paymentMethodId || null,
+        payment_method_id: paymentMethodId,
         customer_notes: customerNotes || null,
         subtotal_net: subtotalNet,
         total_vat: totalVat,
@@ -237,7 +246,7 @@ export async function placeOrder(input: PlaceOrderInput) {
   }
 
   if (!order) {
-    return { error: lastOrderError ?? 'Nie udalo sie zapisac zamowienia' }
+    return { error: lastOrderError ?? 'Nie udało się zapisać zamówienia' }
   }
 
   const { error: itemsError } = await adminSupabase.from('order_items').insert(

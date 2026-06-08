@@ -10,7 +10,13 @@ export default async function CategoriesPage({ params }: { params: Promise<{ ten
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
-  const { data: profile } = await supabase.from('user_profiles').select('tenant_id').eq('id', user.id).single()
+
+  const { data: profile } = await supabase
+    .from('user_profiles')
+    .select('tenant_id')
+    .eq('id', user.id)
+    .single()
+
   if (!profile?.tenant_id) redirect('/login')
 
   const { data: categories } = await supabase.from('categories')
@@ -20,7 +26,7 @@ export default async function CategoriesPage({ params }: { params: Promise<{ ten
     .order('name')
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       <PageHeader
         title="Kategorie"
         description="Zarządzaj kategoriami produktów"
@@ -30,12 +36,12 @@ export default async function CategoriesPage({ params }: { params: Promise<{ ten
       <div className="premium-card overflow-hidden">
         {categories?.length ? (
           <table className="w-full">
-            <thead className="bg-gray-50 border-b">
+            <thead className="border-b bg-gray-50">
               <tr>
-                <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wide px-4 py-3">Nazwa</th>
-                <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wide px-4 py-3">Nadrzędna</th>
-                <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wide px-4 py-3">Kolejność</th>
-                <th className="text-left text-xs font-medium text-gray-500 uppercase tracking-wide px-4 py-3">Status</th>
+                <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-gray-500">Nazwa</th>
+                <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-gray-500">Nadrzędna</th>
+                <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-gray-500">Kolejność</th>
+                <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-gray-500">Status</th>
                 <th className="px-4 py-3"></th>
               </tr>
             </thead>
@@ -44,7 +50,7 @@ export default async function CategoriesPage({ params }: { params: Promise<{ ten
                 const parent = cat.parent as unknown as { name: string } | null
                 return (
                   <tr key={cat.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 font-medium text-sm text-gray-900">{cat.name}</td>
+                    <td className="px-4 py-3 text-sm font-bold text-gray-900">{cat.name}</td>
                     <td className="px-4 py-3 text-sm text-gray-500">{parent?.name || '—'}</td>
                     <td className="px-4 py-3 text-sm text-gray-500">{cat.sort_order}</td>
                     <td className="px-4 py-3">
@@ -62,8 +68,8 @@ export default async function CategoriesPage({ params }: { params: Promise<{ ten
           </table>
         ) : (
           <div className="p-16 text-center">
-            <p className="text-gray-500 font-medium">Brak kategorii</p>
-            <p className="text-gray-400 text-sm mt-1">Dodaj pierwszą kategorię klikając przycisk powyżej</p>
+            <p className="font-bold text-gray-500">Brak kategorii</p>
+            <p className="mt-1 text-sm text-gray-400">Dodaj pierwszą kategorię klikając przycisk powyżej.</p>
           </div>
         )}
       </div>

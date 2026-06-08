@@ -112,7 +112,7 @@ export function ImportPanel({
       const rows = await parseImportFile(file)
       setPreview(rows.slice(0, 5))
     } catch {
-      toast.error('Nie udalo sie odczytac pliku')
+      toast.error('Nie udało się odczytać pliku')
       setPreview(null)
       setFileName(null)
       if (fileRef.current) fileRef.current.value = ''
@@ -159,7 +159,7 @@ export function ImportPanel({
         setFileName(null)
         if (fileRef.current) fileRef.current.value = ''
       } catch {
-        toast.error('Nie udalo sie odczytac pliku')
+        toast.error('Nie udało się odczytać pliku')
       }
     })
   }

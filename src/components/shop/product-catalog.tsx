@@ -54,7 +54,7 @@ export function ProductCatalog({ tenantSlug, brandColor, categories, products, s
 
   const handleAddToCart = (product: Product) => {
     if (product.stock_status === 'unavailable') {
-      toast.error('Ten produkt jest niedostepny')
+      toast.error('Ten produkt jest niedostępny')
       return
     }
 
@@ -213,7 +213,7 @@ export function ProductCatalog({ tenantSlug, brandColor, categories, products, s
 
                       {limited && (
                         <div className="mt-2 flex items-center gap-1 text-xs font-bold text-orange-600">
-                          <AlertCircle className="h-3.5 w-3.5" /> Ograniczona dostepnosc
+                          <AlertCircle className="h-3.5 w-3.5" /> Ograniczona dostępność
                         </div>
                       )}
                       {unavailable && (
