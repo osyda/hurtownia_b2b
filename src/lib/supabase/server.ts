@@ -1,8 +1,11 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
-import { cookies } from 'next/headers'
+import { cookies, headers } from 'next/headers'
+import { sharedAuthCookieOptions } from '@/lib/supabase/cookies'
 
 export async function createClient() {
   const cookieStore = await cookies()
+  const headersList = await headers()
+  const host = headersList.get('host')
 
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -15,7 +18,7 @@ export async function createClient() {
         setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
+              cookieStore.set(name, value, sharedAuthCookieOptions(options, host))
             )
           } catch {
             // Server component — cookies set in middleware
@@ -28,6 +31,8 @@ export async function createClient() {
 
 export async function createAdminClient() {
   const cookieStore = await cookies()
+  const headersList = await headers()
+  const host = headersList.get('host')
 
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -40,7 +45,7 @@ export async function createAdminClient() {
         setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
+              cookieStore.set(name, value, sharedAuthCookieOptions(options, host))
             )
           } catch {}
         },

@@ -1,18 +1,30 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 import { getTenantSlugFromHost, isPlatformMarketingHost } from '@/lib/shop-routing'
+import { sharedAuthCookieOptions } from '@/lib/supabase/cookies'
 
-function copySupabaseCookies(from: NextResponse, to: NextResponse) {
+function normalizeCookieExpires(expires: Date | number | undefined) {
+  return typeof expires === 'number' ? new Date(expires) : expires
+}
+
+function copySupabaseCookies(from: NextResponse, to: NextResponse, host: string | null) {
   from.cookies.getAll().forEach(cookie => {
-    to.cookies.set(cookie.name, cookie.value, {
-      domain: cookie.domain,
-      expires: cookie.expires,
-      httpOnly: cookie.httpOnly,
-      maxAge: cookie.maxAge,
-      path: cookie.path,
-      sameSite: cookie.sameSite,
-      secure: cookie.secure,
-    })
+    to.cookies.set(
+      cookie.name,
+      cookie.value,
+      sharedAuthCookieOptions(
+        {
+          domain: cookie.domain,
+          expires: normalizeCookieExpires(cookie.expires),
+          httpOnly: cookie.httpOnly,
+          maxAge: cookie.maxAge,
+          path: cookie.path,
+          sameSite: cookie.sameSite,
+          secure: cookie.secure,
+        },
+        host
+      )
+    )
   })
 
   return to
@@ -41,7 +53,11 @@ export async function middleware(request: NextRequest) {
           )
           supabaseResponse = NextResponse.next({ request })
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
+            supabaseResponse.cookies.set(
+              name,
+              value,
+              sharedAuthCookieOptions(options, request.headers.get('host'))
+            )
           )
         },
       },
@@ -70,18 +86,18 @@ export async function middleware(request: NextRequest) {
     if (pathname === shopPrefix || pathname.startsWith(`${shopPrefix}/`)) {
       const url = request.nextUrl.clone()
       url.pathname = pathname.slice(shopPrefix.length) || '/'
-      return copySupabaseCookies(supabaseResponse, NextResponse.redirect(url))
+      return copySupabaseCookies(supabaseResponse, NextResponse.redirect(url), host)
     }
 
     if (pathname.startsWith('/sklep/')) {
       const url = request.nextUrl.clone()
       url.pathname = '/'
-      return copySupabaseCookies(supabaseResponse, NextResponse.redirect(url))
+      return copySupabaseCookies(supabaseResponse, NextResponse.redirect(url), host)
     }
 
     const url = request.nextUrl.clone()
     url.pathname = `${shopPrefix}${pathname === '/' ? '' : pathname}`
-    return copySupabaseCookies(supabaseResponse, NextResponse.rewrite(url))
+    return copySupabaseCookies(supabaseResponse, NextResponse.rewrite(url), host)
   }
 
   return supabaseResponse
