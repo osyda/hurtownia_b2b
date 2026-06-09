@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, BadgeCheck, CheckCircle2, ExternalLink, Globe2, KeyRound, ListChecks, Rocket, Store } from 'lucide-react'
+import { ArrowLeft, BadgeCheck, CheckCircle2, ExternalLink, Globe2, KeyRound, ListChecks, Store } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { toast } from 'sonner'
 import { createTenant } from '@/app/actions/admin'
@@ -32,9 +32,9 @@ export default function NewTenantPage() {
     'checklista gotowości po wejściu w szczegóły',
   ]
   const setupCards = [
-    { label: 'Panel platformy', value: 'app.dostawio.pl', icon: Globe2 },
+    { label: 'Panel właściciela', value: 'dostawio.pl/login', icon: Globe2 },
+    { label: 'Panel hurtowni', value: `${previewSlug}.dostawio.pl/dashboard`, icon: Store },
     { label: 'Sklep klienta', value: `${previewSlug}.dostawio.pl`, icon: Store },
-    { label: 'Start operacyjny', value: 'launch pack po utworzeniu', icon: Rocket },
   ]
 
   function handleNameChange(e: React.ChangeEvent<HTMLInputElement>) {

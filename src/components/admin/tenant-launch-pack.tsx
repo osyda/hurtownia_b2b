@@ -177,7 +177,7 @@ export function TenantLaunchPack({
               <KeyRound className="mb-3 h-5 w-5 text-slate-500" />
               <div className="font-black text-slate-950">Dostęp administracyjny</div>
               <p className="mt-2 text-sm leading-6 text-slate-500">
-                Administrator hurtowni loguje się przez app.dostawio.pl i trafia do własnej firmy.
+                Administrator hurtowni loguje się na subdomenie swojej firmy i trafia prosto do panelu.
               </p>
             </div>
             <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">

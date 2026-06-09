@@ -45,7 +45,7 @@ Nie wystawiamy bezpośrednio bazy ERP do internetu. Jeśli system działa lokaln
 
 ## Konfiguracja w panelu hurtowni
 
-1. Wejdź do panelu hurtowni: `https://app.dostawio.pl`.
+1. Wejdź do panelu hurtowni na jej subdomenie, np. `https://twoja-hurtownia.dostawio.pl/dashboard`.
 2. Otwórz `Integracje`.
 3. Wybierz system klienta, np. `BaseLinker / Base`, `Subiekt`, `Comarch Optima`, `Symfonia`.
 4. Uzupełnij:

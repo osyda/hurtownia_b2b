@@ -4,27 +4,34 @@ import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import {
+  getPlatformSiteUrl,
+  getTenantPanelUrl,
   getTenantShopUrl,
+  getTenantSlugFromHost,
+  isLegacyPlatformAppHost,
   isPlatformMarketingHost,
-  normalizeHost,
-  PLATFORM_APP_URL,
 } from '@/lib/shop-routing'
 import { isDostawioHost } from '@/lib/supabase/cookies'
 
-function appRedirect(path: string, host: string | null) {
-  const normalizedPath = path.startsWith('/') ? path : `/${path}`
-
-  return isDostawioHost(host) ? `${PLATFORM_APP_URL}${normalizedPath}` : normalizedPath
+function platformDashboardRedirect(host: string | null) {
+  return isDostawioHost(host) ? getPlatformSiteUrl('/dashboard') : '/dashboard'
 }
 
-function customerShopRedirect(tenantSlug: string, host: string | null) {
-  const normalizedHost = normalizeHost(host)
+function tenantPanelRedirect(tenantSlug: string, host: string | null) {
+  if (getTenantSlugFromHost(host) === tenantSlug) return '/dashboard'
 
-  if (normalizedHost === 'localhost' || normalizedHost.endsWith('.localhost')) {
-    return `/sklep/${tenantSlug}`
-  }
+  return isDostawioHost(host) ? getTenantPanelUrl(tenantSlug, 'dashboard') : `/${tenantSlug}/dashboard`
+}
 
-  return getTenantShopUrl(tenantSlug)
+function tenantShopRedirect(tenantSlug: string, host: string | null) {
+  if (getTenantSlugFromHost(host) === tenantSlug) return '/'
+
+  return isDostawioHost(host) ? getTenantShopUrl(tenantSlug) : `/sklep/${tenantSlug}`
+}
+
+async function signOutWithError(supabase: Awaited<ReturnType<typeof createClient>>, error: string) {
+  await supabase.auth.signOut()
+  return { error }
 }
 
 export async function loginAction(
@@ -39,8 +46,9 @@ export async function loginAction(
   }
 
   const supabase = await createClient()
-  const headersList = await headers()
-  const host = headersList.get('host')
+  const host = (await headers()).get('host')
+  const tenantHostSlug = getTenantSlugFromHost(host)
+  const isPlatformLoginHost = isPlatformMarketingHost(host) || isLegacyPlatformAppHost(host)
   const { data, error } = await supabase.auth.signInWithPassword({ email, password })
 
   if (error) {
@@ -50,7 +58,7 @@ export async function loginAction(
   const userId = data.user?.id
 
   if (!userId) {
-    redirect(isPlatformMarketingHost(host) ? appRedirect('/', host) : '/')
+    return signOutWithError(supabase, 'Nie udało się rozpoznać konta. Spróbuj ponownie.')
   }
 
   const { data: profile } = await supabase
@@ -59,23 +67,36 @@ export async function loginAction(
     .eq('id', userId)
     .maybeSingle()
 
-  if (profile?.role === 'super_admin') {
-    redirect(appRedirect('/dashboard', host))
+  if (!profile) {
+    return signOutWithError(supabase, 'Konto nie ma przypisanej roli w Dostawio.')
   }
 
-  if ((profile?.role === 'tenant_admin' || profile?.role === 'tenant_employee') && profile.tenant_id) {
+  if (profile.role === 'super_admin') {
+    redirect(platformDashboardRedirect(host))
+  }
+
+  if (isPlatformLoginHost) {
+    return signOutWithError(
+      supabase,
+      'To wejście jest tylko dla właściciela Dostawio. Hurtownia i klient logują się na subdomenie swojej hurtowni, np. test.dostawio.pl/login.'
+    )
+  }
+
+  if ((profile.role === 'tenant_admin' || profile.role === 'tenant_employee') && profile.tenant_id) {
     const { data: tenant } = await supabase
       .from('tenants')
       .select('slug')
       .eq('id', profile.tenant_id)
       .maybeSingle()
 
-    if (tenant?.slug) {
-      redirect(appRedirect(`/${tenant.slug}/dashboard`, host))
+    if (!tenant?.slug) {
+      return signOutWithError(supabase, 'To konto nie ma przypisanej aktywnej hurtowni.')
     }
+
+    redirect(tenantPanelRedirect(tenant.slug, host))
   }
 
-  if (profile?.role === 'customer') {
+  if (profile.role === 'customer') {
     const { data: customer } = await supabase
       .from('customers')
       .select('tenants(slug)')
@@ -83,10 +104,17 @@ export async function loginAction(
       .maybeSingle()
 
     const tenantSlug = (customer?.tenants as unknown as { slug: string } | null)?.slug
-    if (tenantSlug) {
-      redirect(customerShopRedirect(tenantSlug, host))
+
+    if (!tenantSlug) {
+      return signOutWithError(supabase, 'To konto klienta nie jest przypisane do hurtowni.')
     }
+
+    if (tenantHostSlug && tenantHostSlug !== tenantSlug) {
+      redirect(tenantShopRedirect(tenantSlug, host))
+    }
+
+    redirect(tenantShopRedirect(tenantSlug, host))
   }
 
-  redirect(isPlatformMarketingHost(host) ? appRedirect('/', host) : '/')
+  return signOutWithError(supabase, 'Nieobsługiwana rola konta.')
 }

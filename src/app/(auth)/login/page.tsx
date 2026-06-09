@@ -45,17 +45,17 @@ export default function LoginPage() {
                 </div>
               </div>
               <div className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-xs font-black uppercase tracking-[0.16em] text-emerald-100">
-                app.dostawio.pl
+                dostawio.pl/login
               </div>
             </div>
 
-            <div className="premium-pill mb-5">Panel operacyjny dla hurtowni</div>
+            <div className="premium-pill mb-5">Dostawio ID</div>
             <h1 className="max-w-2xl text-5xl font-black leading-[1.02] tracking-tight">
-              Jedno wejście do całej platformy B2B.
+              Właściwe wejście dla właściciela, hurtowni i klienta B2B.
             </h1>
             <p className="mt-5 max-w-xl text-base leading-7 text-slate-300">
-              Ty zarządzasz hurtowniami, hurtownia swoim panelem, a klienci składają zamówienia
-              na subdomenie konkretnej firmy. Bez chaosu, bez ręcznego prowadzenia zamówień.
+              Właściciel Dostawio loguje się na domenie głównej, a hurtownia i jej klienci
+              pracują na subdomenie konkretnej firmy. Bez chaosu, bez przypadkowych przekierowań.
             </p>
           </div>
 
@@ -142,11 +142,11 @@ export default function LoginPage() {
             <div className="mt-5 grid gap-2 text-xs font-bold text-slate-500 sm:grid-cols-3">
               <div className="rounded-lg border border-white/70 bg-white/70 px-3 py-2">
                 <Globe2 className="mb-2 h-4 w-4 text-slate-400" />
-                app.dostawio.pl
+                dostawio.pl/login
               </div>
               <div className="rounded-lg border border-white/70 bg-white/70 px-3 py-2">
                 <Truck className="mb-2 h-4 w-4 text-slate-400" />
-                panel hurtowni
+                subdomena hurtowni
               </div>
               <div className="rounded-lg border border-white/70 bg-white/70 px-3 py-2">
                 <LockKeyhole className="mb-2 h-4 w-4 text-slate-400" />

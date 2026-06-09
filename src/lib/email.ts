@@ -3,7 +3,7 @@ import { Resend } from 'resend'
 const DEFAULT_FROM = 'Dostawio <noreply@mail.dostawio.pl>'
 const FROM = process.env.DOSTAWIO_EMAIL_FROM || DEFAULT_FROM
 const REPLY_TO = process.env.DOSTAWIO_EMAIL_REPLY_TO || undefined
-const APP_URL = (process.env.NEXT_PUBLIC_APP_URL || 'https://app.dostawio.pl').replace(/\/$/, '')
+const APP_URL = 'https://dostawio.pl'
 
 let resendClient: Resend | null | undefined
 

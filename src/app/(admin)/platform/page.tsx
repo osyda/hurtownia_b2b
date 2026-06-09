@@ -1,6 +1,6 @@
 import { BadgeCheck, Building2, Globe2, PlugZap, ShieldCheck, Store, Users } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
-import { getPlatformAppUrl, getPlatformSiteUrl, getTenantShopUrl } from '@/lib/shop-routing'
+import { getPlatformSiteUrl, getTenantPanelUrl, getTenantShopUrl } from '@/lib/shop-routing'
 
 export default async function PlatformPage() {
   const supabase = await createClient()
@@ -21,15 +21,15 @@ export default async function PlatformPage() {
     },
     {
       icon: Building2,
-      title: 'Panel administracyjny',
-      url: getPlatformAppUrl(),
-      description: 'Wspólny panel logowania dla superadmina oraz administratorów hurtowni.',
+      title: 'Panel właściciela Dostawio',
+      url: getPlatformSiteUrl('/dashboard'),
+      description: 'Panel superadmina do zarządzania hurtowniami, onboardingiem i gotowością platformy.',
     },
     {
       icon: Store,
-      title: 'Sklepy hurtowni',
-      url: getTenantShopUrl('slug-hurtowni'),
-      description: 'Każda hurtownia dostaje własny adres klienta w wildcard DNS.',
+      title: 'Panel i sklep hurtowni',
+      url: getTenantPanelUrl('slug-hurtowni', 'dashboard'),
+      description: `Każda hurtownia loguje się na swojej subdomenie; klienci używają ${getTenantShopUrl('slug-hurtowni')}.`,
     },
   ]
 
@@ -42,8 +42,8 @@ export default async function PlatformPage() {
 
   const checklist = [
     'dostawio.pl działa jako publiczna domena marki',
-    'app.dostawio.pl prowadzi do panelu platformy',
-    '*.dostawio.pl obsługuje sklepy hurtowni',
+    'dostawio.pl/login prowadzi do panelu właściciela platformy',
+    '*.dostawio.pl obsługuje panel hurtowni i sklep jej klientów',
     'nowe hurtownie dostają domyślne formy płatności',
     'slugi hurtowni nie mogą kolidować z subdomenami systemowymi',
     'API integracyjne działa poza sesją panelu i przyjmuje tokeny konektorów',

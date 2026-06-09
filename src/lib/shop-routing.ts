@@ -1,6 +1,6 @@
 export const PLATFORM_DOMAIN = 'dostawio.pl'
 export const PLATFORM_APP_SUBDOMAIN = 'app'
-export const PLATFORM_APP_URL = `https://${PLATFORM_APP_SUBDOMAIN}.${PLATFORM_DOMAIN}`
+export const PLATFORM_APP_URL = `https://${PLATFORM_DOMAIN}`
 
 const RESERVED_SUBDOMAINS = new Set([
   PLATFORM_APP_SUBDOMAIN,
@@ -36,14 +36,16 @@ export function isPlatformMarketingHost(host: string | null | undefined) {
   return normalized === PLATFORM_DOMAIN || normalized === `www.${PLATFORM_DOMAIN}`
 }
 
+export function isLegacyPlatformAppHost(host: string | null | undefined) {
+  return normalizeHost(host) === `${PLATFORM_APP_SUBDOMAIN}.${PLATFORM_DOMAIN}`
+}
+
 export function getPlatformSiteUrl(path = '') {
   return `https://${PLATFORM_DOMAIN}${normalizePath(path)}`
 }
 
 export function getPlatformAppUrl(path = '') {
-  const baseUrl = (process.env.NEXT_PUBLIC_APP_URL || PLATFORM_APP_URL).replace(/\/$/, '')
-
-  return `${baseUrl}${normalizePath(path)}`
+  return `${PLATFORM_APP_URL}${normalizePath(path)}`
 }
 
 export function getTenantSlugFromHost(host: string | null | undefined) {
@@ -74,7 +76,11 @@ export function getTenantShopUrl(tenantSlug: string, path = '') {
 }
 
 export function getTenantPanelUrl(tenantSlug: string, path = 'dashboard') {
-  return getPlatformAppUrl(`/${tenantSlug}${normalizePath(path)}`)
+  return `https://${tenantSlug}.${PLATFORM_DOMAIN}${normalizePath(path)}`
+}
+
+export function getTenantPanelBasePath(tenantSlug: string, host: string | null | undefined) {
+  return getTenantSlugFromHost(host) === tenantSlug ? '' : `/${tenantSlug}`
 }
 
 export function shopPath(basePath: string, path = '') {

@@ -25,12 +25,13 @@ interface Props {
   tenantName: string
   brandColor: string
   role: string
+  panelBasePath: string
 }
 
-export function TenantSidebar({ tenantSlug, tenantName, brandColor, role }: Props) {
+export function TenantSidebar({ tenantSlug, tenantName, brandColor, role, panelBasePath }: Props) {
   const pathname = usePathname()
   const router = useRouter()
-  const base = `/${tenantSlug}`
+  const base = panelBasePath
   const [open, setOpen] = useState(false)
 
   const navItems = [

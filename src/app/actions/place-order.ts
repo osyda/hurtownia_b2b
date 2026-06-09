@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import type { CartItem } from '@/lib/cart-store'
 import { sendNewOrderEmail } from '@/lib/email'
+import { getTenantPanelUrl } from '@/lib/shop-routing'
 
 interface PlaceOrderInput {
   tenantSlug: string
@@ -259,14 +260,13 @@ export async function placeOrder(input: PlaceOrderInput) {
   }
 
   if (tenant.contact_email) {
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://app.dostawio.pl'
     await sendNewOrderEmail({
       tenantEmail: tenant.contact_email,
       tenantName: tenant.name,
       orderNumber: order.order_number,
       customerName: customer.company_name ?? 'Klient',
       totalGross,
-      orderUrl: `${appUrl}/${tenantSlug}/orders/${order.id}`,
+      orderUrl: getTenantPanelUrl(tenantSlug, `orders/${order.id}`),
     }).catch(error => {
       console.error('[email:new_order] Failed to send new order email', error)
     })

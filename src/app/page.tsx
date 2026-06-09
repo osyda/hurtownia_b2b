@@ -14,7 +14,7 @@ import {
   Users,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
-import { getPlatformAppUrl, getTenantShopUrl, isPlatformMarketingHost } from '@/lib/shop-routing'
+import { getPlatformSiteUrl, getTenantShopUrl, isPlatformMarketingHost } from '@/lib/shop-routing'
 
 export default async function RootPage() {
   const headersList = await headers()
@@ -70,7 +70,7 @@ export default async function RootPage() {
 }
 
 function MarketingLanding() {
-  const appLoginUrl = getPlatformAppUrl('/login')
+  const appLoginUrl = getPlatformSiteUrl('/login')
   const demoShopUrl = getTenantShopUrl('test')
 
   const features = [
@@ -102,7 +102,7 @@ function MarketingLanding() {
     {
       icon: Building2,
       title: 'Ty jako operator platformy',
-      text: 'W app.dostawio.pl widzisz wszystkie hurtownie, ich gotowość, statusy i adresy sklepów.',
+      text: 'Na dostawio.pl/login zarządzasz wszystkimi hurtowniami, ich gotowością, statusami i adresami sklepów.',
       bullets: ['superadmin', 'onboarding hurtowni', 'kontrola uruchomienia'],
     },
     {
@@ -178,7 +178,7 @@ function MarketingLanding() {
 
             <div className="grid gap-3 pb-2 sm:grid-cols-3">
               {[
-                ['Panel', 'app.dostawio.pl'],
+                ['Właściciel', 'dostawio.pl/login'],
                 ['Sklepy', '*.dostawio.pl'],
                 ['Domena', 'dostawio.pl'],
               ].map(([label, value]) => (
@@ -293,8 +293,8 @@ function MarketingLanding() {
                 Jeden produkt, trzy osobne doświadczenia.
               </h2>
               <p className="mt-5 text-sm leading-7 text-slate-500">
-                Docelowy układ zostaje prosty: panel operacyjny na app.dostawio.pl, sklepy klientów na subdomenach
-                hurtowni i publiczna strona sprzedażowa na dostawio.pl.
+                Docelowy układ zostaje prosty: domena główna Dostawio dla marki i superadmina,
+                a hurtownie oraz ich klienci pracują na subdomenach konkretnych firm.
               </p>
             </div>
 
