@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { ClipboardList, LogOut, Package, ShoppingCart, User } from 'lucide-react'
 import { useCart } from '@/lib/cart-store'
 import { createClient } from '@/lib/supabase/client'
+import { resolveAccentColor, resolveBrandColor } from '@/lib/brand'
 import { cn } from '@/lib/utils'
 import { useEffect, useRef, useState } from 'react'
 
@@ -22,6 +23,8 @@ export function ShopHeader({ tenantSlug, tenantName, brandColor, logoUrl, custom
   const router = useRouter()
   const { itemCount, setTenant } = useCart()
   const count = itemCount()
+  const resolvedBrandColor = resolveBrandColor(brandColor)
+  const resolvedAccentColor = resolveAccentColor(brandColor)
   const previousCount = useRef(count)
   const [cartBump, setCartBump] = useState(false)
 
@@ -63,14 +66,14 @@ export function ShopHeader({ tenantSlug, tenantName, brandColor, logoUrl, custom
             ) : (
               <div
                 className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg text-sm font-black text-white shadow-lg shadow-slate-900/10 sm:h-10 sm:w-10"
-                style={{ backgroundColor: brandColor }}
+                style={{ backgroundColor: resolvedBrandColor }}
               >
                 {tenantName.charAt(0).toUpperCase()}
               </div>
             )}
             <div className="hidden min-w-0 sm:block">
               <div className="truncate text-sm font-black tracking-tight text-slate-950">{tenantName}</div>
-              <div className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">B2B Store</div>
+              <div className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">Dostawio Connect</div>
             </div>
           </Link>
 
@@ -85,7 +88,7 @@ export function ShopHeader({ tenantSlug, tenantName, brandColor, logoUrl, custom
                     'flex items-center gap-2 rounded-md px-3 py-2 text-sm font-bold transition-all',
                     active ? 'text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950'
                   )}
-                  style={active ? { backgroundColor: brandColor } : {}}
+                  style={active ? { backgroundColor: resolvedBrandColor } : {}}
                 >
                   <item.icon className="h-4 w-4" />
                   {item.label}
@@ -98,7 +101,7 @@ export function ShopHeader({ tenantSlug, tenantName, brandColor, logoUrl, custom
             <Link
               href={`${base}/koszyk`}
               className={cn(
-                'relative flex items-center gap-2 rounded-lg bg-slate-950 px-3 py-2 text-sm font-black text-white shadow-lg shadow-slate-900/10 transition-all hover:-translate-y-0.5 hover:bg-slate-800',
+                'brand-gradient relative flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-black text-white shadow-lg shadow-slate-900/10 transition-all hover:-translate-y-0.5',
                 cartBump && 'cart-bump'
               )}
             >
@@ -107,7 +110,7 @@ export function ShopHeader({ tenantSlug, tenantName, brandColor, logoUrl, custom
               {count > 0 && (
                 <span
                   className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-xs font-black text-white ring-2 ring-white"
-                  style={{ backgroundColor: brandColor }}
+                  style={{ backgroundColor: resolvedAccentColor }}
                 >
                   {count}
                 </span>
@@ -141,7 +144,7 @@ export function ShopHeader({ tenantSlug, tenantName, brandColor, logoUrl, custom
                   'flex items-center gap-1.5 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-sm font-bold transition-all active:scale-95',
                   active ? 'text-white shadow-sm' : 'border border-slate-200/80 bg-white text-slate-600'
                 )}
-                style={active ? { backgroundColor: brandColor } : {}}
+                style={active ? { backgroundColor: resolvedBrandColor } : {}}
               >
                 <item.icon className="h-4 w-4" />
                 {item.label}

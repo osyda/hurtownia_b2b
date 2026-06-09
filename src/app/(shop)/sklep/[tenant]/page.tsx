@@ -5,6 +5,7 @@ import Link from 'next/link'
 import type { ReactNode } from 'react'
 import { ChevronRight, ClipboardList, PackageSearch, RotateCcw, ShoppingCart, Sparkles } from 'lucide-react'
 import { getShopBasePath } from '@/lib/shop-routing'
+import { resolveBrandColor } from '@/lib/brand'
 import { formatCurrency, formatDate, ORDER_STATUS_COLORS, ORDER_STATUS_LABELS } from '@/lib/utils'
 
 export default async function ShopDashboardPage({ params }: { params: Promise<{ tenant: string }> }) {
@@ -45,7 +46,7 @@ export default async function ShopDashboardPage({ params }: { params: Promise<{ 
     .single()
 
   const base = shopBasePath
-  const brandColor = tenantInfo?.brand_color ?? '#0f172a'
+  const brandColor = resolveBrandColor(tenantInfo?.brand_color ?? '#303030')
   const orderTotal = recentOrders?.reduce((sum, order) => sum + (order.total_gross || 0), 0) ?? 0
 
   return (
@@ -96,14 +97,14 @@ export default async function ShopDashboardPage({ params }: { params: Promise<{ 
           icon={<PackageSearch className="h-5 w-5" />}
           title="Przeglądaj katalog"
           description="Produkty, ceny i dostępność"
-          color="from-sky-500 to-cyan-400"
+          color="from-[#0F4D38] to-[#27C7C3]"
         />
         <ActionLink
           href={`${base}/zamowienia`}
           icon={<ClipboardList className="h-5 w-5" />}
           title="Historia zamówień"
           description="Statusy i szczegóły dostaw"
-          color="from-emerald-500 to-teal-400"
+          color="from-[#27C7C3] to-[#19AFA9]"
         />
         {lastOrder ? (
           <ActionLink
@@ -111,7 +112,7 @@ export default async function ShopDashboardPage({ params }: { params: Promise<{ 
             icon={<RotateCcw className="h-5 w-5" />}
             title="Zamów ponownie"
             description="Powtórz ostatni koszyk"
-            color="from-amber-500 to-orange-400"
+            color="from-[#303030] to-[#0F4D38]"
           />
         ) : (
           <ActionLink
@@ -119,7 +120,7 @@ export default async function ShopDashboardPage({ params }: { params: Promise<{ 
             icon={<ShoppingCart className="h-5 w-5" />}
             title="Pierwsze zamówienie"
             description="Rozpocznij od katalogu"
-            color="from-slate-700 to-slate-500"
+            color="from-[#303030] to-[#4A4A4A]"
           />
         )}
       </section>
@@ -130,7 +131,7 @@ export default async function ShopDashboardPage({ params }: { params: Promise<{ 
             <h2 className="text-lg font-black tracking-tight text-slate-950">Ostatnie zamówienia</h2>
             <p className="text-sm text-slate-500">Szybki podgląd statusów i wartości.</p>
           </div>
-          <Link href={`${base}/zamowienia`} className="rounded-lg bg-slate-950 px-3 py-2 text-sm font-bold text-white transition hover:bg-slate-800">
+          <Link href={`${base}/zamowienia`} className="brand-button px-3 py-2 text-sm">
             Wszystkie
           </Link>
         </div>

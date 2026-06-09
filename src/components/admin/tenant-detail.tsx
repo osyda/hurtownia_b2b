@@ -115,7 +115,7 @@ export function TenantDetail({
               href={shopUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 rounded-lg border border-sky-200 px-3 py-2 text-sm font-bold text-sky-700 transition hover:bg-sky-50"
+              className="inline-flex items-center gap-2 rounded-lg border border-[#BFEDEA] px-3 py-2 text-sm font-bold text-[#0F4D38] transition hover:bg-[#E9FAF8]"
             >
               <Store className="h-4 w-4" />
               Sklep
@@ -241,7 +241,7 @@ function AddressCard({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
       <div className="text-xs font-black uppercase tracking-[0.16em] text-slate-400">{label}</div>
-      <div className="mt-2 break-all font-mono text-sm font-bold text-sky-700">{value}</div>
+      <div className="mt-2 break-all font-mono text-sm font-bold text-[#0F4D38]">{value}</div>
     </div>
   )
 }

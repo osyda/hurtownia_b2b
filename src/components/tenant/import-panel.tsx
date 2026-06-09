@@ -178,7 +178,7 @@ export function ImportPanel({
             key={m}
             onClick={() => { setMode(m); setPreview(null); setFileName(null) }}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              mode === m ? 'bg-blue-600 text-white' : 'bg-white border text-gray-600 hover:bg-gray-50'
+              mode === m ? 'bg-[#0F4D38] text-white' : 'bg-white border text-gray-600 hover:bg-gray-50'
             }`}
           >
             <FileSpreadsheet className="h-4 w-4" />
@@ -210,7 +210,7 @@ export function ImportPanel({
               : 'Kolumny: sku*, stock_qty*, stock_status. Aktualizuje stany dla istniejących produktów po SKU.'}
           </div>
 
-          <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-xl p-8 cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-colors">
+          <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-xl p-8 cursor-pointer hover:border-[#27C7C3] hover:bg-[#E9FAF8] transition-colors">
             <Upload className="h-8 w-8 text-gray-400 mb-2" />
             <span className="text-sm font-medium text-gray-700">
               {fileName ?? 'Kliknij lub przeciągnij plik'}

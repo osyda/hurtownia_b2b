@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { useCart } from '@/lib/cart-store'
 import { placeOrder } from '@/app/actions/place-order'
+import { resolveBrandColor } from '@/lib/brand'
 import { formatCurrency } from '@/lib/utils'
 import { CheckCircle, Info, ShoppingCart, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
@@ -41,6 +42,7 @@ export function CartView({
 }: Props) {
   const router = useRouter()
   const { items, updateQty, updateNotes, removeItem, clear, totalNet, totalGross } = useCart()
+  const resolvedBrandColor = resolveBrandColor(brandColor)
   const [pending, startTransition] = useTransition()
   const [submitted, setSubmitted] = useState(false)
   const [submittedOrder, setSubmittedOrder] = useState<{ id: string; number: string } | null>(null)
@@ -133,7 +135,7 @@ export function CartView({
         </p>
         <p className="mt-1 text-sm text-gray-400">Potwierdzenie zostanie wysłane na Twój e-mail.</p>
         <div className="mt-8 flex justify-center gap-3">
-          <Link href={`${shopBasePath}/zamowienia/${submittedOrder.id}`} className="rounded-lg px-4 py-2 text-sm font-bold text-white hover:opacity-90" style={{ backgroundColor: brandColor }}>
+          <Link href={`${shopBasePath}/zamowienia/${submittedOrder.id}`} className="rounded-lg px-4 py-2 text-sm font-bold text-white hover:opacity-90" style={{ backgroundColor: resolvedBrandColor }}>
             Zobacz zamówienie
           </Link>
           <Link href={`${shopBasePath}/katalog`} className="rounded-lg border px-4 py-2 text-sm font-bold text-gray-700 hover:bg-gray-50">
@@ -150,7 +152,7 @@ export function CartView({
         <ShoppingCart className="mx-auto mb-4 h-16 w-16 text-gray-200" />
         <h1 className="text-xl font-black text-gray-900">Koszyk jest pusty</h1>
         <p className="mt-2 text-sm text-gray-500">Dodaj produkty z katalogu.</p>
-        <Link href={`${shopBasePath}/katalog`} className="mt-6 inline-block rounded-lg px-5 py-2.5 text-sm font-bold text-white hover:opacity-90" style={{ backgroundColor: brandColor }}>
+        <Link href={`${shopBasePath}/katalog`} className="mt-6 inline-block rounded-lg px-5 py-2.5 text-sm font-bold text-white hover:opacity-90" style={{ backgroundColor: resolvedBrandColor }}>
           Przeglądaj produkty
         </Link>
       </div>
@@ -251,7 +253,7 @@ export function CartView({
                   <label
                     key={method.id}
                     className={`flex cursor-pointer items-center gap-3 rounded-lg border p-3 text-sm font-bold transition ${
-                      paymentMethodId === method.id ? 'border-slate-950 bg-slate-50 text-slate-950' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
+                      paymentMethodId === method.id ? 'border-[#0F4D38] bg-[#F4F1EA] text-slate-950' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
                     }`}
                   >
                     <input
@@ -278,7 +280,7 @@ export function CartView({
             onClick={handleSubmit}
             disabled={pending || belowMin || !items.length || noPaymentMethods || paymentMissing}
             className="flex w-full items-center justify-center gap-2 rounded-lg py-3 text-sm font-black text-white shadow-sm transition-all hover:opacity-90 disabled:opacity-40"
-            style={{ backgroundColor: brandColor }}
+            style={{ backgroundColor: resolvedBrandColor }}
           >
             {pending ? 'Składanie zamówienia...' : 'Złóż zamówienie'}
           </button>

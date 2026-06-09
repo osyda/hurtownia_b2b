@@ -19,7 +19,7 @@ export default function NewTenantPage() {
   const [name, setName] = useState('')
   const [slug, setSlug] = useState('')
   const [slugManual, setSlugManual] = useState(false)
-  const [brandColor, setBrandColor] = useState('#2563eb')
+  const [brandColor, setBrandColor] = useState('#0F4D38')
 
   const previewSlug = slug || 'nowa-hurtownia'
   const shopUrl = getTenantShopUrl(previewSlug)
@@ -172,7 +172,7 @@ export default function NewTenantPage() {
 
         <aside className="space-y-4">
           <div className="premium-card overflow-hidden">
-            <div className="border-b border-slate-200/80 bg-slate-950 px-5 py-4 text-white">
+            <div className="brand-gradient border-b border-slate-200/80 px-5 py-4 text-white">
               <div className="text-sm font-black">Podgląd wdrożenia</div>
               <p className="mt-1 text-xs leading-5 text-slate-400">Adresy powstaną automatycznie po utworzeniu hurtowni.</p>
             </div>
@@ -211,10 +211,10 @@ export default function NewTenantPage() {
             </p>
           </div>
 
-          <div className="rounded-lg border border-sky-200 bg-sky-50 p-5">
-            <BadgeCheck className="mb-4 h-5 w-5 text-sky-700" />
-            <h2 className="text-sm font-black uppercase tracking-[0.16em] text-sky-900">Standard Dostawio</h2>
-            <p className="mt-2 text-sm leading-6 text-sky-800">
+          <div className="rounded-lg border border-[#BFEDEA] bg-[#E9FAF8] p-5">
+            <BadgeCheck className="mb-4 h-5 w-5 text-[#0F4D38]" />
+            <h2 className="text-sm font-black uppercase tracking-[0.16em] text-[#0F4D38]">Standard Dostawio</h2>
+            <p className="mt-2 text-sm leading-6 text-slate-700">
               Po zapisie przejdziesz prosto do szczegółów hurtowni, gdzie widać wynik gotowości i następny krok.
             </p>
           </div>
@@ -251,7 +251,7 @@ function PreviewLink({
         </div>
         <ExternalLink className="h-4 w-4 text-slate-400" />
       </div>
-      <div className="break-all font-mono text-xs font-bold text-sky-700">{url}</div>
+      <div className="break-all font-mono text-xs font-bold text-[#0F4D38]">{url}</div>
     </a>
   )
 }

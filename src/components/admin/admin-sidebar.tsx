@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+import { DostawioLogo } from '@/components/brand/dostawio-logo'
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -35,15 +36,7 @@ export function AdminSidebar() {
   const SidebarContent = () => (
     <aside className="premium-sidebar flex h-full w-64 flex-col">
       <div className="flex items-center justify-between border-b border-white/10 p-6">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white text-sm font-black text-slate-950 shadow-lg shadow-sky-500/10">
-            D
-          </div>
-          <div>
-            <div className="text-lg font-bold tracking-tight text-white">Dostawio</div>
-            <div className="mt-0.5 text-xs font-medium uppercase tracking-wide text-slate-400">Super Admin</div>
-          </div>
-        </div>
+        <DostawioLogo light className="[&>div>div:first-child]:text-xl [&>svg]:h-10 [&>svg]:w-10" />
         <button
           onClick={() => setOpen(false)}
           className="rounded-lg p-1 text-slate-400 transition hover:bg-white/10 md:hidden"
@@ -61,7 +54,7 @@ export function AdminSidebar() {
             className={cn(
               'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-all',
               pathname.startsWith(item.href)
-                ? 'bg-white text-slate-950 shadow-lg shadow-sky-500/10'
+                ? 'bg-white text-slate-950 shadow-lg shadow-[#27C7C3]/10'
                 : 'text-slate-300 hover:bg-white/10 hover:text-white'
             )}
           >
@@ -87,7 +80,10 @@ export function AdminSidebar() {
     <>
       {/* Mobile top bar */}
       <div className="premium-topbar fixed left-0 right-0 top-0 z-30 flex h-14 items-center justify-between px-4 md:hidden">
-        <div className="font-bold text-slate-950">Dostawio</div>
+        <div className="flex items-center gap-2 font-bold text-slate-950">
+          <DostawioLogo compact />
+          <span>Dostawio</span>
+        </div>
         <button
           onClick={() => setOpen(true)}
           className="rounded-lg p-2 transition hover:bg-slate-100"

@@ -8,7 +8,7 @@ interface BadgeProps {
 }
 
 const variants = {
-  default: 'bg-sky-100 text-sky-800',
+  default: 'bg-[#E9FAF8] text-[#0F4D38]',
   success: 'bg-emerald-100 text-emerald-800',
   warning: 'bg-amber-100 text-amber-800',
   error: 'bg-red-100 text-red-800',

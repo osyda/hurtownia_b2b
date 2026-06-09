@@ -53,7 +53,7 @@ export function OnboardingPanel({
     <section className="premium-card overflow-hidden">
       <div className="grid gap-5 border-b border-slate-200/80 bg-white p-5 lg:grid-cols-[1fr_220px] lg:items-center">
         <div>
-          <div className="mb-3 inline-flex items-center rounded-full bg-slate-950 px-3 py-1 text-xs font-black uppercase tracking-[0.16em] text-white">
+          <div className="mb-3 inline-flex items-center rounded-full bg-[#303030] px-3 py-1 text-xs font-black uppercase tracking-[0.16em] text-white">
             <Sparkles className="mr-2 h-3.5 w-3.5" />
             {state.label}
           </div>
@@ -72,7 +72,7 @@ export function OnboardingPanel({
             </div>
           </div>
           <div className="mt-4 h-2 overflow-hidden rounded-full bg-slate-200">
-            <div className="h-full rounded-full bg-slate-950 transition-all" style={{ width: `${state.score}%` }} />
+            <div className="h-full rounded-full bg-[#303030] transition-all" style={{ width: `${state.score}%` }} />
           </div>
         </div>
       </div>
@@ -103,7 +103,7 @@ export function OnboardingPanel({
           ))}
         </div>
 
-        <aside className="rounded-lg border border-slate-200 bg-slate-950 p-5 text-white">
+        <aside className="rounded-lg border border-slate-200 bg-[#303030] p-5 text-white">
           <div className="text-xs font-black uppercase tracking-[0.16em] text-slate-400">Następny krok</div>
           {nextItem ? (
             <div className="mt-4">

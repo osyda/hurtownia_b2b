@@ -82,16 +82,16 @@ export default async function AdminDashboardPage() {
     .limit(10)
 
   const cards = [
-    { label: 'Aktywne hurtownie', value: stats.activeTenants, detail: 'działające konta', icon: Building2, accent: 'from-sky-500 to-cyan-400' },
-    { label: 'Gotowość platformy', value: `${stats.averageReadiness}%`, detail: `${stats.operationalTenants} hurtowni operacyjnie`, icon: Gauge, accent: 'from-violet-500 to-sky-500' },
-    { label: 'Aktywni klienci', value: stats.activeCustomers, detail: 'z dostępem B2B', icon: Users, accent: 'from-emerald-500 to-teal-400' },
-    { label: 'Zamówienia 30 dni', value: stats.ordersLast30Days, detail: 'ostatni miesiąc', icon: ShoppingCart, accent: 'from-amber-500 to-orange-400' },
+    { label: 'Aktywne hurtownie', value: stats.activeTenants, detail: 'działające konta', icon: Building2, accent: 'from-[#0F4D38] to-[#27C7C3]' },
+    { label: 'Gotowość platformy', value: `${stats.averageReadiness}%`, detail: `${stats.operationalTenants} hurtowni operacyjnie`, icon: Gauge, accent: 'from-[#303030] to-[#0F4D38]' },
+    { label: 'Aktywni klienci', value: stats.activeCustomers, detail: 'z dostępem B2B', icon: Users, accent: 'from-[#27C7C3] to-[#19AFA9]' },
+    { label: 'Zamówienia 30 dni', value: stats.ordersLast30Days, detail: 'ostatni miesiąc', icon: ShoppingCart, accent: 'from-[#4A4A4A] to-[#0F4D38]' },
     {
       label: 'Obrót 30 dni',
       value: formatCurrency(stats.revenueLast30Days),
       detail: 'wartość brutto',
       icon: TrendingUp,
-      accent: 'from-slate-700 to-slate-500',
+      accent: 'from-[#303030] to-[#4A4A4A]',
     },
   ]
   const offerNotes = [
@@ -205,7 +205,7 @@ export default async function AdminDashboardPage() {
         </div>
 
         <div className="premium-card overflow-hidden">
-          <div className="border-b border-slate-200/80 bg-slate-950 px-5 py-4 text-white">
+          <div className="border-b border-slate-200/80 bg-[#303030] px-5 py-4 text-white">
             <h2 className="text-lg font-black tracking-tight">Proponowany cennik do rozmów</h2>
             <p className="mt-1 text-sm text-slate-400">Ceny netto. Wdrożenie jednorazowe od 1 490 zł.</p>
           </div>

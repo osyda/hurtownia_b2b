@@ -58,14 +58,14 @@ export function LoginForm({
       <button
         type="submit"
         disabled={pending}
-        className="flex w-full items-center justify-center gap-2 rounded-lg bg-slate-950 py-3 font-bold text-white shadow-xl shadow-slate-900/15 transition-all hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-2xl disabled:translate-y-0 disabled:opacity-50"
+        className="brand-button flex w-full py-3 font-bold disabled:translate-y-0 disabled:opacity-50"
       >
         {pending && <Loader2 className="h-4 w-4 animate-spin" />}
         {buttonLabel}
         {!pending && <ArrowRight className="h-4 w-4" />}
       </button>
 
-      <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-3 text-xs leading-5 text-slate-500">
+      <div className="rounded-lg border border-[#E8E4DC] bg-[#FBFAF6] px-3 py-3 text-xs leading-5 text-slate-500">
         {helperText}
       </div>
 

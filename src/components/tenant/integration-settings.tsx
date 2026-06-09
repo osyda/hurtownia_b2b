@@ -273,7 +273,7 @@ export function IntegrationSettings({ tenantSlug, integrations, syncLogs }: Prop
                   href={selectedProfile.docsUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-slate-950 hover:text-blue-700"
+                  className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-slate-950 hover:text-[#083B2B]"
                 >
                   Dokumentacja systemu <ExternalLink className="h-4 w-4" />
                 </a>
@@ -428,7 +428,7 @@ export function IntegrationSettings({ tenantSlug, integrations, syncLogs }: Prop
         <aside className="space-y-4">
           <div className="premium-card p-5">
             <div className="mb-4 flex items-center gap-3">
-              <div className="rounded-lg bg-slate-950 p-2 text-white">
+              <div className="rounded-lg bg-[#303030] p-2 text-white">
                 <KeyRound className="h-5 w-5" />
               </div>
               <div>

@@ -17,6 +17,7 @@ import {
   Users,
 } from 'lucide-react'
 import { LoginForm } from '@/components/shared/login-form'
+import { DostawioLogo, DostawioMark } from '@/components/brand/dostawio-logo'
 import { getTenantSlugFromHost } from '@/lib/shop-routing'
 
 function humanizeTenantName(slug: string) {
@@ -66,8 +67,8 @@ export default async function LoginPage() {
         ],
       }
     : {
-        brandTitle: 'Dostawio',
-        brandSubtitle: 'platform owner',
+        brandTitle: 'Dostawio Connect',
+        brandSubtitle: 'platforma zamówień B2B',
         badge: 'Panel właściciela',
         eyebrow: 'Dostawio Admin',
         headline: 'Zaloguj się do centrum zarządzania platformą.',
@@ -103,18 +104,20 @@ export default async function LoginPage() {
         <section className="premium-hero hidden flex-col justify-between p-8 lg:flex">
           <div className="relative z-10">
             <div className="mb-10 flex items-center justify-between gap-6">
-              <div className="flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-white text-sm font-black text-slate-950">
-                  {context.brandTitle.charAt(0).toUpperCase()}
-                </div>
-                <div>
-                  <div className="text-lg font-black tracking-tight">{context.brandTitle}</div>
-                  <div className="text-xs font-semibold uppercase tracking-[0.24em] text-white/45">
-                    {context.brandSubtitle}
+              {isTenantLogin ? (
+                <div className="flex items-center gap-3">
+                  <DostawioMark className="h-11 w-11" />
+                  <div>
+                    <div className="text-lg font-black tracking-tight">{context.brandTitle}</div>
+                    <div className="text-xs font-semibold uppercase tracking-[0.24em] text-white/45">
+                      Dostawio Connect
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-xs font-black uppercase tracking-[0.16em] text-emerald-100">
+              ) : (
+                <DostawioLogo light className="[&>div>div:first-child]:text-2xl" />
+              )}
+              <div className="rounded-full border border-[#27C7C3]/25 bg-[#27C7C3]/10 px-3 py-1 text-xs font-black uppercase tracking-[0.16em] text-teal-100">
                 {context.badge}
               </div>
             </div>
@@ -151,7 +154,7 @@ export default async function LoginPage() {
             <div className="grid gap-3 md:grid-cols-[0.9fr_1.1fr]">
               <div className="rounded-lg border border-white/10 bg-white/[0.08] p-4">
                 <div className="mb-3 flex items-center gap-2 text-sm font-black">
-                  <LockKeyhole className="h-4 w-4 text-sky-200" />
+                  <LockKeyhole className="h-4 w-4 text-teal-200" />
                   Bezpieczny dostęp
                 </div>
                 <p className="text-sm leading-6 text-slate-300">
@@ -179,9 +182,7 @@ export default async function LoginPage() {
         <main className="flex min-h-[calc(100vh-1.5rem)] items-center justify-center px-1 py-5 lg:min-h-[calc(100vh-3rem)] lg:px-10">
           <div className="w-full max-w-md">
             <div className="mb-6 lg:hidden">
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-slate-950 text-lg font-black text-white shadow-xl shadow-slate-900/20">
-                {context.brandTitle.charAt(0).toUpperCase()}
-              </div>
+              <DostawioMark className="mb-4 h-12 w-12" />
               <h1 className="text-3xl font-black tracking-tight text-slate-950">{context.brandTitle}</h1>
               <p className="mt-2 text-sm leading-6 text-slate-500">
                 {context.mobileDescription}
@@ -189,10 +190,10 @@ export default async function LoginPage() {
             </div>
 
             <div className="premium-card overflow-hidden">
-              <div className="border-b border-slate-200/80 bg-slate-950 px-6 py-6 text-white sm:px-8 sm:py-7">
+              <div className="brand-gradient border-b border-slate-200/80 px-6 py-6 text-white sm:px-8 sm:py-7">
                 <div className="mb-4 flex items-center justify-between gap-4">
                   <div className="inline-flex rounded-full bg-white/10 p-2">
-                    <Sparkles className="h-5 w-5 text-sky-200" />
+                    <Sparkles className="h-5 w-5 text-teal-100" />
                   </div>
                   <div className="rounded-full bg-white/10 px-3 py-1 text-xs font-black uppercase tracking-[0.16em] text-slate-300">
                     {context.cardLabel}

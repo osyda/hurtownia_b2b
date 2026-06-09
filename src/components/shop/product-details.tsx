@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { AlertCircle, ArrowLeft, ImageIcon, ShoppingCart } from 'lucide-react'
 import { toast } from 'sonner'
 import { useCart } from '@/lib/cart-store'
+import { resolveBrandColor } from '@/lib/brand'
 import { cn, formatCurrency } from '@/lib/utils'
 
 interface ProductDetailsData {
@@ -30,6 +31,7 @@ interface Props {
 
 export function ProductDetails({ brandColor, backHref, product }: Props) {
   const { addItem } = useCart()
+  const resolvedBrandColor = resolveBrandColor(brandColor)
   const [qty, setQty] = useState(product.min_order_qty)
   const unavailable = product.stock_status === 'unavailable'
   const limited = product.stock_status === 'limited'
@@ -121,10 +123,10 @@ export function ProductDetails({ brandColor, backHref, product }: Props) {
             </div>
           )}
 
-          <div className="mt-6 rounded-lg bg-slate-50 p-4">
+          <div className="mt-6 rounded-lg bg-[#FBFAF6] p-3 sm:p-4">
             <div className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">Cena netto</div>
             <div className="mt-1 flex items-end justify-between gap-4">
-              <div className="text-4xl font-black tracking-tight text-slate-950">
+              <div className="text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
                 {formatCurrency(product.customer_price)}
               </div>
               <div className="text-sm font-bold text-slate-400">/ {product.unit}</div>
@@ -132,11 +134,11 @@ export function ProductDetails({ brandColor, backHref, product }: Props) {
           </div>
 
           <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
-            <div className="flex overflow-hidden rounded-lg border border-slate-300 bg-white">
+            <div className="flex overflow-hidden rounded-lg border border-[#D9D5CC] bg-white">
               <button
                 type="button"
                 onClick={() => updateQty(-product.order_multiple)}
-                className="px-4 py-3 text-sm font-black text-slate-600 transition hover:bg-slate-100"
+                className="px-3 py-2 text-sm font-black text-slate-600 transition hover:bg-slate-100 sm:px-4 sm:py-3"
                 disabled={unavailable}
               >
                 -
@@ -147,13 +149,13 @@ export function ProductDetails({ brandColor, backHref, product }: Props) {
                 min={product.min_order_qty}
                 step={product.order_multiple}
                 onChange={e => setQty(parseFloat(e.target.value) || product.min_order_qty)}
-                className="w-20 border-x border-slate-300 py-3 text-center text-sm font-bold focus:outline-none"
+                className="w-16 border-x border-[#D9D5CC] py-2 text-center text-sm font-bold focus:outline-none sm:w-20 sm:py-3"
                 disabled={unavailable}
               />
               <button
                 type="button"
                 onClick={() => updateQty(product.order_multiple)}
-                className="px-4 py-3 text-sm font-black text-slate-600 transition hover:bg-slate-100"
+                className="px-3 py-2 text-sm font-black text-slate-600 transition hover:bg-slate-100 sm:px-4 sm:py-3"
                 disabled={unavailable}
               >
                 +
@@ -166,7 +168,7 @@ export function ProductDetails({ brandColor, backHref, product }: Props) {
               onClick={handleAddToCart}
               disabled={unavailable}
               className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-black text-white shadow-sm transition hover:-translate-y-0.5 disabled:translate-y-0 disabled:opacity-40 sm:flex-none"
-              style={{ backgroundColor: brandColor }}
+              style={{ backgroundColor: resolvedBrandColor }}
             >
               <ShoppingCart className="h-4 w-4" />
               Dodaj do koszyka

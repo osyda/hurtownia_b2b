@@ -4,6 +4,7 @@ import { useCart } from '@/lib/cart-store'
 import { useRouter } from 'next/navigation'
 import { RotateCcw } from 'lucide-react'
 import { toast } from 'sonner'
+import { resolveBrandColor } from '@/lib/brand'
 
 interface OrderItem {
   product_id: string | null
@@ -25,6 +26,7 @@ interface Props {
 export function ReorderButton({ brandColor, items, shopBasePath }: Props) {
   const { addItem, clear } = useCart()
   const router = useRouter()
+  const resolvedBrandColor = resolveBrandColor(brandColor)
 
   function handleReorder() {
     clear()
@@ -50,7 +52,7 @@ export function ReorderButton({ brandColor, items, shopBasePath }: Props) {
     <button
       onClick={handleReorder}
       className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-white font-semibold text-sm hover:opacity-90 transition-opacity"
-      style={{ backgroundColor: brandColor }}
+      style={{ backgroundColor: resolvedBrandColor }}
     >
       <RotateCcw className="h-4 w-4" />
       Zamów ponownie

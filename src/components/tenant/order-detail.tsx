@@ -127,7 +127,7 @@ export function OrderDetail({ tenantSlug, order, items }: Props) {
               disabled={pending || order.status === s}
               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors disabled:opacity-40 ${
                 order.status === s
-                  ? 'bg-blue-600 text-white cursor-default'
+                  ? 'bg-[#0F4D38] text-white cursor-default'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >

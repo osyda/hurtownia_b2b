@@ -19,6 +19,7 @@ import {
   X,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { resolveBrandColor } from '@/lib/brand'
 
 interface Props {
   tenantSlug: string
@@ -32,6 +33,7 @@ export function TenantSidebar({ tenantSlug, tenantName, brandColor, role, panelB
   const pathname = usePathname()
   const router = useRouter()
   const base = panelBasePath
+  const resolvedBrandColor = resolveBrandColor(brandColor)
   const [open, setOpen] = useState(false)
 
   const navItems = [
@@ -57,8 +59,8 @@ export function TenantSidebar({ tenantSlug, tenantName, brandColor, role, panelB
       <div className="flex items-center justify-between border-b border-white/10 p-5">
         <div className="flex items-center gap-3">
           <div
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-sm font-black text-white shadow-lg shadow-sky-500/10 ring-1 ring-white/20"
-            style={{ backgroundColor: brandColor }}
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-sm font-black text-white shadow-lg shadow-[#27C7C3]/10 ring-1 ring-white/20"
+            style={{ backgroundColor: resolvedBrandColor }}
           >
             {tenantName.charAt(0).toUpperCase()}
           </div>
@@ -86,10 +88,10 @@ export function TenantSidebar({ tenantSlug, tenantName, brandColor, role, panelB
             className={cn(
               'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-all',
               pathname.startsWith(item.href)
-                ? 'text-white shadow-lg shadow-sky-500/10 ring-1 ring-white/15'
+                ? 'text-white shadow-lg shadow-[#27C7C3]/10 ring-1 ring-white/15'
                 : 'text-slate-300 hover:bg-white/10 hover:text-white'
             )}
-            style={pathname.startsWith(item.href) ? { backgroundColor: brandColor } : {}}
+            style={pathname.startsWith(item.href) ? { backgroundColor: resolvedBrandColor } : {}}
           >
             <item.icon className="h-4 w-4 shrink-0" />
             {item.label}
@@ -116,7 +118,7 @@ export function TenantSidebar({ tenantSlug, tenantName, brandColor, role, panelB
         <div className="flex items-center gap-3">
           <div
             className="flex h-7 w-7 items-center justify-center rounded-lg text-xs font-bold text-white shadow-sm"
-            style={{ backgroundColor: brandColor }}
+            style={{ backgroundColor: resolvedBrandColor }}
           >
             {tenantName.charAt(0).toUpperCase()}
           </div>

@@ -3,10 +3,11 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { AlertCircle, Check, Search, ShoppingCart } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import { useCart } from '@/lib/cart-store'
+import { resolveAccentColor, resolveBrandColor } from '@/lib/brand'
 import { cn, formatCurrency } from '@/lib/utils'
 import { toast } from 'sonner'
-import { useEffect, useRef, useState } from 'react'
 
 interface Product {
   id: string
@@ -40,6 +41,8 @@ interface Props {
 export function ProductCatalog({ brandColor, categories, products, searchQuery, activeCategory, shopBasePath }: Props) {
   const router = useRouter()
   const { addItem } = useCart()
+  const resolvedBrandColor = resolveBrandColor(brandColor)
+  const resolvedAccentColor = resolveAccentColor(brandColor)
   const addedResetTimer = useRef<number | null>(null)
   const [addedProductId, setAddedProductId] = useState<string | null>(null)
   const [quantities, setQuantities] = useState<Record<string, number>>(() =>
@@ -102,9 +105,9 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
     <div className="grid gap-3 lg:grid-cols-[240px_1fr] lg:gap-6">
       <aside className="hidden lg:block">
         <div className="premium-card sticky top-24 overflow-hidden">
-          <div className="border-b border-slate-200/80 bg-slate-950 px-4 py-4 text-white">
+          <div className="brand-gradient border-b border-slate-200/80 px-4 py-4 text-white">
             <div className="text-sm font-black">Kategorie</div>
-            <div className="mt-1 text-xs text-slate-400">{categories.length} grup produktów</div>
+            <div className="mt-1 text-xs text-white/65">{categories.length} grup produktów</div>
           </div>
           <div className="space-y-1 p-3">
             <button
@@ -112,9 +115,9 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
               onClick={() => navigate({ q: searchQuery })}
               className={cn(
                 'w-full rounded-lg px-3 py-2.5 text-left text-sm font-bold transition-all active:scale-95',
-                !activeCategory ? 'text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950'
+                !activeCategory ? 'text-white shadow-sm' : 'text-slate-600 hover:bg-[#F4F1EA] hover:text-slate-950'
               )}
-              style={!activeCategory ? { backgroundColor: brandColor } : {}}
+              style={!activeCategory ? { backgroundColor: resolvedBrandColor } : {}}
             >
               Wszystkie produkty
             </button>
@@ -125,9 +128,9 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
                 onClick={() => navigate({ q: searchQuery, category: cat.id })}
                 className={cn(
                   'w-full rounded-lg px-3 py-2.5 text-left text-sm font-bold transition-all active:scale-95',
-                  activeCategory === cat.id ? 'text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950'
+                  activeCategory === cat.id ? 'text-white shadow-sm' : 'text-slate-600 hover:bg-[#F4F1EA] hover:text-slate-950'
                 )}
-                style={activeCategory === cat.id ? { backgroundColor: brandColor } : {}}
+                style={activeCategory === cat.id ? { backgroundColor: resolvedBrandColor } : {}}
               >
                 {cat.name}
               </button>
@@ -138,10 +141,10 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
 
       <div className="min-w-0 space-y-3 sm:space-y-5">
         <section className="premium-card overflow-hidden">
-          <div className="grid gap-3 p-3 md:grid-cols-[1fr_auto] md:items-center sm:p-4">
+          <div className="grid gap-2.5 p-2.5 md:grid-cols-[1fr_auto] md:items-center sm:gap-3 sm:p-4">
             <div>
               <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 sm:text-xs">Katalog produktów</div>
-              <h1 className="mt-0.5 text-xl font-black tracking-tight text-slate-950 sm:mt-1 sm:text-2xl">
+              <h1 className="mt-0.5 text-lg font-black tracking-tight text-slate-950 sm:mt-1 sm:text-2xl">
                 {products.length} pozycji w ofercie
               </h1>
             </div>
@@ -159,14 +162,10 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
                   name="q"
                   defaultValue={searchQuery}
                   placeholder="Szukaj produktu, SKU, kategorii..."
-                  className="premium-input h-10 w-full pl-9"
+                  className="premium-input h-9 w-full pl-9 sm:h-10"
                 />
               </div>
-              <button
-                type="submit"
-                className="rounded-lg px-3.5 py-2 text-sm font-black text-white shadow-sm transition-all hover:-translate-y-0.5 active:scale-95 sm:px-4 sm:py-2.5"
-                style={{ backgroundColor: brandColor }}
-              >
+              <button type="submit" className="brand-button px-3 py-1.5 text-xs sm:px-4 sm:py-2.5 sm:text-sm">
                 Szukaj
               </button>
             </form>
@@ -179,9 +178,9 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
             onClick={() => navigate({ q: searchQuery })}
             className={cn(
               'whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-black transition-all active:scale-95',
-              !activeCategory ? 'text-white shadow-sm' : 'border border-white/80 bg-white text-slate-600 shadow-sm'
+              !activeCategory ? 'text-white shadow-sm' : 'border border-[#E8E4DC] bg-white text-slate-600 shadow-sm'
             )}
-            style={!activeCategory ? { backgroundColor: brandColor } : {}}
+            style={!activeCategory ? { backgroundColor: resolvedBrandColor } : {}}
           >
             Wszystkie
           </button>
@@ -192,9 +191,9 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
               onClick={() => navigate({ q: searchQuery, category: cat.id })}
               className={cn(
                 'whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-black transition-all active:scale-95',
-                activeCategory === cat.id ? 'text-white shadow-sm' : 'border border-white/80 bg-white text-slate-600 shadow-sm'
+                activeCategory === cat.id ? 'text-white shadow-sm' : 'border border-[#E8E4DC] bg-white text-slate-600 shadow-sm'
               )}
-              style={activeCategory === cat.id ? { backgroundColor: brandColor } : {}}
+              style={activeCategory === cat.id ? { backgroundColor: resolvedBrandColor } : {}}
             >
               {cat.name}
             </button>
@@ -202,7 +201,7 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
         </div>
 
         {products.length ? (
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 sm:gap-4 xl:grid-cols-3">
             {products.map((product, index) => {
               const unavailable = product.stock_status === 'unavailable'
               const limited = product.stock_status === 'limited'
@@ -212,17 +211,17 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
                 <article
                   key={product.id}
                   className={cn(
-                    'premium-card motion-card flex flex-col p-3 transition duration-200 hover:-translate-y-1 sm:p-4',
+                    'premium-card motion-card flex flex-col p-2.5 transition duration-200 hover:-translate-y-1 sm:p-4',
                     unavailable && 'opacity-60',
                     justAdded && 'card-added'
                   )}
                   style={{ animationDelay: `${Math.min(index, 8) * 28}ms` }}
                 >
-                  <div className="flex flex-1 flex-col space-y-3 sm:space-y-4">
+                  <div className="flex flex-1 flex-col space-y-2.5 sm:space-y-4">
                     <div>
-                      <div className="mb-2 flex min-h-6 items-center justify-between gap-2 sm:mb-3 sm:min-h-7">
+                      <div className="mb-1.5 flex min-h-5 items-center justify-between gap-2 sm:mb-3 sm:min-h-7">
                         {product.category_name ? (
-                          <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600 sm:text-xs">
+                          <span className="rounded-full bg-[#F4F1EA] px-2 py-0.5 text-[10px] font-bold text-slate-600 sm:px-2.5 sm:py-1 sm:text-xs">
                             {product.category_name}
                           </span>
                         ) : (
@@ -235,12 +234,12 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
                           Szczegóły
                         </Link>
                       </div>
-                      <h2 className="line-clamp-2 min-h-[2.15rem] text-[15px] font-black leading-tight text-slate-950 sm:min-h-[2.5rem] sm:text-sm">
+                      <h2 className="line-clamp-2 min-h-[2rem] text-sm font-black leading-tight text-slate-950 sm:min-h-[2.5rem]">
                         {product.name}
                       </h2>
                       <div className="mt-1.5 flex items-center justify-between gap-2 sm:mt-2">
-                        {product.sku ? <span className="truncate text-xs font-semibold text-slate-400">SKU: {product.sku}</span> : <span />}
-                        <span className="text-xs font-semibold text-slate-400">VAT {product.vat_rate}%</span>
+                        {product.sku ? <span className="truncate text-[11px] font-semibold text-slate-400 sm:text-xs">SKU: {product.sku}</span> : <span />}
+                        <span className="text-[11px] font-semibold text-slate-400 sm:text-xs">VAT {product.vat_rate}%</span>
                       </div>
 
                       {limited && (
@@ -255,24 +254,24 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
                       )}
                     </div>
 
-                    <div className="rounded-lg bg-slate-50 p-3">
+                    <div className="rounded-lg bg-[#FBFAF6] p-2.5 sm:p-3">
                       <div className="flex items-end justify-between gap-2">
                         <div>
-                          <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400 sm:text-xs">Cena netto</div>
-                          <div className="mt-0.5 text-[1.7rem] font-black tracking-tight text-slate-950 sm:mt-1 sm:text-2xl">
+                          <div className="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 sm:text-xs">Cena netto</div>
+                          <div className="mt-0.5 text-xl font-black tracking-tight text-slate-950 sm:mt-1 sm:text-2xl">
                             {formatCurrency(product.customer_price)}
                           </div>
                         </div>
-                        <div className="text-right text-xs font-bold text-slate-400">/ {product.unit}</div>
+                        <div className="text-right text-[11px] font-bold text-slate-400 sm:text-xs">/ {product.unit}</div>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                      <div className="flex overflow-hidden rounded-lg border border-slate-300 bg-white">
+                    <div className="flex items-center gap-1.5 sm:gap-2">
+                      <div className="flex overflow-hidden rounded-lg border border-[#D9D5CC] bg-white">
                         <button
                           type="button"
                           onClick={() => updateQty(product.id, -product.order_multiple, product)}
-                          className="px-2.5 py-1.5 text-sm font-black text-slate-600 transition hover:bg-slate-100 active:scale-95 sm:px-3 sm:py-2"
+                          className="px-2 py-1 text-sm font-black text-slate-600 transition hover:bg-slate-100 active:scale-95 sm:px-3 sm:py-2"
                           disabled={unavailable}
                         >
                           -
@@ -283,31 +282,31 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
                           min={product.min_order_qty}
                           step={product.order_multiple}
                           onChange={e => setQuantities(prev => ({ ...prev, [product.id]: parseFloat(e.target.value) || product.min_order_qty }))}
-                          className="w-14 border-x border-slate-300 py-1.5 text-center text-sm font-bold focus:outline-none sm:w-16 sm:py-2"
+                          className="w-12 border-x border-[#D9D5CC] py-1 text-center text-sm font-bold focus:outline-none sm:w-16 sm:py-2"
                           disabled={unavailable}
                         />
                         <button
                           type="button"
                           onClick={() => updateQty(product.id, product.order_multiple, product)}
-                          className="px-2.5 py-1.5 text-sm font-black text-slate-600 transition hover:bg-slate-100 active:scale-95 sm:px-3 sm:py-2"
+                          className="px-2 py-1 text-sm font-black text-slate-600 transition hover:bg-slate-100 active:scale-95 sm:px-3 sm:py-2"
                           disabled={unavailable}
                         >
                           +
                         </button>
                       </div>
-                      <span className="text-xs font-bold text-slate-400">{product.unit}</span>
+                      <span className="text-[11px] font-bold text-slate-400 sm:text-xs">{product.unit}</span>
 
                       <button
                         type="button"
                         onClick={() => handleAddToCart(product)}
                         disabled={unavailable}
                         className={cn(
-                          'ml-auto inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-black text-white shadow-sm transition hover:-translate-y-0.5 active:scale-95 disabled:translate-y-0 disabled:opacity-40',
+                          'ml-auto inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-black text-white shadow-sm transition hover:-translate-y-0.5 active:scale-95 disabled:translate-y-0 disabled:opacity-40 sm:px-3 sm:py-2 sm:text-sm',
                           justAdded && 'button-added'
                         )}
-                        style={{ backgroundColor: brandColor }}
+                        style={{ backgroundColor: justAdded ? resolvedAccentColor : resolvedBrandColor }}
                       >
-                        {justAdded ? <Check className="h-4 w-4" /> : <ShoppingCart className="h-4 w-4" />}
+                        {justAdded ? <Check className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> : <ShoppingCart className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
                         {justAdded ? 'Dodano' : 'Dodaj'}
                       </button>
                     </div>

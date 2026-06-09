@@ -102,10 +102,10 @@ export default async function TenantDashboardPage({
   }, tenantSlug)
 
   const cards = [
-    { label: 'Zamówienia dziś', value: todayOrders.count ?? 0, sub: formatCurrency(todayRevenue), icon: ShoppingCart, accent: 'from-sky-500 to-cyan-400' },
-    { label: 'Nowe zamówienia', value: newOrders.count ?? 0, sub: 'do obsługi', icon: Clock, accent: 'from-amber-500 to-orange-400' },
-    { label: 'Aktywni klienci', value: totalCustomers.count ?? 0, sub: 'kupujący B2B', icon: Users, accent: 'from-emerald-500 to-teal-400' },
-    { label: 'Aktywne produkty', value: totalProducts.count ?? 0, sub: 'w katalogu', icon: Package, accent: 'from-slate-700 to-slate-500' },
+    { label: 'Zamówienia dziś', value: todayOrders.count ?? 0, sub: formatCurrency(todayRevenue), icon: ShoppingCart, accent: 'from-[#0F4D38] to-[#27C7C3]' },
+    { label: 'Nowe zamówienia', value: newOrders.count ?? 0, sub: 'do obsługi', icon: Clock, accent: 'from-[#303030] to-[#0F4D38]' },
+    { label: 'Aktywni klienci', value: totalCustomers.count ?? 0, sub: 'kupujący B2B', icon: Users, accent: 'from-[#27C7C3] to-[#19AFA9]' },
+    { label: 'Aktywne produkty', value: totalProducts.count ?? 0, sub: 'w katalogu', icon: Package, accent: 'from-[#303030] to-[#4A4A4A]' },
   ]
 
   return (
@@ -157,7 +157,7 @@ export default async function TenantDashboardPage({
             <h2 className="text-lg font-black tracking-tight text-slate-950">Ostatnie zamówienia</h2>
             <p className="text-sm text-slate-500">Najnowsze zamówienia klientów i ich status.</p>
           </div>
-          <Link href={`/${tenantSlug}/orders`} className="rounded-lg bg-slate-950 px-3 py-2 text-sm font-bold text-white transition hover:bg-slate-800">
+          <Link href={`/${tenantSlug}/orders`} className="rounded-lg bg-[#303030] px-3 py-2 text-sm font-bold text-white transition hover:bg-[#083B2B]">
             Wszystkie
           </Link>
         </div>

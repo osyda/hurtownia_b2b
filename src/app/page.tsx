@@ -14,6 +14,7 @@ import {
   Users,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { DostawioLogo } from '@/components/brand/dostawio-logo'
 import { getPlatformSiteUrl, getTenantShopUrl, isPlatformMarketingHost } from '@/lib/shop-routing'
 
 export default async function RootPage() {
@@ -150,31 +151,22 @@ function MarketingLanding() {
   ]
 
   return (
-    <main className="min-h-screen bg-white text-slate-950">
-      <section className="relative overflow-hidden bg-slate-950 text-white">
+    <main className="min-h-screen bg-[#F7F5EF] text-slate-950">
+      <section className="relative overflow-hidden bg-[#303030] text-white">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.06)_1px,transparent_1px)] bg-[size:34px_34px]" />
-        <div className="absolute inset-x-0 top-0 h-80 bg-gradient-to-b from-sky-500/20 to-transparent" />
+        <div className="absolute inset-x-0 top-0 h-80 bg-gradient-to-b from-[#27C7C3]/20 to-transparent" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_10%,rgba(15,77,56,0.55),transparent_34rem)]" />
 
         <div className="relative mx-auto max-w-7xl px-5 py-6 lg:px-8">
           <nav className="flex items-center justify-between gap-5 py-3">
-            <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-white text-sm font-black text-slate-950">
-                D
-              </div>
-              <div>
-                <div className="text-lg font-black tracking-tight">Dostawio</div>
-                <div className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">
-                  zamówienia B2B dla hurtowni
-                </div>
-              </div>
-            </div>
+            <DostawioLogo light className="[&>div>div:first-child]:text-2xl" />
             <div className="flex items-center gap-2">
               <a href={loginUrl} className="hidden rounded-lg px-3 py-2 text-sm font-bold text-slate-300 transition hover:text-white sm:block">
                 Logowanie
               </a>
               <a
                 href={contactHref}
-                className="rounded-lg bg-white px-4 py-2 text-sm font-black text-slate-950 transition hover:-translate-y-0.5"
+                className="rounded-lg bg-white px-4 py-2 text-sm font-black text-[#303030] transition hover:-translate-y-0.5"
               >
                 Umów rozmowę
               </a>
@@ -183,7 +175,7 @@ function MarketingLanding() {
 
           <div className="grid min-h-[calc(100vh-5rem)] gap-10 py-12 lg:grid-cols-[0.92fr_1.08fr] lg:items-center lg:py-16">
             <div>
-              <div className="mb-5 inline-flex items-center rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-sky-100">
+              <div className="mb-5 inline-flex items-center rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-teal-100">
                 Platforma dla hurtowni, nie kolejny sklep internetowy
               </div>
               <h1 className="max-w-4xl text-5xl font-black leading-[0.98] tracking-tight md:text-7xl">
@@ -197,7 +189,7 @@ function MarketingLanding() {
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <a
                   href={contactHref}
-                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-white px-5 py-3 text-sm font-black text-slate-950 shadow-2xl shadow-sky-950/30 transition hover:-translate-y-0.5"
+                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-white px-5 py-3 text-sm font-black text-[#303030] shadow-2xl shadow-slate-950/25 transition hover:-translate-y-0.5"
                 >
                   Porozmawiajmy o wdrożeniu
                   <ArrowRight className="h-4 w-4" />
@@ -225,7 +217,7 @@ function MarketingLanding() {
             </div>
 
             <div className="rounded-lg border border-white/10 bg-white/[0.07] p-4 shadow-2xl shadow-black/30 backdrop-blur">
-              <div className="rounded-lg bg-white p-4 text-slate-950">
+              <div className="rounded-lg bg-[#FBFAF6] p-4 text-slate-950">
                 <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                   <div>
                     <div className="text-sm font-black">Panel hurtowni</div>
@@ -244,7 +236,7 @@ function MarketingLanding() {
                     { icon: Users, label: 'Klienci B2B', value: '118' },
                     { icon: CreditCard, label: 'Płatności', value: '7/14/30 dni' },
                   ].map(item => (
-                    <div key={item.label} className="rounded-lg bg-slate-50 p-4">
+                    <div key={item.label} className="rounded-lg bg-white p-4">
                       <item.icon className="mb-4 h-5 w-5 text-slate-500" />
                       <div className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">{item.label}</div>
                       <div className="mt-2 text-xl font-black">{item.value}</div>
@@ -297,7 +289,7 @@ function MarketingLanding() {
         </div>
       </section>
 
-      <section className="bg-slate-50 px-5 py-20 lg:px-8">
+      <section className="bg-[#FBFAF6] px-5 py-20 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
             <div>
@@ -318,7 +310,7 @@ function MarketingLanding() {
                 <div key={step.title} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
                   <div className="mb-5 flex items-center justify-between">
                     <step.icon className="h-6 w-6 text-slate-500" />
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-950 text-xs font-black text-white">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#0F4D38] text-xs font-black text-white">
                       {index + 1}
                     </div>
                   </div>
@@ -357,7 +349,7 @@ function MarketingLanding() {
         </div>
       </section>
 
-      <section className="bg-slate-950 px-5 py-20 text-white lg:px-8">
+      <section className="brand-gradient px-5 py-20 text-white lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
             <div className="max-w-2xl">
@@ -385,9 +377,9 @@ function MarketingLanding() {
             {plans.map(plan => (
               <div
                 key={plan.name}
-                className={`rounded-lg border p-6 ${plan.featured ? 'border-sky-300 bg-white text-slate-950 shadow-2xl shadow-sky-950/20' : 'border-white/10 bg-white/[0.06]'}`}
+                className={`rounded-lg border p-6 ${plan.featured ? 'border-[#27C7C3] bg-white text-slate-950 shadow-2xl shadow-slate-950/15' : 'border-white/10 bg-white/[0.06]'}`}
               >
-                <div className={`mb-5 inline-flex rounded-full px-3 py-1 text-xs font-black uppercase tracking-[0.14em] ${plan.featured ? 'bg-sky-50 text-sky-700' : 'bg-white/10 text-slate-300'}`}>
+                <div className={`mb-5 inline-flex rounded-full px-3 py-1 text-xs font-black uppercase tracking-[0.14em] ${plan.featured ? 'bg-[#E9FAF8] text-[#0F4D38]' : 'bg-white/10 text-slate-300'}`}>
                   {plan.badge}
                 </div>
                 <h3 className="text-2xl font-black">{plan.name}</h3>
@@ -415,7 +407,7 @@ function MarketingLanding() {
       </section>
 
       <section className="px-5 py-20 lg:px-8">
-        <div className="mx-auto max-w-7xl rounded-lg bg-slate-950 p-6 text-white md:p-10">
+        <div className="brand-gradient mx-auto max-w-7xl rounded-lg p-6 text-white md:p-10">
           <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
             <div>
               <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-black uppercase tracking-[0.16em] text-slate-300">
@@ -432,7 +424,7 @@ function MarketingLanding() {
             </div>
             <a
               href={contactHref}
-              className="inline-flex items-center justify-center gap-2 rounded-lg bg-white px-5 py-3 text-sm font-black text-slate-950 transition hover:-translate-y-0.5"
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-white px-5 py-3 text-sm font-black text-[#303030] transition hover:-translate-y-0.5"
             >
               Umów konsultację
               <ArrowRight className="h-4 w-4" />

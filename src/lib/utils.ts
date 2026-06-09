@@ -50,10 +50,10 @@ export const ORDER_STATUS_LABELS: Record<string, string> = {
 }
 
 export const ORDER_STATUS_COLORS: Record<string, string> = {
-  new: 'bg-sky-100 text-sky-800',
+  new: 'bg-[#E9FAF8] text-[#0F4D38]',
   accepted: 'bg-amber-100 text-amber-800',
   in_progress: 'bg-orange-100 text-orange-800',
-  ready: 'bg-cyan-100 text-cyan-800',
+  ready: 'bg-[#E9FAF8] text-[#0F4D38]',
   delivered: 'bg-emerald-100 text-emerald-800',
   cancelled: 'bg-slate-100 text-slate-800',
 }

@@ -37,7 +37,7 @@ const tenantSchema = z.object({
     .min(2, 'Slug jest wymagany')
     .max(63, 'Slug może mieć maksymalnie 63 znaki')
     .regex(/^[a-z0-9][a-z0-9-]*[a-z0-9]$/, 'Tylko małe litery, cyfry i myślniki, bez myślnika na początku lub końcu'),
-  brand_color: z.string().regex(/^#[0-9a-fA-F]{6}$/).optional().default('#2563eb'),
+  brand_color: z.string().regex(/^#[0-9a-fA-F]{6}$/).optional().default('#0F4D38'),
   contact_email: z.string().email().optional().or(z.literal('')),
 })
 

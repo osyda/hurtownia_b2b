@@ -47,7 +47,7 @@ export default async function AdminTenantsPage() {
         </div>
         <Link
           href="/tenants/new"
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-950 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-slate-800"
+          className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#303030] px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-[#083B2B]"
         >
           <Plus className="h-4 w-4" />
           Nowa hurtownia
@@ -89,7 +89,7 @@ export default async function AdminTenantsPage() {
               >
                 <div
                   className="flex h-11 w-11 items-center justify-center rounded-lg text-base font-black text-white"
-                  style={{ backgroundColor: tenant.brand_color || '#2563eb' }}
+                  style={{ backgroundColor: tenant.brand_color || '#0F4D38' }}
                 >
                   {tenant.name.charAt(0).toUpperCase()}
                 </div>
@@ -106,7 +106,7 @@ export default async function AdminTenantsPage() {
                   </div>
                   <div className="mt-1 flex min-w-0 items-center gap-2 text-xs text-slate-500">
                     <Store className="h-3.5 w-3.5 shrink-0" />
-                    <span className="truncate font-mono font-semibold text-sky-700">{shopUrl}</span>
+                    <span className="truncate font-mono font-semibold text-[#0F4D38]">{shopUrl}</span>
                   </div>
                   {tenant.contact_email && (
                     <div className="mt-1 truncate text-xs text-slate-400">{tenant.contact_email}</div>
@@ -119,7 +119,7 @@ export default async function AdminTenantsPage() {
                     <span className="text-sm font-black text-slate-950">{onboarding.score}%</span>
                   </div>
                   <div className="h-1.5 overflow-hidden rounded-full bg-slate-200">
-                    <div className="h-full rounded-full bg-slate-950" style={{ width: `${onboarding.score}%` }} />
+                    <div className="h-full rounded-full bg-[#303030]" style={{ width: `${onboarding.score}%` }} />
                   </div>
                 </div>
 

@@ -96,7 +96,7 @@ export function PricesPanel({
         <button
           onClick={() => setTab('groups')}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-            tab === 'groups' ? 'bg-blue-600 text-white' : 'bg-white border text-gray-600 hover:bg-gray-50'
+            tab === 'groups' ? 'bg-[#0F4D38] text-white' : 'bg-white border text-gray-600 hover:bg-gray-50'
           }`}
         >
           <Tag className="h-4 w-4" />
@@ -105,7 +105,7 @@ export function PricesPanel({
         <button
           onClick={() => setTab('customers')}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-            tab === 'customers' ? 'bg-blue-600 text-white' : 'bg-white border text-gray-600 hover:bg-gray-50'
+            tab === 'customers' ? 'bg-[#0F4D38] text-white' : 'bg-white border text-gray-600 hover:bg-gray-50'
           }`}
         >
           <Users className="h-4 w-4" />
@@ -148,7 +148,7 @@ export function PricesPanel({
                 {editingGroup === group.id ? (
                   <form
                     action={(fd) => handleUpdateGroup(group.id, fd)}
-                    className="p-4 grid grid-cols-2 gap-3 bg-blue-50"
+                    className="p-4 grid grid-cols-2 gap-3 bg-[#E9FAF8]"
                   >
                     <Input name="name" defaultValue={group.name} required label="Nazwa" />
                     <Input name="description" defaultValue={group.description ?? ''} label="Opis" />
@@ -177,7 +177,7 @@ export function PricesPanel({
                     <div className="flex gap-2">
                       <button
                         onClick={() => setEditingGroup(group.id)}
-                        className="p-1.5 text-gray-400 hover:text-blue-600 transition-colors"
+                        className="p-1.5 text-gray-400 hover:text-[#0F4D38] transition-colors"
                       >
                         <Edit2 className="h-4 w-4" />
                       </button>
@@ -214,7 +214,7 @@ export function PricesPanel({
                   key={c.id}
                   onClick={() => { setSelectedCustomer(c.id); setPriceEdits({}) }}
                   className={`w-full text-left p-3 hover:bg-gray-50 transition-colors ${
-                    selectedCustomer === c.id ? 'bg-blue-50' : ''
+                    selectedCustomer === c.id ? 'bg-[#E9FAF8]' : ''
                   }`}
                 >
                   <div className="text-sm font-medium text-gray-900">{c.company_name}</div>
