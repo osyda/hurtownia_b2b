@@ -2,11 +2,11 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { AlertCircle, Search, ShoppingCart } from 'lucide-react'
+import { AlertCircle, Check, Search, ShoppingCart } from 'lucide-react'
 import { useCart } from '@/lib/cart-store'
 import { cn, formatCurrency } from '@/lib/utils'
 import { toast } from 'sonner'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 interface Product {
   id: string
@@ -40,9 +40,19 @@ interface Props {
 export function ProductCatalog({ brandColor, categories, products, searchQuery, activeCategory, shopBasePath }: Props) {
   const router = useRouter()
   const { addItem } = useCart()
+  const addedResetTimer = useRef<number | null>(null)
+  const [addedProductId, setAddedProductId] = useState<string | null>(null)
   const [quantities, setQuantities] = useState<Record<string, number>>(() =>
     Object.fromEntries(products.map(p => [p.id, p.min_order_qty]))
   )
+
+  useEffect(() => {
+    return () => {
+      if (addedResetTimer.current) {
+        window.clearTimeout(addedResetTimer.current)
+      }
+    }
+  }, [])
 
   const updateQty = (id: string, delta: number, product: Product) => {
     setQuantities(prev => {
@@ -69,6 +79,14 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
       minQty: product.min_order_qty,
       multiple: product.order_multiple,
     })
+
+    setAddedProductId(product.id)
+    if (addedResetTimer.current) {
+      window.clearTimeout(addedResetTimer.current)
+    }
+    addedResetTimer.current = window.setTimeout(() => {
+      setAddedProductId(current => (current === product.id ? null : current))
+    }, 900)
     toast.success(`Dodano: ${product.name}`)
   }
 
@@ -81,19 +99,19 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
   }
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
+    <div className="grid gap-3 lg:grid-cols-[240px_1fr] lg:gap-6">
       <aside className="hidden lg:block">
         <div className="premium-card sticky top-24 overflow-hidden">
           <div className="border-b border-slate-200/80 bg-slate-950 px-4 py-4 text-white">
             <div className="text-sm font-black">Kategorie</div>
-            <div className="mt-1 text-xs text-slate-400">{categories.length} grup produktow</div>
+            <div className="mt-1 text-xs text-slate-400">{categories.length} grup produktów</div>
           </div>
           <div className="space-y-1 p-3">
             <button
               type="button"
               onClick={() => navigate({ q: searchQuery })}
               className={cn(
-                'w-full rounded-lg px-3 py-2.5 text-left text-sm font-bold transition-all',
+                'w-full rounded-lg px-3 py-2.5 text-left text-sm font-bold transition-all active:scale-95',
                 !activeCategory ? 'text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950'
               )}
               style={!activeCategory ? { backgroundColor: brandColor } : {}}
@@ -106,7 +124,7 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
                 type="button"
                 onClick={() => navigate({ q: searchQuery, category: cat.id })}
                 className={cn(
-                  'w-full rounded-lg px-3 py-2.5 text-left text-sm font-bold transition-all',
+                  'w-full rounded-lg px-3 py-2.5 text-left text-sm font-bold transition-all active:scale-95',
                   activeCategory === cat.id ? 'text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950'
                 )}
                 style={activeCategory === cat.id ? { backgroundColor: brandColor } : {}}
@@ -118,12 +136,12 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
         </div>
       </aside>
 
-      <div className="min-w-0 space-y-5">
+      <div className="min-w-0 space-y-3 sm:space-y-5">
         <section className="premium-card overflow-hidden">
-          <div className="grid gap-4 p-4 md:grid-cols-[1fr_auto] md:items-center">
+          <div className="grid gap-3 p-3 md:grid-cols-[1fr_auto] md:items-center sm:p-4">
             <div>
-              <div className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Katalog produktow</div>
-              <h1 className="mt-1 text-2xl font-black tracking-tight text-slate-950">
+              <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 sm:text-xs">Katalog produktów</div>
+              <h1 className="mt-0.5 text-xl font-black tracking-tight text-slate-950 sm:mt-1 sm:text-2xl">
                 {products.length} pozycji w ofercie
               </h1>
             </div>
@@ -141,12 +159,12 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
                   name="q"
                   defaultValue={searchQuery}
                   placeholder="Szukaj produktu, SKU, kategorii..."
-                  className="premium-input w-full pl-9"
+                  className="premium-input h-10 w-full pl-9"
                 />
               </div>
               <button
                 type="submit"
-                className="rounded-lg px-4 py-2.5 text-sm font-black text-white shadow-sm transition-all hover:-translate-y-0.5"
+                className="rounded-lg px-3.5 py-2 text-sm font-black text-white shadow-sm transition-all hover:-translate-y-0.5 active:scale-95 sm:px-4 sm:py-2.5"
                 style={{ backgroundColor: brandColor }}
               >
                 Szukaj
@@ -155,11 +173,14 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
           </div>
         </section>
 
-        <div className="flex gap-2 overflow-x-auto pb-1 lg:hidden">
+        <div className="-mx-3 flex gap-1.5 overflow-x-auto px-3 pb-1 lg:hidden">
           <button
             type="button"
             onClick={() => navigate({ q: searchQuery })}
-            className={cn('whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-bold transition-colors', !activeCategory ? 'text-white' : 'border bg-white text-slate-600')}
+            className={cn(
+              'whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-black transition-all active:scale-95',
+              !activeCategory ? 'text-white shadow-sm' : 'border border-white/80 bg-white text-slate-600 shadow-sm'
+            )}
             style={!activeCategory ? { backgroundColor: brandColor } : {}}
           >
             Wszystkie
@@ -169,7 +190,10 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
               key={cat.id}
               type="button"
               onClick={() => navigate({ q: searchQuery, category: cat.id })}
-              className={cn('whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-bold transition-colors', activeCategory === cat.id ? 'text-white' : 'border bg-white text-slate-600')}
+              className={cn(
+                'whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-black transition-all active:scale-95',
+                activeCategory === cat.id ? 'text-white shadow-sm' : 'border border-white/80 bg-white text-slate-600 shadow-sm'
+              )}
               style={activeCategory === cat.id ? { backgroundColor: brandColor } : {}}
             >
               {cat.name}
@@ -178,18 +202,27 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
         </div>
 
         {products.length ? (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {products.map(product => {
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-3">
+            {products.map((product, index) => {
               const unavailable = product.stock_status === 'unavailable'
               const limited = product.stock_status === 'limited'
+              const justAdded = addedProductId === product.id
 
               return (
-                <article key={product.id} className={cn('premium-card flex flex-col p-4 transition hover:-translate-y-1', unavailable && 'opacity-60')}>
-                  <div className="flex flex-1 flex-col space-y-4">
+                <article
+                  key={product.id}
+                  className={cn(
+                    'premium-card motion-card flex flex-col p-3 transition duration-200 hover:-translate-y-1 sm:p-4',
+                    unavailable && 'opacity-60',
+                    justAdded && 'card-added'
+                  )}
+                  style={{ animationDelay: `${Math.min(index, 8) * 28}ms` }}
+                >
+                  <div className="flex flex-1 flex-col space-y-3 sm:space-y-4">
                     <div>
-                      <div className="mb-3 flex min-h-7 items-center justify-between gap-3">
+                      <div className="mb-2 flex min-h-6 items-center justify-between gap-2 sm:mb-3 sm:min-h-7">
                         {product.category_name ? (
-                          <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-600">
+                          <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600 sm:text-xs">
                             {product.category_name}
                           </span>
                         ) : (
@@ -197,15 +230,15 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
                         )}
                         <Link
                           href={`${shopBasePath}/katalog/${product.id}`}
-                          className="text-xs font-black uppercase tracking-[0.14em] text-slate-400 transition hover:text-slate-950"
+                          className="text-[10px] font-black uppercase tracking-[0.14em] text-slate-400 transition hover:text-slate-950 sm:text-xs"
                         >
                           Szczegóły
                         </Link>
                       </div>
-                      <h2 className="line-clamp-2 min-h-[2.5rem] text-sm font-black leading-tight text-slate-950">
+                      <h2 className="line-clamp-2 min-h-[2.15rem] text-[15px] font-black leading-tight text-slate-950 sm:min-h-[2.5rem] sm:text-sm">
                         {product.name}
                       </h2>
-                      <div className="mt-2 flex items-center justify-between gap-2">
+                      <div className="mt-1.5 flex items-center justify-between gap-2 sm:mt-2">
                         {product.sku ? <span className="truncate text-xs font-semibold text-slate-400">SKU: {product.sku}</span> : <span />}
                         <span className="text-xs font-semibold text-slate-400">VAT {product.vat_rate}%</span>
                       </div>
@@ -217,7 +250,7 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
                       )}
                       {unavailable && (
                         <div className="mt-2 flex items-center gap-1 text-xs font-bold text-red-600">
-                          <AlertCircle className="h-3.5 w-3.5" /> Niedostepny
+                          <AlertCircle className="h-3.5 w-3.5" /> Niedostępny
                         </div>
                       )}
                     </div>
@@ -225,8 +258,8 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
                     <div className="rounded-lg bg-slate-50 p-3">
                       <div className="flex items-end justify-between gap-2">
                         <div>
-                          <div className="text-xs font-bold uppercase tracking-[0.14em] text-slate-400">Cena netto</div>
-                          <div className="mt-1 text-2xl font-black tracking-tight text-slate-950">
+                          <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400 sm:text-xs">Cena netto</div>
+                          <div className="mt-0.5 text-[1.7rem] font-black tracking-tight text-slate-950 sm:mt-1 sm:text-2xl">
                             {formatCurrency(product.customer_price)}
                           </div>
                         </div>
@@ -239,7 +272,7 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
                         <button
                           type="button"
                           onClick={() => updateQty(product.id, -product.order_multiple, product)}
-                          className="px-3 py-2 text-sm font-black text-slate-600 transition hover:bg-slate-100"
+                          className="px-2.5 py-1.5 text-sm font-black text-slate-600 transition hover:bg-slate-100 active:scale-95 sm:px-3 sm:py-2"
                           disabled={unavailable}
                         >
                           -
@@ -250,13 +283,13 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
                           min={product.min_order_qty}
                           step={product.order_multiple}
                           onChange={e => setQuantities(prev => ({ ...prev, [product.id]: parseFloat(e.target.value) || product.min_order_qty }))}
-                          className="w-16 border-x border-slate-300 py-2 text-center text-sm font-bold focus:outline-none"
+                          className="w-14 border-x border-slate-300 py-1.5 text-center text-sm font-bold focus:outline-none sm:w-16 sm:py-2"
                           disabled={unavailable}
                         />
                         <button
                           type="button"
                           onClick={() => updateQty(product.id, product.order_multiple, product)}
-                          className="px-3 py-2 text-sm font-black text-slate-600 transition hover:bg-slate-100"
+                          className="px-2.5 py-1.5 text-sm font-black text-slate-600 transition hover:bg-slate-100 active:scale-95 sm:px-3 sm:py-2"
                           disabled={unavailable}
                         >
                           +
@@ -268,11 +301,14 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
                         type="button"
                         onClick={() => handleAddToCart(product)}
                         disabled={unavailable}
-                        className="ml-auto inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-black text-white shadow-sm transition hover:-translate-y-0.5 disabled:translate-y-0 disabled:opacity-40"
+                        className={cn(
+                          'ml-auto inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-black text-white shadow-sm transition hover:-translate-y-0.5 active:scale-95 disabled:translate-y-0 disabled:opacity-40',
+                          justAdded && 'button-added'
+                        )}
                         style={{ backgroundColor: brandColor }}
                       >
-                        <ShoppingCart className="h-4 w-4" />
-                        Dodaj
+                        {justAdded ? <Check className="h-4 w-4" /> : <ShoppingCart className="h-4 w-4" />}
+                        {justAdded ? 'Dodano' : 'Dodaj'}
                       </button>
                     </div>
                   </div>
@@ -281,8 +317,8 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
             })}
           </div>
         ) : (
-          <div className="premium-card p-16 text-center">
-            <p className="text-sm font-semibold text-slate-500">Brak produktow spelniajacych kryteria.</p>
+          <div className="premium-card p-10 text-center sm:p-16">
+            <p className="text-sm font-semibold text-slate-500">Brak produktów spełniających kryteria.</p>
           </div>
         )}
       </div>

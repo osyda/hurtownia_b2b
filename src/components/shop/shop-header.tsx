@@ -6,7 +6,7 @@ import { ClipboardList, LogOut, Package, ShoppingCart, User } from 'lucide-react
 import { useCart } from '@/lib/cart-store'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 interface Props {
   tenantSlug: string
@@ -22,10 +22,23 @@ export function ShopHeader({ tenantSlug, tenantName, brandColor, logoUrl, custom
   const router = useRouter()
   const { itemCount, setTenant } = useCart()
   const count = itemCount()
+  const previousCount = useRef(count)
+  const [cartBump, setCartBump] = useState(false)
 
   useEffect(() => {
     setTenant(tenantSlug)
   }, [tenantSlug, setTenant])
+
+  useEffect(() => {
+    if (count > previousCount.current) {
+      setCartBump(true)
+      const timer = window.setTimeout(() => setCartBump(false), 420)
+      previousCount.current = count
+      return () => window.clearTimeout(timer)
+    }
+
+    previousCount.current = count
+  }, [count])
 
   async function handleLogout() {
     const supabase = createClient()
@@ -42,14 +55,14 @@ export function ShopHeader({ tenantSlug, tenantName, brandColor, logoUrl, custom
 
   return (
     <header className="premium-topbar sticky top-0 z-40">
-      <div className="mx-auto max-w-6xl px-4">
-        <div className="flex h-16 items-center justify-between gap-4">
+      <div className="mx-auto max-w-6xl px-3 sm:px-4">
+        <div className="flex h-14 items-center justify-between gap-3 sm:h-16 sm:gap-4">
           <Link href={base || '/'} className="flex min-w-0 items-center gap-3">
             {logoUrl ? (
-              <img src={logoUrl} alt={tenantName} className="h-9 w-auto max-w-[140px] object-contain" />
+              <img src={logoUrl} alt={tenantName} className="h-8 w-auto max-w-[120px] object-contain sm:h-9 sm:max-w-[140px]" />
             ) : (
               <div
-                className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg text-sm font-black text-white shadow-lg shadow-slate-900/10"
+                className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg text-sm font-black text-white shadow-lg shadow-slate-900/10 sm:h-10 sm:w-10"
                 style={{ backgroundColor: brandColor }}
               >
                 {tenantName.charAt(0).toUpperCase()}
@@ -84,7 +97,10 @@ export function ShopHeader({ tenantSlug, tenantName, brandColor, logoUrl, custom
           <div className="flex items-center gap-2">
             <Link
               href={`${base}/koszyk`}
-              className="relative flex items-center gap-2 rounded-lg bg-slate-950 px-3 py-2 text-sm font-black text-white shadow-lg shadow-slate-900/10 transition-all hover:-translate-y-0.5 hover:bg-slate-800"
+              className={cn(
+                'relative flex items-center gap-2 rounded-lg bg-slate-950 px-3 py-2 text-sm font-black text-white shadow-lg shadow-slate-900/10 transition-all hover:-translate-y-0.5 hover:bg-slate-800',
+                cartBump && 'cart-bump'
+              )}
             >
               <ShoppingCart className="h-4 w-4" />
               <span className="hidden sm:inline">Koszyk</span>
@@ -106,7 +122,7 @@ export function ShopHeader({ tenantSlug, tenantName, brandColor, logoUrl, custom
             <button
               type="button"
               onClick={handleLogout}
-              className="rounded-lg border border-slate-200/80 bg-white p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+              className="rounded-lg border border-slate-200/80 bg-white p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 active:scale-95"
               aria-label="Wyloguj"
             >
               <LogOut className="h-4 w-4" />
@@ -114,7 +130,7 @@ export function ShopHeader({ tenantSlug, tenantName, brandColor, logoUrl, custom
           </div>
         </div>
 
-        <nav className="flex gap-2 overflow-x-auto pb-3 md:hidden">
+        <nav className="flex gap-1.5 overflow-x-auto pb-2 md:hidden">
           {navItems.map(item => {
             const active = item.exact ? pathname === item.href : pathname.startsWith(item.href)
             return (
@@ -122,7 +138,7 @@ export function ShopHeader({ tenantSlug, tenantName, brandColor, logoUrl, custom
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'flex items-center gap-2 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-bold transition-all',
+                  'flex items-center gap-1.5 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-sm font-bold transition-all active:scale-95',
                   active ? 'text-white shadow-sm' : 'border border-slate-200/80 bg-white text-slate-600'
                 )}
                 style={active ? { backgroundColor: brandColor } : {}}
