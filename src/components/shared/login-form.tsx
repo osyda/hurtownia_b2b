@@ -4,7 +4,19 @@ import { useActionState } from 'react'
 import { ArrowRight, Loader2 } from 'lucide-react'
 import { loginAction } from '@/app/actions/login'
 
-export function LoginForm() {
+interface LoginFormProps {
+  buttonLabel?: string
+  emailPlaceholder?: string
+  passwordPlaceholder?: string
+  helperText?: string
+}
+
+export function LoginForm({
+  buttonLabel = 'Wejdź do Dostawio',
+  emailPlaceholder = 'adres@email.pl',
+  passwordPlaceholder = 'Wpisz swoje hasło',
+  helperText = 'System rozpozna konto i przekieruje Cię do właściwego panelu.',
+}: LoginFormProps) {
   const [state, formAction, pending] = useActionState(loginAction, {})
 
   return (
@@ -19,7 +31,7 @@ export function LoginForm() {
           autoComplete="email"
           required
           className="premium-input w-full"
-          placeholder="osyda@icloud.com"
+          placeholder={emailPlaceholder}
         />
       </div>
 
@@ -33,7 +45,7 @@ export function LoginForm() {
           autoComplete="current-password"
           required
           className="premium-input w-full"
-          placeholder="Wpisz swoje hasło"
+          placeholder={passwordPlaceholder}
         />
       </div>
 
@@ -49,17 +61,17 @@ export function LoginForm() {
         className="flex w-full items-center justify-center gap-2 rounded-lg bg-slate-950 py-3 font-bold text-white shadow-xl shadow-slate-900/15 transition-all hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-2xl disabled:translate-y-0 disabled:opacity-50"
       >
         {pending && <Loader2 className="h-4 w-4 animate-spin" />}
-        Wejdź do Dostawio
+        {buttonLabel}
         {!pending && <ArrowRight className="h-4 w-4" />}
       </button>
 
       <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-3 text-xs leading-5 text-slate-500">
-        System rozpozna po koncie, czy masz wejść jako superadmin, hurtownia czy klient B2B.
+        {helperText}
       </div>
 
       <div className="text-center">
         <a href="/reset-password" className="text-sm font-semibold text-slate-600 hover:text-slate-950">
-          Zapomniałem hasła
+          Nie pamiętam hasła
         </a>
       </div>
     </form>
