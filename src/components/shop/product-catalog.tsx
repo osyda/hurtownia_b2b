@@ -1,7 +1,8 @@
 'use client'
 
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { AlertCircle, ImageIcon, Search, ShoppingCart } from 'lucide-react'
+import { AlertCircle, Search, ShoppingCart } from 'lucide-react'
 import { useCart } from '@/lib/cart-store'
 import { cn, formatCurrency } from '@/lib/utils'
 import { toast } from 'sonner'
@@ -17,7 +18,6 @@ interface Product {
   min_order_qty: number
   order_multiple: number
   stock_status: string
-  image_url: string | null
   category_id: string | null
   customer_price: number
   category_name: string | null
@@ -184,26 +184,24 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
               const limited = product.stock_status === 'limited'
 
               return (
-                <article key={product.id} className={cn('premium-card group overflow-hidden transition hover:-translate-y-1', unavailable && 'opacity-60')}>
-                  <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
-                    {product.image_url ? (
-                      <img src={product.image_url} alt={product.name} className="h-full w-full object-cover transition duration-300 group-hover:scale-105" />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200">
-                        <div className="rounded-lg bg-white/80 p-4 text-slate-400 shadow-sm">
-                          <ImageIcon className="h-7 w-7" />
-                        </div>
-                      </div>
-                    )}
-                    {product.category_name && (
-                      <div className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-xs font-bold text-slate-700 shadow-sm backdrop-blur">
-                        {product.category_name}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="space-y-4 p-4">
+                <article key={product.id} className={cn('premium-card flex flex-col p-4 transition hover:-translate-y-1', unavailable && 'opacity-60')}>
+                  <div className="flex flex-1 flex-col space-y-4">
                     <div>
+                      <div className="mb-3 flex min-h-7 items-center justify-between gap-3">
+                        {product.category_name ? (
+                          <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-600">
+                            {product.category_name}
+                          </span>
+                        ) : (
+                          <span />
+                        )}
+                        <Link
+                          href={`${shopBasePath}/katalog/${product.id}`}
+                          className="text-xs font-black uppercase tracking-[0.14em] text-slate-400 transition hover:text-slate-950"
+                        >
+                          Szczegóły
+                        </Link>
+                      </div>
                       <h2 className="line-clamp-2 min-h-[2.5rem] text-sm font-black leading-tight text-slate-950">
                         {product.name}
                       </h2>

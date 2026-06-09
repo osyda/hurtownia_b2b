@@ -40,7 +40,7 @@ export default async function CatalogPage({
   // Get products with visibility filtering
   let productQuery = supabase
     .from('products')
-    .select('id, name, sku, unit, base_price, vat_rate, min_order_qty, order_multiple, stock_status, image_url, category_id, categories(name)')
+    .select('id, name, sku, unit, base_price, vat_rate, min_order_qty, order_multiple, stock_status, category_id, categories(name)')
     .eq('tenant_id', tenantInfo.id)
     .eq('status', 'active')
     .order('name')
