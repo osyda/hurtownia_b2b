@@ -1,5 +1,18 @@
 import Link from 'next/link'
-import { Building2, ChevronRight, Globe2, Gauge, ShoppingCart, Sparkles, TrendingUp, Users } from 'lucide-react'
+import {
+  Building2,
+  CheckCircle2,
+  ChevronRight,
+  CreditCard,
+  FileText,
+  Globe2,
+  Gauge,
+  ShoppingCart,
+  Sparkles,
+  Store,
+  TrendingUp,
+  Users,
+} from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { buildTenantOnboarding } from '@/lib/onboarding'
 import { formatCurrency, formatDateTime, ORDER_STATUS_COLORS, ORDER_STATUS_LABELS } from '@/lib/utils'
@@ -81,6 +94,39 @@ export default async function AdminDashboardPage() {
       accent: 'from-slate-700 to-slate-500',
     },
   ]
+  const offerNotes = [
+    {
+      icon: Globe2,
+      title: 'Strona publiczna',
+      value: 'dostawio.pl',
+      text: 'Sprzedaje korzyści dla hurtowni: mniej telefonu, własny panel B2B, klienci zamawiają online.',
+    },
+    {
+      icon: Store,
+      title: 'Adres hurtowni',
+      value: 'slug.dostawio.pl',
+      text: 'To jest miejsce pracy hurtowni i jej klientów. Nie komunikuj klientowi końcowemu app ani superadmina.',
+    },
+    {
+      icon: CreditCard,
+      title: 'Model ceny',
+      value: 'abonament + wdrożenie',
+      text: 'Startuj od stałego abonamentu bez prowizji od wartości zamówień. Integracje wyceniaj osobno.',
+    },
+  ]
+  const internalPricing = [
+    ['Start B2B', '399 zł/mies.', '6 mies. 2 154 zł, rok 3 990 zł netto'],
+    ['Pro B2B', '699 zł/mies.', 'dla hurtowni z większym katalogiem i importami'],
+    ['Integracje', '1 190 zł/mies.', 'ERP, faktury, stany, statusy i indywidualny konektor'],
+  ]
+  const launchSteps = [
+    'Utwórz hurtownię i administratora.',
+    'Ustaw dane firmy, płatności, dostawy i minimum zamówienia.',
+    'Zaimportuj kategorie oraz produkty z SKU.',
+    'Dodaj klienta B2B, grupę cenową i przypisane formy płatności.',
+    'Wyślij dostęp do subdomeny hurtowni.',
+    'Zrób testowe zamówienie i dopiero wtedy uruchom klienta.',
+  ]
 
   return (
     <div className="space-y-7 p-4 md:p-8">
@@ -123,6 +169,65 @@ export default async function AdminDashboardPage() {
           </div>
         ))}
       </div>
+
+      <section className="grid gap-4 xl:grid-cols-[1.05fr_0.95fr]">
+        <div className="premium-card overflow-hidden">
+          <div className="border-b border-slate-200/80 bg-white px-5 py-4">
+            <h2 className="text-lg font-black tracking-tight text-slate-950">Wewnętrzny playbook sprzedaży</h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Te informacje są dla Ciebie po zalogowaniu. Na stronie publicznej pokazujemy tylko wartość dla hurtowni.
+            </p>
+          </div>
+          <div className="grid gap-4 p-5 lg:grid-cols-3">
+            {offerNotes.map(note => (
+              <div key={note.title} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+                <note.icon className="mb-4 h-5 w-5 text-slate-500" />
+                <div className="text-xs font-black uppercase tracking-[0.16em] text-slate-400">{note.title}</div>
+                <div className="mt-2 font-mono text-sm font-black text-slate-950">{note.value}</div>
+                <p className="mt-3 text-sm leading-6 text-slate-500">{note.text}</p>
+              </div>
+            ))}
+          </div>
+          <div className="border-t border-slate-200/80 p-5">
+            <div className="mb-4 flex items-center gap-2 text-sm font-black text-slate-950">
+              <FileText className="h-4 w-4 text-slate-500" />
+              Kroki wdrożenia hurtowni
+            </div>
+            <div className="grid gap-2 md:grid-cols-2">
+              {launchSteps.map(step => (
+                <div key={step} className="flex gap-2 rounded-lg bg-white px-3 py-2 text-sm font-semibold text-slate-700 ring-1 ring-slate-200">
+                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+                  {step}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="premium-card overflow-hidden">
+          <div className="border-b border-slate-200/80 bg-slate-950 px-5 py-4 text-white">
+            <h2 className="text-lg font-black tracking-tight">Proponowany cennik do rozmów</h2>
+            <p className="mt-1 text-sm text-slate-400">Ceny netto. Wdrożenie jednorazowe od 1 490 zł.</p>
+          </div>
+          <div className="divide-y divide-slate-100">
+            {internalPricing.map(([name, price, detail]) => (
+              <div key={name} className="grid gap-3 p-5 sm:grid-cols-[1fr_auto] sm:items-center">
+                <div>
+                  <div className="font-black text-slate-950">{name}</div>
+                  <div className="mt-1 text-sm leading-6 text-slate-500">{detail}</div>
+                </div>
+                <div className="rounded-lg bg-slate-50 px-3 py-2 text-right font-black text-slate-950">
+                  {price}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="border-t border-slate-200/80 bg-slate-50 p-5 text-sm leading-6 text-slate-600">
+            Roczny plan sprzedawaj jako najkorzystniejszy: 12 miesięcy w cenie 10. Integracje ERP/WMS traktuj
+            jako osobny etap po uruchomieniu podstawowego zamawiania.
+          </div>
+        </div>
+      </section>
 
       <section className="premium-card overflow-hidden">
         <div className="flex items-center justify-between border-b border-slate-200/80 bg-white px-5 py-4">
