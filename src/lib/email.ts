@@ -358,12 +358,14 @@ export async function sendCustomerInviteEmail({
 
 export async function sendDemoRequestEmail({
   company,
+  nip,
   name,
   email,
   phone,
   message,
 }: {
   company: string
+  nip: string
   name: string
   email: string
   phone: string
@@ -379,6 +381,7 @@ export async function sendDemoRequestEmail({
     body: `
       <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border-top:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0">
         ${row('Hurtownia', company)}
+        ${row('NIP hurtowni', nip)}
         ${row('Osoba kontaktowa', name)}
         ${row('E-mail', email)}
         ${row('Telefon', phone)}
@@ -396,12 +399,13 @@ export async function sendDemoRequestEmail({
     text: [
       'Nowa prośba o demo Dostawio Connect',
       `Hurtownia: ${company}`,
+      `NIP: ${nip}`,
       `Osoba: ${name}`,
       `E-mail: ${email}`,
       `Telefon: ${phone}`,
       message ? `Wiadomość: ${message}` : '',
     ].filter(Boolean).join('\n'),
-    idempotencyKey: `demo-request:${email}:${company}`,
+    idempotencyKey: `demo-request:${email}:${nip}:${company}`,
     tag: 'demo_request',
   })
 }

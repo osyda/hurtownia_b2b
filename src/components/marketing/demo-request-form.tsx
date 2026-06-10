@@ -20,7 +20,16 @@ export function DemoRequestForm() {
       </div>
 
       <div className="mt-5 grid gap-3">
-        <input name="company" required placeholder="Nazwa hurtowni" className="premium-input w-full" />
+        <div className="grid gap-3 sm:grid-cols-[1.15fr_0.85fr]">
+          <input name="company" required placeholder="Nazwa hurtowni" className="premium-input w-full" />
+          <input
+            name="nip"
+            required
+            inputMode="numeric"
+            placeholder="NIP hurtowni"
+            className="premium-input w-full"
+          />
+        </div>
         <input name="name" required placeholder="Imię i nazwisko" className="premium-input w-full" />
         <div className="grid gap-3 sm:grid-cols-2">
           <input name="email" type="email" required placeholder="E-mail" className="premium-input w-full" />
