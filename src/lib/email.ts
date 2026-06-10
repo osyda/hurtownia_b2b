@@ -59,6 +59,18 @@ function row(label: string, value: string | number) {
   `
 }
 
+function normalizeIdempotencyKey(value: string) {
+  const normalized = value
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-zA-Z0-9:._-]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 220)
+
+  return normalized || `email:${Date.now()}`
+}
+
 function renderEmail({
   preview,
   title,
@@ -107,30 +119,38 @@ function renderEmail({
 }
 
 async function sendTransactionalEmail(input: SendEmailInput): Promise<EmailSendResult> {
-  const resend = getResend()
-  if (!resend) {
-    console.info(`[email:${input.tag}] DOSTAWIO_RESEND_API_KEY is not configured; email skipped.`)
-    return { ok: false, reason: 'not_configured' }
+  try {
+    const resend = getResend()
+    if (!resend) {
+      console.info(`[email:${input.tag}] DOSTAWIO_RESEND_API_KEY is not configured; email skipped.`)
+      return { ok: false, reason: 'not_configured' }
+    }
+
+    const payload = {
+      from: FROM,
+      to: input.to,
+      subject: input.subject,
+      html: input.html,
+      text: input.text,
+      tags: [{ name: 'type', value: input.tag }],
+      ...(REPLY_TO ? { replyTo: REPLY_TO } : {}),
+    }
+
+    const { data, error } = await resend.emails.send(payload, {
+      idempotencyKey: normalizeIdempotencyKey(input.idempotencyKey),
+    })
+
+    if (error) {
+      console.error(`[email:${input.tag}] Resend error`, error)
+      return { ok: false, reason: 'provider_error', error: error.message }
+    }
+
+    return { ok: true, id: data?.id ?? null }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown email provider error'
+    console.error(`[email:${input.tag}] Resend exception`, error)
+    return { ok: false, reason: 'provider_error', error: message }
   }
-
-  const { data, error } = await resend.emails.send({
-    from: FROM,
-    to: input.to,
-    replyTo: REPLY_TO,
-    subject: input.subject,
-    html: input.html,
-    text: input.text,
-    tags: [{ name: 'type', value: input.tag }],
-  }, {
-    idempotencyKey: input.idempotencyKey,
-  })
-
-  if (error) {
-    console.error(`[email:${input.tag}] Resend error`, error)
-    return { ok: false, reason: 'provider_error', error: error.message }
-  }
-
-  return { ok: true, id: data?.id ?? null }
 }
 
 export async function sendTenantAdminWelcomeEmail({

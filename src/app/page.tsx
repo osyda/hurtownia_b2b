@@ -107,9 +107,31 @@ function MarketingLanding() {
   ]
 
   const plans = [
-    ['Start', '399 zł', 'miesięcznie netto', 'dla hurtowni startującej z zamówieniami online'],
-    ['Pro', '699 zł', 'miesięcznie netto', 'dla większego katalogu, importów i stałej pracy handlowców'],
-    ['Integracje', 'od 1 190 zł', 'miesięcznie netto', 'dla ERP, faktur, statusów i indywidualnego konektora'],
+    {
+      name: 'Start',
+      price: '399 zł',
+      period: 'miesięcznie netto',
+      badge: 'Dobry start',
+      description: 'Dla hurtowni, która chce szybko uruchomić zamówienia online dla stałych klientów.',
+      features: ['do 1 000 produktów', 'do 50 klientów B2B', 'katalog, koszyk i historia', 'podstawowy onboarding'],
+    },
+    {
+      name: 'Pro',
+      price: '699 zł',
+      period: 'miesięcznie netto',
+      badge: 'Najczęściej wybierany',
+      description: 'Najlepszy plan do regularnej pracy B2B: większy katalog, importy, cenniki i obsługa handlowców.',
+      features: ['do 10 000 produktów', 'do 250 klientów B2B', 'importy i grupy cenowe', 'priorytet wdrożenia'],
+      featured: true,
+    },
+    {
+      name: 'Integracje',
+      price: 'od 1 190 zł',
+      period: 'miesięcznie netto',
+      badge: 'ERP i automatyzacje',
+      description: 'Dla hurtowni, która chce połączyć Dostawio z systemem sprzedażowym, magazynem lub fakturami.',
+      features: ['API integracyjne', 'statusy i faktury', 'synchronizacja stanów', 'indywidualny konektor'],
+    },
   ]
 
   return (
@@ -262,26 +284,80 @@ function MarketingLanding() {
         </div>
       </section>
 
-      <section id="cennik" className="bg-white px-5 py-14 lg:px-8">
+      <section id="cennik" className="bg-white px-5 py-16 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <div className="max-w-2xl">
-            <div className="text-sm font-black uppercase tracking-[0.18em] text-[#0F4D38]">Cennik</div>
-            <h2 className="mt-3 text-2xl font-black tracking-tight sm:text-4xl">
-              Stały abonament bez prowizji od zamówień.
-            </h2>
-            <p className="mt-4 text-sm leading-7 text-slate-500">
-              Wdrożenie jednorazowe od 1 490 zł netto. Integracje są wyceniane po krótkiej analizie systemu hurtowni.
-            </p>
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div className="max-w-2xl">
+              <div className="text-sm font-black uppercase tracking-[0.18em] text-[#0F4D38]">Cennik</div>
+              <h2 className="mt-3 text-2xl font-black tracking-tight sm:text-4xl">
+                Stały abonament bez prowizji od zamówień.
+              </h2>
+              <p className="mt-4 text-sm leading-7 text-slate-500">
+                Wdrożenie jednorazowe od 1 490 zł netto. Przy płatności rocznej: 2 miesiące w cenie.
+                Integracje są wyceniane po krótkiej analizie systemu hurtowni.
+              </p>
+            </div>
+            <div className="rounded-lg border border-[#BFEDEA] bg-[#E9FAF8] px-4 py-3 text-sm font-bold text-[#0F4D38]">
+              Rekomendowany start: plan Pro
+            </div>
           </div>
-          <div className="mt-8 grid gap-4 lg:grid-cols-3">
-            {plans.map(([name, price, period, description]) => (
-              <div key={name} className="rounded-lg border border-[#E8E4DC] bg-[#FCFBF8] p-5">
-                <h3 className="text-xl font-black">{name}</h3>
-                <div className="mt-5 flex items-end gap-2">
-                  <div className="text-2xl font-black tracking-tight sm:text-3xl">{price}</div>
-                  <div className="pb-1 text-sm font-bold text-slate-400">{period}</div>
+          <div className="mt-10 grid gap-4 lg:grid-cols-3 lg:items-stretch">
+            {plans.map(plan => (
+              <div
+                key={plan.name}
+                className={[
+                  'relative flex flex-col rounded-lg border p-5 transition duration-200',
+                  plan.featured
+                    ? 'border-[#27C7C3] bg-white shadow-[0_18px_44px_rgba(15,77,56,0.14)] ring-1 ring-[#27C7C3]/25 lg:-mt-4 lg:pb-7'
+                    : 'border-[#E8E4DC] bg-[#FCFBF8]',
+                ].join(' ')}
+              >
+                {plan.featured && (
+                  <div className="absolute -top-3 left-5 rounded-full bg-[#0F4D38] px-3 py-1 text-[11px] font-black uppercase tracking-[0.14em] text-white shadow-sm">
+                    Najlepszy wybór
+                  </div>
+                )}
+
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <div className={plan.featured ? 'text-sm font-black uppercase tracking-[0.16em] text-[#0F4D38]' : 'text-sm font-black uppercase tracking-[0.16em] text-slate-400'}>
+                      {plan.badge}
+                    </div>
+                    <h3 className="mt-2 text-2xl font-black">{plan.name}</h3>
+                  </div>
+                  {plan.featured && <PackageCheck className="h-6 w-6 text-[#27C7C3]" />}
                 </div>
-                <p className="mt-4 text-sm leading-6 text-slate-500">{description}</p>
+
+                <div className="mt-6">
+                  <div className="flex flex-wrap items-end gap-x-2 gap-y-1">
+                    <div className={plan.featured ? 'text-4xl font-black tracking-tight text-[#303030]' : 'text-3xl font-black tracking-tight text-[#303030]'}>
+                      {plan.price}
+                    </div>
+                    <div className="pb-1 text-sm font-bold text-slate-400">{plan.period}</div>
+                  </div>
+                  <p className="mt-4 min-h-[4.5rem] text-sm leading-6 text-slate-500">{plan.description}</p>
+                </div>
+
+                <div className="mt-5 space-y-3">
+                  {plan.features.map(feature => (
+                    <div key={feature} className="flex gap-2 text-sm font-semibold text-slate-700">
+                      <CheckCircle2 className={plan.featured ? 'mt-0.5 h-4 w-4 shrink-0 text-[#0F4D38]' : 'mt-0.5 h-4 w-4 shrink-0 text-slate-400'} />
+                      <span>{feature}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <a
+                  href="#demo"
+                  className={
+                    plan.featured
+                      ? 'brand-button mt-6 px-4 py-3 text-sm'
+                      : 'mt-6 inline-flex items-center justify-center rounded-lg border border-[#E8E4DC] bg-white px-4 py-3 text-sm font-black text-[#303030] transition hover:border-[#27C7C3]'
+                  }
+                >
+                  Poproś o demo
+                  <ArrowRight className="h-4 w-4" />
+                </a>
               </div>
             ))}
           </div>
