@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: 'Dostawio Connect - platforma zamówień B2B dla hurtowni',
   description: 'Dostawio Connect: platforma B2B dla hurtowni, klientów, cenników, zamówień i integracji.',
   icons: {
-    icon: '/dostawio-icon.svg',
+    icon: '/brand/dostawio-connect-icon.jpg',
   },
 }
 

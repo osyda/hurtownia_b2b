@@ -335,3 +335,53 @@ export async function sendCustomerInviteEmail({
     tag: 'customer_invite',
   })
 }
+
+export async function sendDemoRequestEmail({
+  company,
+  name,
+  email,
+  phone,
+  message,
+}: {
+  company: string
+  name: string
+  email: string
+  phone: string
+  message?: string
+}) {
+  const to = process.env.DOSTAWIO_DEMO_REQUEST_TO || 'kontakt@dostawio.pl'
+  const subject = `Nowa prośba o demo Dostawio - ${company}`
+  const preview = `${name} z ${company} prosi o dostęp demo.`
+  const html = renderEmail({
+    preview,
+    title: 'Nowa prośba o demo',
+    intro: `${name} chce otrzymać dostęp demo do Dostawio Connect.`,
+    body: `
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border-top:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0">
+        ${row('Hurtownia', company)}
+        ${row('Osoba kontaktowa', name)}
+        ${row('E-mail', email)}
+        ${row('Telefon', phone)}
+      </table>
+      ${message ? `<div style="margin-top:16px;background:#F7F5EF;border:1px solid #E8E4DC;border-radius:8px;padding:12px;color:#475569;font-size:14px;line-height:1.6"><strong>Wiadomość:</strong><br>${escapeHtml(message)}</div>` : ''}
+    `,
+    action: button('Odpisz na e-mail', `mailto:${email}`),
+  })
+
+  return sendTransactionalEmail({
+    to,
+    subject,
+    preview,
+    html,
+    text: [
+      'Nowa prośba o demo Dostawio Connect',
+      `Hurtownia: ${company}`,
+      `Osoba: ${name}`,
+      `E-mail: ${email}`,
+      `Telefon: ${phone}`,
+      message ? `Wiadomość: ${message}` : '',
+    ].filter(Boolean).join('\n'),
+    idempotencyKey: `demo-request:${email}:${company}`,
+    tag: 'demo_request',
+  })
+}

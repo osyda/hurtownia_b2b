@@ -99,9 +99,9 @@ export default async function LoginPage() {
       }
 
   return (
-    <div className="premium-page min-h-screen p-3 sm:p-4 lg:p-6">
+    <div className="premium-page min-h-screen overflow-x-hidden p-3 sm:p-4 lg:p-6">
       <div className="mx-auto grid min-h-[calc(100vh-1.5rem)] max-w-7xl gap-5 lg:min-h-[calc(100vh-3rem)] lg:grid-cols-[1.05fr_0.95fr]">
-        <section className="premium-hero hidden flex-col justify-between p-8 lg:flex">
+        <section className="premium-hero hidden flex-col justify-between p-7 lg:flex">
           <div className="relative z-10">
             <div className="mb-10 flex items-center justify-between gap-6">
               {isTenantLogin ? (
@@ -115,7 +115,7 @@ export default async function LoginPage() {
                   </div>
                 </div>
               ) : (
-                <DostawioLogo light className="[&>div>div:first-child]:text-2xl" />
+                <DostawioLogo className="w-[230px]" />
               )}
               <div className="rounded-full border border-[#27C7C3]/25 bg-[#27C7C3]/10 px-3 py-1 text-xs font-black uppercase tracking-[0.16em] text-teal-100">
                 {context.badge}
@@ -123,7 +123,7 @@ export default async function LoginPage() {
             </div>
 
             <div className="premium-pill mb-5">{context.eyebrow}</div>
-            <h1 className="max-w-2xl text-5xl font-black leading-[1.02] tracking-tight">
+            <h1 className="max-w-2xl text-4xl font-black leading-[1.05] tracking-tight">
               {context.headline}
             </h1>
             <p className="mt-5 max-w-xl text-base leading-7 text-slate-300">
@@ -179,32 +179,32 @@ export default async function LoginPage() {
           </div>
         </section>
 
-        <main className="flex min-h-[calc(100vh-1.5rem)] items-center justify-center px-1 py-5 lg:min-h-[calc(100vh-3rem)] lg:px-10">
-          <div className="w-full max-w-md">
-            <div className="mb-6 lg:hidden">
-              <DostawioMark className="mb-4 h-12 w-12" />
-              <h1 className="text-3xl font-black tracking-tight text-slate-950">{context.brandTitle}</h1>
+        <main className="flex min-h-[calc(100vh-1.5rem)] items-center justify-center px-1 py-3 lg:min-h-[calc(100vh-3rem)] lg:px-10">
+          <div className="w-full min-w-0 max-w-md">
+            <div className="mb-4 lg:hidden">
+              <DostawioMark className="mb-3 h-10 w-10" />
+              <h1 className="text-2xl font-black tracking-tight text-slate-950">{context.brandTitle}</h1>
               <p className="mt-2 text-sm leading-6 text-slate-500">
                 {context.mobileDescription}
               </p>
             </div>
 
             <div className="premium-card overflow-hidden">
-              <div className="brand-gradient border-b border-slate-200/80 px-6 py-6 text-white sm:px-8 sm:py-7">
-                <div className="mb-4 flex items-center justify-between gap-4">
+              <div className="brand-gradient border-b border-slate-200/80 px-5 py-5 text-white sm:px-7 sm:py-6">
+                <div className="mb-3 flex items-center justify-between gap-4">
                   <div className="inline-flex rounded-full bg-white/10 p-2">
                     <Sparkles className="h-5 w-5 text-teal-100" />
                   </div>
-                  <div className="rounded-full bg-white/10 px-3 py-1 text-xs font-black uppercase tracking-[0.16em] text-slate-300">
+                  <div className="max-w-[118px] truncate rounded-full bg-white/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-slate-300 sm:max-w-none sm:text-xs sm:tracking-[0.16em]">
                     {context.cardLabel}
                   </div>
                 </div>
-                <h2 className="text-2xl font-black tracking-tight">{context.cardTitle}</h2>
+                <h2 className="text-xl font-black tracking-tight sm:text-2xl">{context.cardTitle}</h2>
                 <p className="mt-2 text-sm leading-6 text-slate-300">
                   {context.cardDescription}
                 </p>
               </div>
-              <div className="p-6 sm:p-8">
+              <div className="p-5 sm:p-7">
                 <LoginForm
                   buttonLabel={context.buttonLabel}
                   emailPlaceholder={context.emailPlaceholder}
@@ -213,7 +213,7 @@ export default async function LoginPage() {
               </div>
             </div>
 
-            <div className="mt-4 grid grid-cols-3 gap-2 text-[11px] font-bold leading-4 text-slate-500 sm:text-xs">
+            <div className="mt-4 grid grid-cols-1 gap-2 text-[11px] font-bold leading-4 text-slate-500 sm:grid-cols-3 sm:text-xs">
               {context.quickCards.map(item => (
                 <div key={item.label} className="rounded-lg border border-white/70 bg-white/75 px-2.5 py-3 shadow-sm">
                   <item.icon className="mb-2 h-4 w-4 text-slate-400" />

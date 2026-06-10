@@ -50,24 +50,24 @@ export default async function ShopDashboardPage({ params }: { params: Promise<{ 
   const orderTotal = recentOrders?.reduce((sum, order) => sum + (order.total_gross || 0), 0) ?? 0
 
   return (
-    <div className="space-y-7">
-      <section className="premium-hero p-6 md:p-8">
-        <div className="relative z-10 grid gap-8 lg:grid-cols-[1fr_310px] lg:items-end">
+    <div className="space-y-5">
+      <section className="premium-hero p-5 md:p-7">
+        <div className="relative z-10 grid gap-6 lg:grid-cols-[1fr_290px] lg:items-end">
           <div>
             <div className="premium-pill mb-5">
               <Sparkles className="mr-2 h-3.5 w-3.5" />
               Portal zakupowy B2B
             </div>
-            <h1 className="max-w-3xl text-3xl font-black tracking-tight md:text-5xl">
+            <h1 className="max-w-3xl text-2xl font-black tracking-tight md:text-4xl">
               Witaj, {customer.company_name}
             </h1>
-            <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-300 md:text-base">
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300 md:text-base">
               {tenantInfo?.customer_message || 'Szybko zamów produkty, sprawdź status i powtórz ostatnie zakupy.'}
             </p>
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-5 flex flex-col gap-2.5 sm:flex-row">
               <Link
                 href={`${base}/katalog`}
-                className="inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-black text-white shadow-xl shadow-slate-950/20 transition hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-black text-white shadow-sm transition hover:-translate-y-0.5"
                 style={{ backgroundColor: brandColor }}
               >
                 <ShoppingCart className="h-4 w-4" />
@@ -75,7 +75,7 @@ export default async function ShopDashboardPage({ params }: { params: Promise<{ 
               </Link>
               <Link
                 href={`${base}/zamowienia`}
-                className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/15 bg-white/10 px-5 py-3 text-sm font-bold text-white backdrop-blur transition hover:bg-white/15"
+                className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/15 bg-white/10 px-4 py-2.5 text-sm font-bold text-white backdrop-blur transition hover:bg-white/15"
               >
                 Historia zamówień
                 <ChevronRight className="h-4 w-4" />
@@ -83,9 +83,9 @@ export default async function ShopDashboardPage({ params }: { params: Promise<{ 
             </div>
           </div>
 
-          <div className="rounded-lg border border-white/10 bg-white/10 p-5 backdrop-blur">
+          <div className="rounded-lg border border-white/10 bg-white/10 p-4 backdrop-blur">
             <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Ostatnie zamówienia</div>
-            <div className="mt-2 text-4xl font-black">{recentOrders?.length ?? 0}</div>
+            <div className="mt-2 text-3xl font-black">{recentOrders?.length ?? 0}</div>
             <div className="mt-2 text-sm text-slate-300">{formatCurrency(orderTotal)} w ostatnich pozycjach</div>
           </div>
         </div>
@@ -176,7 +176,7 @@ function ActionLink({
   return (
     <Link href={href} className="premium-stat-card group block overflow-hidden">
       <div className="mb-5 flex items-center justify-between">
-        <div className={`rounded-lg bg-gradient-to-br ${color} p-3 text-white shadow-lg shadow-slate-900/10`}>
+        <div className={`rounded-lg bg-gradient-to-br ${color} p-2.5 text-white shadow-sm`}>
           {icon}
         </div>
         <ChevronRight className="h-4 w-4 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-slate-600" />

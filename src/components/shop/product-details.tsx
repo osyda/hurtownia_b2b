@@ -94,7 +94,7 @@ export function ProductDetails({ brandColor, backHref, product }: Props) {
             </span>
           </div>
 
-          <h1 className="mt-5 text-3xl font-black tracking-tight text-slate-950 md:text-4xl">
+          <h1 className="mt-5 text-2xl font-black tracking-tight text-slate-950 md:text-4xl">
             {product.name}
           </h1>
 
@@ -126,7 +126,7 @@ export function ProductDetails({ brandColor, backHref, product }: Props) {
           <div className="mt-6 rounded-lg bg-[#FBFAF6] p-3 sm:p-4">
             <div className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">Cena netto</div>
             <div className="mt-1 flex items-end justify-between gap-4">
-              <div className="text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
+              <div className="text-xl font-black tracking-tight text-slate-950 sm:text-2xl">
                 {formatCurrency(product.customer_price)}
               </div>
               <div className="text-sm font-bold text-slate-400">/ {product.unit}</div>

@@ -258,7 +258,7 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
                       <div className="flex items-end justify-between gap-2">
                         <div>
                           <div className="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 sm:text-xs">Cena netto</div>
-                          <div className="mt-0.5 text-xl font-black tracking-tight text-slate-950 sm:mt-1 sm:text-2xl">
+                          <div className="mt-0.5 text-base font-black tracking-tight text-slate-950 sm:mt-1 sm:text-lg">
                             {formatCurrency(product.customer_price)}
                           </div>
                         </div>
