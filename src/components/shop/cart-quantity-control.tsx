@@ -86,7 +86,7 @@ export function CartQuantityControl({
         onClick={() => adjust(-step)}
         disabled={disabled}
         className={cn(
-          'grid place-items-center text-slate-600 transition hover:bg-[#F4F1EC] active:scale-95 disabled:pointer-events-none',
+          'grid place-items-center text-slate-500 transition hover:bg-[#F4F1EC] hover:text-slate-700 active:scale-95 disabled:pointer-events-none',
           compact ? 'w-8' : 'w-10'
         )}
         aria-label="Zmniejsz ilość"
@@ -106,7 +106,7 @@ export function CartQuantityControl({
         }}
         disabled={disabled}
         className={cn(
-          'border-x border-[#D9D5CC] bg-white text-center font-black text-slate-950 outline-none transition focus:bg-[#F8F5EF]',
+          'border-x border-[#D9D5CC] bg-white text-center font-semibold text-slate-800 outline-none transition focus:bg-[#F8F5EF]',
           compact ? 'w-12 px-1 py-1 text-xs' : 'w-16 px-2 py-1.5 text-sm'
         )}
         aria-label="Ilość"
@@ -116,7 +116,7 @@ export function CartQuantityControl({
         onClick={() => adjust(step)}
         disabled={disabled}
         className={cn(
-          'grid place-items-center text-slate-600 transition hover:bg-[#F4F1EC] active:scale-95 disabled:pointer-events-none',
+          'grid place-items-center text-slate-500 transition hover:bg-[#F4F1EC] hover:text-slate-700 active:scale-95 disabled:pointer-events-none',
           compact ? 'w-8' : 'w-10'
         )}
         aria-label="Zwiększ ilość"
@@ -124,7 +124,7 @@ export function CartQuantityControl({
         <Plus className={compact ? 'h-3.5 w-3.5' : 'h-4 w-4'} />
       </button>
       {unit ? (
-        <span className={cn('grid place-items-center px-2 font-bold text-slate-400', compact ? 'text-[10px]' : 'text-xs')}>
+        <span className={cn('grid place-items-center px-2 font-semibold text-slate-400', compact ? 'text-[10px]' : 'text-xs')}>
           {unit}
         </span>
       ) : null}

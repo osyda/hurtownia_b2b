@@ -29,8 +29,8 @@ export function QuickCartPanel({ brandColor, shopBasePath }: QuickCartPanelProps
         <div className="border-b border-[#E2DCD0] bg-[#F8F5EF] px-4 py-4">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <div className="text-[10px] font-black uppercase tracking-[0.18em] text-[#0F5B41]">Koszyk</div>
-              <h2 className="mt-1 text-lg font-black text-slate-950">Szybkie zamówienie</h2>
+              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#0F5B41]">Koszyk</div>
+              <h2 className="mt-1 text-lg font-semibold text-slate-900">Szybkie zamówienie</h2>
             </div>
             <div className="grid h-10 w-10 place-items-center rounded-xl bg-white text-slate-950 shadow-sm">
               <ShoppingCart className="h-5 w-5" />
@@ -54,7 +54,7 @@ export function QuickCartPanel({ brandColor, shopBasePath }: QuickCartPanelProps
                 <div key={item.productId} className="rounded-xl border border-[#E2DCD0] bg-white p-3 shadow-sm">
                   <div className="flex items-start gap-2">
                     <div className="min-w-0 flex-1">
-                      <div className="line-clamp-2 text-sm font-black leading-snug text-slate-950">{item.name}</div>
+                      <div className="line-clamp-2 text-sm font-semibold leading-snug text-slate-900">{item.name}</div>
                       <div className="mt-1 flex items-center justify-between gap-2 text-[11px] font-semibold text-slate-400">
                         <span className="truncate">{item.sku ? `SKU: ${item.sku}` : 'Produkt'}</span>
                         <span>{formatCurrency(item.price)} / {item.unit}</span>
@@ -80,8 +80,8 @@ export function QuickCartPanel({ brandColor, shopBasePath }: QuickCartPanelProps
                       onChange={qty => updateQty(item.productId, qty)}
                     />
                     <div className="text-right">
-                      <div className="text-sm font-black text-slate-950">{formatCurrency(item.price * item.qty)}</div>
-                      <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">netto</div>
+                      <div className="text-sm font-semibold text-slate-900">{formatCurrency(item.price * item.qty)}</div>
+                      <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-400">netto</div>
                     </div>
                   </div>
                 </div>
@@ -96,12 +96,12 @@ export function QuickCartPanel({ brandColor, shopBasePath }: QuickCartPanelProps
                 </div>
                 <div className="flex justify-between text-slate-500">
                   <span>Brutto</span>
-                  <span className="font-black text-slate-950">{formatCurrency(gross)}</span>
+                  <span className="font-semibold text-slate-900">{formatCurrency(gross)}</span>
                 </div>
               </div>
               <Link
                 href={`${shopBasePath}/koszyk`}
-                className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-black text-white shadow-sm transition hover:-translate-y-0.5 active:scale-95"
+                className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 active:scale-95"
                 style={{ backgroundColor: resolvedBrandColor }}
               >
                 Przejdź do zamówienia
