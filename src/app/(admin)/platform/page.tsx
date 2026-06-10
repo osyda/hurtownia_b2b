@@ -88,7 +88,7 @@ export default async function PlatformPage() {
           >
             <card.icon className="mb-6 h-6 w-6 text-slate-500" />
             <h2 className="text-lg font-black tracking-tight text-slate-950">{card.title}</h2>
-            <div className="mt-3 break-all font-mono text-sm font-bold text-[#0F4D38]">{card.url}</div>
+            <div className="mt-3 break-all font-mono text-sm font-bold text-[#1D2125]">{card.url}</div>
             <p className="mt-4 text-sm leading-6 text-slate-500">{card.description}</p>
           </a>
         ))}
@@ -118,7 +118,7 @@ export default async function PlatformPage() {
               checklisty, testowe zamówienie, instrukcja integratora i raport gotowości po stronie superadmina.
             </p>
           </div>
-          <div className="rounded-lg bg-[#303030] px-4 py-3 text-sm font-black text-white">
+          <div className="rounded-lg bg-[#1D2125] px-4 py-3 text-sm font-black text-white">
             Gotowe pod skalowanie
           </div>
         </div>

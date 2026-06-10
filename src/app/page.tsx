@@ -71,7 +71,7 @@ export default async function RootPage() {
 }
 
 function MarketingLanding() {
-  const contactHref = 'mailto:kontakt@dostawio.pl?subject=Rozmowa%20o%20Dostawio%20Connect'
+  const contactHref = 'mailto:kontakt@dostawio.pl?subject=Rozmowa%20o%20Dostawio'
 
   const outcomes = [
     {
@@ -135,14 +135,14 @@ function MarketingLanding() {
   ]
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[#FCFBF8] text-[#303030]">
-      <header className="sticky top-0 z-40 border-b border-[#E8E4DC]/80 bg-white/90 backdrop-blur">
+    <main className="min-h-screen overflow-x-hidden bg-[#FBFAF7] text-[#1D2125]">
+      <header className="sticky top-0 z-40 border-b border-[#E2DCD0]/80 bg-white/90 backdrop-blur">
         <nav className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-5 lg:px-8">
           <DostawioLogo className="w-[166px] sm:w-[240px]" />
           <div className="hidden items-center gap-6 text-sm font-bold text-slate-600 md:flex">
-            <a href="#oferta" className="transition hover:text-[#0F4D38]">Oferta</a>
-            <a href="#jak-dziala" className="transition hover:text-[#0F4D38]">Jak działa</a>
-            <a href="#cennik" className="transition hover:text-[#0F4D38]">Cennik</a>
+            <a href="#oferta" className="transition hover:text-[#1D2125]">Oferta</a>
+            <a href="#jak-dziala" className="transition hover:text-[#1D2125]">Jak działa</a>
+            <a href="#cennik" className="transition hover:text-[#1D2125]">Cennik</a>
           </div>
           <a href="#demo" className="brand-button shrink-0 px-3 py-2 text-xs sm:px-4 sm:text-sm">
             <span className="sm:hidden">Demo</span>
@@ -152,17 +152,17 @@ function MarketingLanding() {
       </header>
 
       <section className="relative overflow-hidden px-5 py-14 lg:px-8 lg:py-20">
-        <div className="absolute inset-x-0 top-0 -z-10 h-[32rem] bg-[radial-gradient(circle_at_80%_8%,rgba(39,199,195,0.13),transparent_30rem)]" />
+        <div className="absolute inset-x-0 top-0 -z-10 h-[32rem] bg-[radial-gradient(circle_at_82%_6%,rgba(224,138,43,0.14),transparent_30rem)]" />
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.02fr_0.98fr] lg:items-center">
           <div>
-            <div className="mb-6 inline-flex max-w-full rounded-full border border-[#BFEDEA] bg-[#E9FAF8] px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-[#0F4D38] sm:text-xs sm:tracking-[0.18em]">
+            <div className="mb-6 inline-flex max-w-full rounded-full border border-[#F0D3B3] bg-[#FFF7ED] px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-[#1D2125] sm:text-xs sm:tracking-[0.18em]">
               Platforma zamówień B2B dla hurtowni
             </div>
-            <h1 className="max-w-4xl text-3xl font-black leading-[1.06] tracking-tight text-[#303030] sm:text-5xl lg:text-6xl">
+            <h1 className="max-w-4xl text-3xl font-black leading-[1.06] tracking-tight text-[#1D2125] sm:text-5xl lg:text-6xl">
               Własny panel zamówień online dla Twoich klientów B2B.
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">
-              Dostawio Connect porządkuje codzienne zamówienia hurtowni: katalog, ceny, płatności,
+              Dostawio porządkuje codzienne zamówienia hurtowni: katalog, ceny, płatności,
               koszyk, historię i przygotowanie pod integracje z systemem sprzedażowo-magazynowym.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -172,7 +172,7 @@ function MarketingLanding() {
               </a>
               <a
                 href={contactHref}
-                className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#E8E4DC] bg-white px-5 py-3 text-sm font-black text-[#303030] transition hover:border-[#27C7C3]"
+                className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#E2DCD0] bg-white px-5 py-3 text-sm font-black text-[#1D2125] transition hover:border-[#E08A2B]"
               >
                 Napisz do nas
               </a>
@@ -184,31 +184,30 @@ function MarketingLanding() {
                 ['Subdomena', 'dla hurtowni'],
                 ['Cenniki', 'per klient'],
               ].map(([label, value]) => (
-                <div key={label} className="rounded-lg border border-[#E8E4DC] bg-white px-4 py-3">
+                <div key={label} className="rounded-lg border border-[#E2DCD0] bg-white px-4 py-3">
                   <div className="text-[11px] font-black uppercase tracking-[0.16em] text-slate-400">{label}</div>
-                  <div className="mt-1 text-sm font-black text-[#303030]">{value}</div>
+                  <div className="mt-1 text-sm font-black text-[#1D2125]">{value}</div>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="rounded-lg border border-[#E8E4DC] bg-white p-4 shadow-sm">
-            <img
-              src="/brand/dostawio-full-color.svg"
-              alt="Dostawio Connect - platforma zamówień B2B dla hurtowni"
-              width={1600}
-              height={520}
-              className="mx-auto h-auto w-full max-w-xl rounded-md object-contain"
-            />
+          <div className="rounded-lg border border-[#1D2125] bg-[#16191C] p-5 text-white shadow-[0_18px_42px_rgba(29,33,37,0.12)]">
+            <div className="rounded-lg bg-[#1D2125] px-5 py-8">
+              <DostawioLogo light className="mx-auto w-full max-w-xl" />
+              <p className="mx-auto mt-6 max-w-md text-center text-sm font-semibold leading-6 text-white/62">
+                Własny kanał zamówień B2B dla hurtowni, bez prowizji od sprzedaży i bez publicznego marketplace.
+              </p>
+            </div>
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
               {[
                 { icon: Store, label: 'Hurtownia', value: 'własny adres' },
                 { icon: Users, label: 'Klienci', value: 'swoje ceny' },
                 { icon: ShoppingCart, label: 'Zamówienia', value: 'online' },
               ].map(item => (
-                <div key={item.label} className="rounded-lg bg-[#FCFBF8] p-4">
-                  <item.icon className="mb-4 h-5 w-5 text-[#0F4D38]" />
-                  <div className="text-xs font-black uppercase tracking-[0.14em] text-slate-400">{item.label}</div>
+                <div key={item.label} className="rounded-lg border border-white/10 bg-white/[0.06] p-4">
+                  <item.icon className="mb-4 h-5 w-5 text-[#E08A2B]" />
+                  <div className="text-xs font-black uppercase tracking-[0.14em] text-white/45">{item.label}</div>
                   <div className="mt-1 text-sm font-black">{item.value}</div>
                 </div>
               ))}
@@ -220,15 +219,15 @@ function MarketingLanding() {
       <section id="oferta" className="px-5 py-12 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="max-w-2xl">
-            <div className="text-sm font-black uppercase tracking-[0.18em] text-[#0F4D38]">Co dostaje hurtownia</div>
+            <div className="text-sm font-black uppercase tracking-[0.18em] text-[#1D2125]">Co dostaje hurtownia</div>
             <h2 className="mt-3 text-2xl font-black tracking-tight sm:text-4xl">
               Lżejszy sposób przyjmowania zamówień od stałych klientów.
             </h2>
           </div>
           <div className="mt-8 grid gap-4 md:grid-cols-3">
             {outcomes.map(outcome => (
-              <div key={outcome.title} className="rounded-lg border border-[#E8E4DC] bg-white p-5">
-                <outcome.icon className="mb-6 h-6 w-6 text-[#0F4D38]" />
+              <div key={outcome.title} className="rounded-lg border border-[#E2DCD0] bg-white p-5">
+                <outcome.icon className="mb-6 h-6 w-6 text-[#1D2125]" />
                 <h3 className="text-lg font-black">{outcome.title}</h3>
                 <p className="mt-3 text-sm leading-6 text-slate-500">{outcome.text}</p>
               </div>
@@ -240,7 +239,7 @@ function MarketingLanding() {
       <section id="jak-dziala" className="bg-white px-5 py-14 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
           <div>
-            <div className="text-sm font-black uppercase tracking-[0.18em] text-[#0F4D38]">Jak działa</div>
+            <div className="text-sm font-black uppercase tracking-[0.18em] text-[#1D2125]">Jak działa</div>
             <h2 className="mt-3 text-2xl font-black tracking-tight sm:text-4xl">
               Klient zamawia na stronie swojej hurtowni, nie w cudzym marketplace.
             </h2>
@@ -250,8 +249,8 @@ function MarketingLanding() {
           </div>
           <div className="grid gap-4 md:grid-cols-3">
             {flow.map(([title, text], index) => (
-              <div key={title} className="rounded-lg border border-[#E8E4DC] bg-[#FCFBF8] p-5">
-                <div className="mb-5 flex h-8 w-8 items-center justify-center rounded-full bg-[#0F4D38] text-xs font-black text-white">
+              <div key={title} className="rounded-lg border border-[#E2DCD0] bg-[#FBFAF7] p-5">
+                <div className="mb-5 flex h-8 w-8 items-center justify-center rounded-full bg-[#1D2125] text-xs font-black text-white">
                   {index + 1}
                 </div>
                 <h3 className="text-base font-black">{title}</h3>
@@ -265,7 +264,7 @@ function MarketingLanding() {
       <section className="px-5 py-14 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <div>
-            <div className="text-sm font-black uppercase tracking-[0.18em] text-[#0F4D38]">Zakres systemu</div>
+            <div className="text-sm font-black uppercase tracking-[0.18em] text-[#1D2125]">Zakres systemu</div>
             <h2 className="mt-3 text-2xl font-black tracking-tight sm:text-4xl">
               Najpierw zamówienia, potem automatyzacje.
             </h2>
@@ -275,8 +274,8 @@ function MarketingLanding() {
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             {included.map(item => (
-              <div key={item} className="flex gap-3 rounded-lg border border-[#E8E4DC] bg-white px-4 py-3">
-                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#0F4D38]" />
+              <div key={item} className="flex gap-3 rounded-lg border border-[#E2DCD0] bg-white px-4 py-3">
+                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#1D2125]" />
                 <div className="text-sm font-semibold leading-6 text-slate-700">{item}</div>
               </div>
             ))}
@@ -288,16 +287,16 @@ function MarketingLanding() {
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div className="max-w-2xl">
-              <div className="text-sm font-black uppercase tracking-[0.18em] text-[#0F4D38]">Cennik</div>
+              <div className="text-sm font-black uppercase tracking-[0.18em] text-[#1D2125]">Cennik</div>
               <h2 className="mt-3 text-2xl font-black tracking-tight sm:text-4xl">
-                Stały abonament bez prowizji od zamówień.
+                Stały abonament, jasny zakres i bez prowizji od zamówień.
               </h2>
               <p className="mt-4 text-sm leading-7 text-slate-500">
                 Wdrożenie jednorazowe od 1 490 zł netto. Przy płatności rocznej: 2 miesiące w cenie.
                 Integracje są wyceniane po krótkiej analizie systemu hurtowni.
               </p>
             </div>
-            <div className="rounded-lg border border-[#BFEDEA] bg-[#E9FAF8] px-4 py-3 text-sm font-bold text-[#0F4D38]">
+            <div className="rounded-lg border border-[#F0D3B3] bg-[#FFF7ED] px-4 py-3 text-sm font-bold text-[#1D2125]">
               Rekomendowany start: plan Pro
             </div>
           </div>
@@ -308,40 +307,40 @@ function MarketingLanding() {
                 className={[
                   'relative flex flex-col rounded-lg border p-5 transition duration-200',
                   plan.featured
-                    ? 'border-[#27C7C3] bg-white shadow-[0_18px_44px_rgba(15,77,56,0.14)] ring-1 ring-[#27C7C3]/25 lg:-mt-4 lg:pb-7'
-                    : 'border-[#E8E4DC] bg-[#FCFBF8]',
+                    ? 'border-[#1D2125] bg-[#1D2125] text-white shadow-[0_22px_52px_rgba(29,33,37,0.18)] ring-1 ring-[#E08A2B]/45 lg:-mt-5 lg:pb-8'
+                    : 'border-[#E2DCD0] bg-[#FBFAF7]',
                 ].join(' ')}
               >
                 {plan.featured && (
-                  <div className="absolute -top-3 left-5 rounded-full bg-[#0F4D38] px-3 py-1 text-[11px] font-black uppercase tracking-[0.14em] text-white shadow-sm">
+                  <div className="absolute -top-3 left-5 rounded-full bg-[#E08A2B] px-3 py-1 text-[11px] font-black uppercase tracking-[0.14em] text-white shadow-sm">
                     Najlepszy wybór
                   </div>
                 )}
 
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <div className={plan.featured ? 'text-sm font-black uppercase tracking-[0.16em] text-[#0F4D38]' : 'text-sm font-black uppercase tracking-[0.16em] text-slate-400'}>
+                    <div className={plan.featured ? 'text-sm font-black uppercase tracking-[0.16em] text-[#E08A2B]' : 'text-sm font-black uppercase tracking-[0.16em] text-slate-400'}>
                       {plan.badge}
                     </div>
                     <h3 className="mt-2 text-2xl font-black">{plan.name}</h3>
                   </div>
-                  {plan.featured && <PackageCheck className="h-6 w-6 text-[#27C7C3]" />}
+                  {plan.featured && <PackageCheck className="h-6 w-6 text-[#E08A2B]" />}
                 </div>
 
                 <div className="mt-6">
                   <div className="flex flex-wrap items-end gap-x-2 gap-y-1">
-                    <div className={plan.featured ? 'text-4xl font-black tracking-tight text-[#303030]' : 'text-3xl font-black tracking-tight text-[#303030]'}>
+                    <div className={plan.featured ? 'text-4xl font-black tracking-tight text-white' : 'text-3xl font-black tracking-tight text-[#1D2125]'}>
                       {plan.price}
                     </div>
-                    <div className="pb-1 text-sm font-bold text-slate-400">{plan.period}</div>
+                    <div className={plan.featured ? 'pb-1 text-sm font-bold text-white/52' : 'pb-1 text-sm font-bold text-slate-400'}>{plan.period}</div>
                   </div>
-                  <p className="mt-4 min-h-[4.5rem] text-sm leading-6 text-slate-500">{plan.description}</p>
+                  <p className={plan.featured ? 'mt-4 min-h-[4.5rem] text-sm leading-6 text-white/62' : 'mt-4 min-h-[4.5rem] text-sm leading-6 text-slate-500'}>{plan.description}</p>
                 </div>
 
                 <div className="mt-5 space-y-3">
                   {plan.features.map(feature => (
-                    <div key={feature} className="flex gap-2 text-sm font-semibold text-slate-700">
-                      <CheckCircle2 className={plan.featured ? 'mt-0.5 h-4 w-4 shrink-0 text-[#0F4D38]' : 'mt-0.5 h-4 w-4 shrink-0 text-slate-400'} />
+                    <div key={feature} className={plan.featured ? 'flex gap-2 text-sm font-semibold text-white/78' : 'flex gap-2 text-sm font-semibold text-slate-700'}>
+                      <CheckCircle2 className={plan.featured ? 'mt-0.5 h-4 w-4 shrink-0 text-[#E08A2B]' : 'mt-0.5 h-4 w-4 shrink-0 text-slate-400'} />
                       <span>{feature}</span>
                     </div>
                   ))}
@@ -351,8 +350,8 @@ function MarketingLanding() {
                   href="#demo"
                   className={
                     plan.featured
-                      ? 'brand-button mt-6 px-4 py-3 text-sm'
-                      : 'mt-6 inline-flex items-center justify-center rounded-lg border border-[#E8E4DC] bg-white px-4 py-3 text-sm font-black text-[#303030] transition hover:border-[#27C7C3]'
+                      ? 'mt-6 inline-flex items-center justify-center gap-2 rounded-lg bg-[#E08A2B] px-4 py-3 text-sm font-black text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-[#C7741F]'
+                      : 'mt-6 inline-flex items-center justify-center rounded-lg border border-[#E2DCD0] bg-white px-4 py-3 text-sm font-black text-[#1D2125] transition hover:border-[#E08A2B]'
                   }
                 >
                   Poproś o demo
@@ -366,8 +365,8 @@ function MarketingLanding() {
 
       <section className="px-5 py-14 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-          <div className="rounded-lg border border-[#E8E4DC] bg-white p-5">
-            <ShieldCheck className="mb-5 h-6 w-6 text-[#0F4D38]" />
+          <div className="rounded-lg border border-[#E2DCD0] bg-white p-5">
+            <ShieldCheck className="mb-5 h-6 w-6 text-[#1D2125]" />
             <h2 className="text-2xl font-black tracking-tight sm:text-3xl">Demo tylko po zgłoszeniu.</h2>
             <p className="mt-4 text-sm leading-7 text-slate-500">
               Nie publikujemy danych testowego sklepu na stronie. Potencjalna hurtownia zostawia kontakt,
@@ -378,10 +377,10 @@ function MarketingLanding() {
         </div>
       </section>
 
-      <footer className="border-t border-[#E8E4DC] bg-white px-5 py-8 lg:px-8">
+      <footer className="border-t border-[#E2DCD0] bg-white px-5 py-8 lg:px-8">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <DostawioLogo className="w-[180px]" />
-          <a href={contactHref} className="text-sm font-bold text-[#0F4D38] hover:underline">
+          <a href={contactHref} className="text-sm font-bold text-[#1D2125] hover:underline">
             kontakt@dostawio.pl
           </a>
         </div>

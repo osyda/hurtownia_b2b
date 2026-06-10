@@ -253,7 +253,7 @@ export function CartView({
                   <label
                     key={method.id}
                     className={`flex cursor-pointer items-center gap-3 rounded-lg border p-3 text-sm font-bold transition ${
-                      paymentMethodId === method.id ? 'border-[#0F4D38] bg-[#F4F1EA] text-slate-950' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
+                      paymentMethodId === method.id ? 'border-[#1D2125] bg-[#F4F1EC] text-slate-950' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
                     }`}
                   >
                     <input

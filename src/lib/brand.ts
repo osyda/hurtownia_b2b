@@ -1,18 +1,18 @@
 export const DOSTAWIO_BRAND = {
-  graphite: '#303030',
-  graphiteSoft: '#4A4A4A',
-  forest: '#0F4D38',
-  forestDark: '#083B2B',
-  teal: '#27C7C3',
-  tealDark: '#19AFA9',
-  porcelain: '#F7F5EF',
-  stone: '#E8E4DC',
+  graphite: '#1D2125',
+  graphiteSoft: '#363A3D',
+  ink: '#16191C',
+  amber: '#E08A2B',
+  amberDark: '#C7741F',
+  ivory: '#F4F1EC',
+  paper: '#FBFAF7',
+  stone: '#E2DCD0',
 } as const
 
 const LEGACY_BRAND_COLORS = new Set([
   '#020617',
   '#0f172a',
-  '#303030',
+  '#1D2125',
   '#1d4ed8',
   '#2563eb',
   '#3b82f6',
@@ -21,7 +21,7 @@ const LEGACY_BRAND_COLORS = new Set([
 export function resolveBrandColor(color?: string | null) {
   const normalized = color?.trim().toLowerCase()
   if (!normalized || LEGACY_BRAND_COLORS.has(normalized)) {
-    return DOSTAWIO_BRAND.forest
+    return DOSTAWIO_BRAND.graphite
   }
 
   return color!
@@ -30,7 +30,7 @@ export function resolveBrandColor(color?: string | null) {
 export function resolveAccentColor(color?: string | null) {
   const normalized = color?.trim().toLowerCase()
   if (!normalized || LEGACY_BRAND_COLORS.has(normalized)) {
-    return DOSTAWIO_BRAND.tealDark
+    return DOSTAWIO_BRAND.amber
   }
 
   return color!

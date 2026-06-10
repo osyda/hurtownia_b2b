@@ -19,7 +19,7 @@ export default function NewTenantPage() {
   const [name, setName] = useState('')
   const [slug, setSlug] = useState('')
   const [slugManual, setSlugManual] = useState(false)
-  const [brandColor, setBrandColor] = useState('#0F4D38')
+  const [brandColor, setBrandColor] = useState('#1D2125')
 
   const previewSlug = slug || 'nowa-hurtownia'
   const shopUrl = getTenantShopUrl(previewSlug)
@@ -211,9 +211,9 @@ export default function NewTenantPage() {
             </p>
           </div>
 
-          <div className="rounded-lg border border-[#BFEDEA] bg-[#E9FAF8] p-5">
-            <BadgeCheck className="mb-4 h-5 w-5 text-[#0F4D38]" />
-            <h2 className="text-sm font-black uppercase tracking-[0.16em] text-[#0F4D38]">Standard Dostawio</h2>
+          <div className="rounded-lg border border-[#F0D3B3] bg-[#FFF7ED] p-5">
+            <BadgeCheck className="mb-4 h-5 w-5 text-[#1D2125]" />
+            <h2 className="text-sm font-black uppercase tracking-[0.16em] text-[#1D2125]">Standard Dostawio</h2>
             <p className="mt-2 text-sm leading-6 text-slate-700">
               Po zapisie przejdziesz prosto do szczegółów hurtowni, gdzie widać wynik gotowości i następny krok.
             </p>
@@ -251,7 +251,7 @@ function PreviewLink({
         </div>
         <ExternalLink className="h-4 w-4 text-slate-400" />
       </div>
-      <div className="break-all font-mono text-xs font-bold text-[#0F4D38]">{url}</div>
+      <div className="break-all font-mono text-xs font-bold text-[#1D2125]">{url}</div>
     </a>
   )
 }

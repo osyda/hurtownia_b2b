@@ -65,7 +65,7 @@ export function LoginForm({
         {!pending && <ArrowRight className="h-4 w-4" />}
       </button>
 
-      <div className="rounded-lg border border-[#E8E4DC] bg-[#FBFAF6] px-3 py-3 text-xs leading-5 text-slate-500">
+      <div className="rounded-lg border border-[#E2DCD0] bg-[#F8F5EF] px-3 py-3 text-xs leading-5 text-slate-500">
         {helperText}
       </div>
 

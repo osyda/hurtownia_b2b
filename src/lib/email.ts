@@ -44,7 +44,7 @@ function formatCurrency(value: number) {
 
 function button(label: string, href: string) {
   return `
-    <a href="${escapeHtml(href)}" style="display:inline-block;background:#303030;color:#ffffff;padding:13px 20px;border-radius:8px;text-decoration:none;font-weight:800;font-size:14px">
+    <a href="${escapeHtml(href)}" style="display:inline-block;background:#1D2125;color:#ffffff;padding:13px 20px;border-radius:8px;text-decoration:none;font-weight:800;font-size:14px">
       ${escapeHtml(label)}
     </a>
   `
@@ -54,7 +54,7 @@ function row(label: string, value: string | number) {
   return `
     <tr>
       <td style="padding:10px 0;color:#64748b;font-size:14px">${escapeHtml(label)}</td>
-      <td style="padding:10px 0;color:#303030;font-size:14px;font-weight:800;text-align:right">${escapeHtml(value)}</td>
+      <td style="padding:10px 0;color:#1D2125;font-size:14px;font-weight:800;text-align:right">${escapeHtml(value)}</td>
     </tr>
   `
 }
@@ -92,13 +92,13 @@ function renderEmail({
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>${escapeHtml(preview)}</title>
       </head>
-      <body style="margin:0;background:#F7F5EF;padding:28px 16px;font-family:Arial,Helvetica,sans-serif;color:#303030">
+      <body style="margin:0;background:#F4F1EC;padding:28px 16px;font-family:Arial,Helvetica,sans-serif;color:#1D2125">
         <div style="display:none;max-height:0;overflow:hidden;opacity:0">${escapeHtml(preview)}</div>
         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;margin:0 auto">
           <tr>
             <td>
-              <div style="background:#303030;color:#ffffff;border-radius:14px 14px 0 0;padding:24px">
-                <div style="display:inline-block;width:42px;height:42px;line-height:42px;text-align:center;border-radius:10px;background:#ffffff;color:#303030;font-weight:900">D</div>
+              <div style="background:#1D2125;color:#ffffff;border-radius:14px 14px 0 0;padding:24px">
+                <div style="display:inline-block;width:42px;height:42px;line-height:42px;text-align:center;border-radius:10px;background:#ffffff;color:#1D2125;font-weight:900">D</div>
                 <div style="margin-top:18px;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#94a3b8;font-weight:800">Dostawio</div>
                 <h1 style="margin:8px 0 0;font-size:26px;line-height:1.15;color:#ffffff">${escapeHtml(title)}</h1>
                 ${intro ? `<p style="margin:12px 0 0;color:#cbd5e1;line-height:1.65;font-size:15px">${escapeHtml(intro)}</p>` : ''}
@@ -386,7 +386,7 @@ export async function sendDemoRequestEmail({
         ${row('E-mail', email)}
         ${row('Telefon', phone)}
       </table>
-      ${message ? `<div style="margin-top:16px;background:#F7F5EF;border:1px solid #E8E4DC;border-radius:8px;padding:12px;color:#475569;font-size:14px;line-height:1.6"><strong>Wiadomość:</strong><br>${escapeHtml(message)}</div>` : ''}
+      ${message ? `<div style="margin-top:16px;background:#F4F1EC;border:1px solid #E2DCD0;border-radius:8px;padding:12px;color:#475569;font-size:14px;line-height:1.6"><strong>Wiadomość:</strong><br>${escapeHtml(message)}</div>` : ''}
     `,
     action: button('Odpisz na e-mail', `mailto:${email}`),
   })

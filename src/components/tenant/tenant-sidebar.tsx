@@ -59,7 +59,7 @@ export function TenantSidebar({ tenantSlug, tenantName, brandColor, role, panelB
       <div className="flex items-center justify-between border-b border-white/10 p-5">
         <div className="flex items-center gap-3">
           <div
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-sm font-black text-white shadow-lg shadow-[#27C7C3]/10 ring-1 ring-white/20"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-sm font-black text-white shadow-lg shadow-[#E08A2B]/10 ring-1 ring-white/20"
             style={{ backgroundColor: resolvedBrandColor }}
           >
             {tenantName.charAt(0).toUpperCase()}
@@ -88,7 +88,7 @@ export function TenantSidebar({ tenantSlug, tenantName, brandColor, role, panelB
             className={cn(
               'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-all',
               pathname.startsWith(item.href)
-                ? 'text-white shadow-lg shadow-[#27C7C3]/10 ring-1 ring-white/15'
+                ? 'text-white shadow-lg shadow-[#E08A2B]/10 ring-1 ring-white/15'
                 : 'text-slate-300 hover:bg-white/10 hover:text-white'
             )}
             style={pathname.startsWith(item.href) ? { backgroundColor: resolvedBrandColor } : {}}

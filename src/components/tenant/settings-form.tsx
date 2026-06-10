@@ -58,7 +58,7 @@ export function SettingsForm({
   const [isPending, startTransition] = useTransition()
   const [selectedDays, setSelectedDays] = useState<number[]>(delivery?.delivery_days ?? [])
   const [showAddPayment, setShowAddPayment] = useState(false)
-  const [brandColor, setBrandColor] = useState(tenant?.brand_color ?? '#0F4D38')
+  const [brandColor, setBrandColor] = useState(tenant?.brand_color ?? '#1D2125')
 
   function handleTenantSubmit(formData: FormData) {
     formData.set('brand_color', brandColor)
@@ -189,7 +189,7 @@ export function SettingsForm({
                   onClick={() => toggleDay(i)}
                   className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                     selectedDays.includes(i)
-                      ? 'bg-[#0F4D38] text-white'
+                      ? 'bg-[#1D2125] text-white'
                       : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                   }`}
                 >
@@ -266,7 +266,7 @@ export function SettingsForm({
                   onClick={() => handleToggle(pm.id, pm.is_active)}
                   disabled={isPending}
                   className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-                    pm.is_active ? 'bg-[#0F4D38]' : 'bg-gray-200'
+                    pm.is_active ? 'bg-[#1D2125]' : 'bg-gray-200'
                   }`}
                 >
                   <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform ${

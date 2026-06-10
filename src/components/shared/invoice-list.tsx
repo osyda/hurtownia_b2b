@@ -46,7 +46,7 @@ export function InvoiceList({ invoices }: Props) {
                   href={invoice.pdf_url}
                   target="_blank"
                   rel="noreferrer"
-                  className="rounded-lg bg-[#303030] px-3 py-2 text-sm font-bold text-white transition hover:bg-[#083B2B]"
+                  className="rounded-lg bg-[#1D2125] px-3 py-2 text-sm font-bold text-white transition hover:bg-[#16191C]"
                 >
                   Pobierz PDF
                 </a>

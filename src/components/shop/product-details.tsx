@@ -123,7 +123,7 @@ export function ProductDetails({ brandColor, backHref, product }: Props) {
             </div>
           )}
 
-          <div className="mt-6 rounded-lg bg-[#FBFAF6] p-3 sm:p-4">
+          <div className="mt-6 rounded-lg bg-[#F8F5EF] p-3 sm:p-4">
             <div className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">Cena netto</div>
             <div className="mt-1 flex items-end justify-between gap-4">
               <div className="text-xl font-black tracking-tight text-slate-950 sm:text-2xl">

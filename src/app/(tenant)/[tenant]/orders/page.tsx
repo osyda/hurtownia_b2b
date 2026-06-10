@@ -87,7 +87,7 @@ export default async function OrdersPage({
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <Link href={`/${tenantSlug}/orders/${order.id}`} className="text-sm text-[#0F4D38] hover:underline">Szczegóły</Link>
+                      <Link href={`/${tenantSlug}/orders/${order.id}`} className="text-sm text-[#1D2125] hover:underline">Szczegóły</Link>
                     </td>
                   </tr>
                 )

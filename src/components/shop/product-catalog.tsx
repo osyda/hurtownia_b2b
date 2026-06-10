@@ -115,7 +115,7 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
               onClick={() => navigate({ q: searchQuery })}
               className={cn(
                 'w-full rounded-lg px-3 py-2.5 text-left text-sm font-bold transition-all active:scale-95',
-                !activeCategory ? 'text-white shadow-sm' : 'text-slate-600 hover:bg-[#F4F1EA] hover:text-slate-950'
+                !activeCategory ? 'text-white shadow-sm' : 'text-slate-600 hover:bg-[#F4F1EC] hover:text-slate-950'
               )}
               style={!activeCategory ? { backgroundColor: resolvedBrandColor } : {}}
             >
@@ -128,7 +128,7 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
                 onClick={() => navigate({ q: searchQuery, category: cat.id })}
                 className={cn(
                   'w-full rounded-lg px-3 py-2.5 text-left text-sm font-bold transition-all active:scale-95',
-                  activeCategory === cat.id ? 'text-white shadow-sm' : 'text-slate-600 hover:bg-[#F4F1EA] hover:text-slate-950'
+                  activeCategory === cat.id ? 'text-white shadow-sm' : 'text-slate-600 hover:bg-[#F4F1EC] hover:text-slate-950'
                 )}
                 style={activeCategory === cat.id ? { backgroundColor: resolvedBrandColor } : {}}
               >
@@ -178,7 +178,7 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
             onClick={() => navigate({ q: searchQuery })}
             className={cn(
               'whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-black transition-all active:scale-95',
-              !activeCategory ? 'text-white shadow-sm' : 'border border-[#E8E4DC] bg-white text-slate-600 shadow-sm'
+              !activeCategory ? 'text-white shadow-sm' : 'border border-[#E2DCD0] bg-white text-slate-600 shadow-sm'
             )}
             style={!activeCategory ? { backgroundColor: resolvedBrandColor } : {}}
           >
@@ -191,7 +191,7 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
               onClick={() => navigate({ q: searchQuery, category: cat.id })}
               className={cn(
                 'whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-black transition-all active:scale-95',
-                activeCategory === cat.id ? 'text-white shadow-sm' : 'border border-[#E8E4DC] bg-white text-slate-600 shadow-sm'
+                activeCategory === cat.id ? 'text-white shadow-sm' : 'border border-[#E2DCD0] bg-white text-slate-600 shadow-sm'
               )}
               style={activeCategory === cat.id ? { backgroundColor: resolvedBrandColor } : {}}
             >
@@ -221,7 +221,7 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
                     <div>
                       <div className="mb-1.5 flex min-h-5 items-center justify-between gap-2 sm:mb-3 sm:min-h-7">
                         {product.category_name ? (
-                          <span className="rounded-full bg-[#F4F1EA] px-2 py-0.5 text-[10px] font-bold text-slate-600 sm:px-2.5 sm:py-1 sm:text-xs">
+                          <span className="rounded-full bg-[#F4F1EC] px-2 py-0.5 text-[10px] font-bold text-slate-600 sm:px-2.5 sm:py-1 sm:text-xs">
                             {product.category_name}
                           </span>
                         ) : (
@@ -254,7 +254,7 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
                       )}
                     </div>
 
-                    <div className="rounded-lg bg-[#FBFAF6] p-2.5 sm:p-3">
+                    <div className="rounded-lg bg-[#F8F5EF] p-2.5 sm:p-3">
                       <div className="flex items-end justify-between gap-2">
                         <div>
                           <div className="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 sm:text-xs">Cena netto</div>

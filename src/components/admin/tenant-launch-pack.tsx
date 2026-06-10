@@ -73,7 +73,7 @@ export function TenantLaunchPack({
   return (
     <section className="premium-card overflow-hidden">
       <div className="grid gap-0 lg:grid-cols-[0.82fr_1.18fr]">
-        <div className="bg-[#303030] p-5 text-white">
+        <div className="bg-[#1D2125] p-5 text-white">
           <div className="mb-5 flex items-center justify-between gap-4">
             <div className="inline-flex rounded-lg bg-white/10 p-2">
               <PackageCheck className="h-5 w-5 text-emerald-200" />
@@ -128,7 +128,7 @@ export function TenantLaunchPack({
             {nextItem && (
               <Link
                 href={nextItem.href}
-                className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#303030] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#083B2B]"
+                className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#1D2125] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#16191C]"
               >
                 Następny krok
                 <ArrowRight className="h-4 w-4" />
@@ -153,13 +153,13 @@ export function TenantLaunchPack({
                           href={step.href}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex items-center gap-1 text-xs font-bold text-[#0F4D38] hover:underline"
+                          className="inline-flex items-center gap-1 text-xs font-bold text-[#1D2125] hover:underline"
                         >
                           Otwórz
                           <ExternalLink className="h-3.5 w-3.5" />
                         </a>
                       ) : (
-                        <Link href={step.href} className="inline-flex items-center gap-1 text-xs font-bold text-[#0F4D38] hover:underline">
+                        <Link href={step.href} className="inline-flex items-center gap-1 text-xs font-bold text-[#1D2125] hover:underline">
                           Przejdź
                           <ArrowRight className="h-3.5 w-3.5" />
                         </Link>

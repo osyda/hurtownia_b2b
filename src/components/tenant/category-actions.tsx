@@ -54,7 +54,7 @@ export function CategoryActions({ tenantSlug, categories, editCategory }: Props)
     if (editCategory) {
       return (
         <div className="flex items-center gap-2">
-          <button type="button" onClick={() => setOpen(true)} className="p-1 text-[#0F4D38] hover:text-[#083B2B]" aria-label="Edytuj kategorię">
+          <button type="button" onClick={() => setOpen(true)} className="p-1 text-[#1D2125] hover:text-[#16191C]" aria-label="Edytuj kategorię">
             <Pencil className="h-3.5 w-3.5" />
           </button>
           <button type="button" onClick={handleDelete} className="p-1 text-red-500 hover:text-red-600" aria-label="Usuń kategorię">

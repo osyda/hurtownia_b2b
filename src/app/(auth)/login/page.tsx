@@ -106,7 +106,7 @@ export default async function LoginPage() {
             <div className="mb-10 flex items-center justify-between gap-6">
               {isTenantLogin ? (
                 <div className="flex items-center gap-3">
-                  <DostawioMark className="h-11 w-11" />
+                  <DostawioMark light className="h-11 w-11" />
                   <div>
                     <div className="text-lg font-black tracking-tight">{context.brandTitle}</div>
                     <div className="text-xs font-semibold uppercase tracking-[0.24em] text-white/45">
@@ -115,9 +115,9 @@ export default async function LoginPage() {
                   </div>
                 </div>
               ) : (
-                <DostawioLogo className="w-[230px]" />
+                <DostawioLogo light className="w-[230px]" />
               )}
-              <div className="rounded-full border border-[#27C7C3]/25 bg-[#27C7C3]/10 px-3 py-1 text-xs font-black uppercase tracking-[0.16em] text-teal-100">
+              <div className="rounded-full border border-[#E08A2B]/25 bg-[#E08A2B]/10 px-3 py-1 text-xs font-black uppercase tracking-[0.16em] text-[#F4D1A4]">
                 {context.badge}
               </div>
             </div>
@@ -138,7 +138,7 @@ export default async function LoginPage() {
                   <div className="text-sm font-black">Co możesz zrobić po zalogowaniu</div>
                   <div className="mt-1 text-xs text-slate-400">Najważniejsze funkcje dostępne od razu w panelu.</div>
                 </div>
-                <BadgeCheck className="h-5 w-5 text-emerald-200" />
+                <BadgeCheck className="h-5 w-5 text-[#F4D1A4]" />
               </div>
               <div className="grid gap-3 md:grid-cols-3">
                 {context.highlights.map(item => (
@@ -154,7 +154,7 @@ export default async function LoginPage() {
             <div className="grid gap-3 md:grid-cols-[0.9fr_1.1fr]">
               <div className="rounded-lg border border-white/10 bg-white/[0.08] p-4">
                 <div className="mb-3 flex items-center gap-2 text-sm font-black">
-                  <LockKeyhole className="h-4 w-4 text-teal-200" />
+                  <LockKeyhole className="h-4 w-4 text-[#F4D1A4]" />
                   Bezpieczny dostęp
                 </div>
                 <p className="text-sm leading-6 text-slate-300">
@@ -163,13 +163,13 @@ export default async function LoginPage() {
               </div>
               <div className="rounded-lg border border-white/10 bg-white/[0.08] p-4">
                 <div className="mb-3 flex items-center gap-2 text-sm font-black">
-                  <PackageCheck className="h-4 w-4 text-emerald-200" />
+                  <PackageCheck className="h-4 w-4 text-[#F4D1A4]" />
                   Jak to działa
                 </div>
                 <div className="space-y-2">
                   {context.steps.map(step => (
                     <div key={step} className="flex items-center gap-2 text-sm text-slate-300">
-                      <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-200" />
+                      <CheckCircle2 className="h-4 w-4 shrink-0 text-[#F4D1A4]" />
                       <span>{step}</span>
                     </div>
                   ))}
@@ -193,7 +193,7 @@ export default async function LoginPage() {
               <div className="brand-gradient border-b border-slate-200/80 px-5 py-5 text-white sm:px-7 sm:py-6">
                 <div className="mb-3 flex items-center justify-between gap-4">
                   <div className="inline-flex rounded-full bg-white/10 p-2">
-                    <Sparkles className="h-5 w-5 text-teal-100" />
+                    <Sparkles className="h-5 w-5 text-[#F4D1A4]" />
                   </div>
                   <div className="max-w-[118px] truncate rounded-full bg-white/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-slate-300 sm:max-w-none sm:text-xs sm:tracking-[0.16em]">
                     {context.cardLabel}

@@ -4,14 +4,19 @@
 
 @layer base {
   :root {
-    --dostawio-graphite: #303030;
-    --dostawio-graphite-soft: #4a4a4a;
-    --dostawio-forest: #0f4d38;
-    --dostawio-forest-dark: #083b2b;
-    --dostawio-teal: #27c7c3;
-    --dostawio-teal-dark: #19afa9;
-    --dostawio-porcelain: #f7f5ef;
-    --dostawio-stone: #e8e4dc;
+    --dostawio-graphite: #1D2125;
+    --dostawio-graphite-soft: #363A3D;
+    --dostawio-ink: #16191C;
+    --dostawio-amber: #E08A2B;
+    --dostawio-amber-dark: #C7741F;
+    --dostawio-ivory: #F4F1EC;
+    --dostawio-paper: #FBFAF7;
+    --dostawio-stone: #E2DCD0;
+    --dostawio-forest: var(--dostawio-graphite);
+    --dostawio-forest-dark: var(--dostawio-ink);
+    --dostawio-teal: var(--dostawio-amber);
+    --dostawio-teal-dark: var(--dostawio-amber-dark);
+    --dostawio-porcelain: var(--dostawio-ivory);
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
@@ -38,12 +43,12 @@
     @apply border-border;
   }
   body {
-    @apply bg-[#FCFBF8] text-slate-950 antialiased;
+    @apply bg-[#FBFAF7] text-slate-950 antialiased;
     text-rendering: optimizeLegibility;
     overflow-x: hidden;
   }
   ::selection {
-    background: var(--dostawio-forest);
+    background: var(--dostawio-graphite);
     color: white;
   }
 }
@@ -52,70 +57,70 @@
   .premium-page {
     @apply min-h-screen text-slate-950;
     background-image:
-      radial-gradient(circle at 12% 0%, rgba(39, 199, 195, 0.07), transparent 24rem),
-      linear-gradient(180deg, #ffffff 0%, #fcfbf8 56%, #f7f5ef 100%);
+      radial-gradient(circle at 16% 0%, rgba(224, 138, 43, 0.10), transparent 23rem),
+      linear-gradient(180deg, #ffffff 0%, #fbfaf7 56%, #f4f1ec 100%);
   }
 
   .premium-card {
     @apply rounded-lg border bg-white shadow-sm ring-1 ring-slate-950/[0.015];
-    border-color: rgba(232, 228, 220, 0.82);
-    box-shadow: 0 8px 22px rgba(48, 48, 48, 0.045);
+    border-color: rgba(226, 220, 208, 0.88);
+    box-shadow: 0 8px 18px rgba(29, 33, 37, 0.035);
   }
 
   .premium-surface {
     @apply rounded-lg border border-white/70 backdrop-blur-xl ring-1 ring-slate-950/[0.03];
     background-color: rgba(255, 255, 255, 0.85);
-    box-shadow: 0 8px 24px rgba(48, 48, 48, 0.045);
+    box-shadow: 0 8px 20px rgba(29, 33, 37, 0.04);
   }
 
   .premium-sidebar {
     @apply border-r border-white/10 text-white;
     background-image:
-      radial-gradient(circle at top left, rgba(39, 199, 195, 0.10), transparent 18rem),
-      linear-gradient(180deg, #303030 0%, #253b35 56%, #12382d 100%);
-    box-shadow: 10px 0 26px rgba(48, 48, 48, 0.10);
+      radial-gradient(circle at top left, rgba(224, 138, 43, 0.14), transparent 18rem),
+      linear-gradient(180deg, #1D2125 0%, #16191C 100%);
+    box-shadow: 10px 0 24px rgba(29, 33, 37, 0.10);
   }
 
   .premium-topbar {
     @apply border-b backdrop-blur-xl ring-1 ring-slate-950/[0.025];
-    border-color: rgba(232, 228, 220, 0.9);
+    border-color: rgba(226, 220, 208, 0.9);
     background-color: rgba(255, 255, 255, 0.92);
-    box-shadow: 0 6px 18px rgba(48, 48, 48, 0.04);
+    box-shadow: 0 6px 16px rgba(29, 33, 37, 0.035);
   }
 
   .premium-input {
     @apply rounded-lg border bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition focus:outline-none focus:ring-4;
     border-color: #d9d5cc;
-    --tw-ring-color: rgba(39, 199, 195, 0.18);
+    --tw-ring-color: rgba(224, 138, 43, 0.16);
   }
 
   .premium-input:focus {
-    border-color: var(--dostawio-forest);
+    border-color: var(--dostawio-amber);
   }
 
   .premium-hero {
     @apply relative overflow-hidden rounded-lg border border-white/10 text-white;
     background-image:
-      radial-gradient(circle at 86% 0%, rgba(39, 199, 195, 0.18), transparent 22rem),
-      linear-gradient(135deg, #303030 0%, #203c35 64%, #12382d 100%);
-    box-shadow: 0 14px 34px rgba(48, 48, 48, 0.12);
+      radial-gradient(circle at 86% 0%, rgba(224, 138, 43, 0.18), transparent 22rem),
+      linear-gradient(135deg, #1D2125 0%, #16191C 100%);
+    box-shadow: 0 14px 30px rgba(29, 33, 37, 0.11);
   }
 
   .premium-stat-card {
     @apply rounded-lg border border-white/70 bg-white/95 p-5 ring-1 ring-slate-950/[0.03] transition duration-200;
-    box-shadow: 0 8px 22px rgba(48, 48, 48, 0.045);
+    box-shadow: 0 8px 18px rgba(29, 33, 37, 0.035);
   }
 
   .premium-stat-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 30px rgba(48, 48, 48, 0.075);
+    box-shadow: 0 12px 26px rgba(29, 33, 37, 0.065);
   }
 
   .premium-pill {
     @apply inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] backdrop-blur;
-    border-color: rgba(15, 77, 56, 0.12);
-    background: rgba(39, 199, 195, 0.08);
-    color: var(--dostawio-forest);
+    border-color: rgba(224, 138, 43, 0.22);
+    background: rgba(224, 138, 43, 0.08);
+    color: var(--dostawio-graphite);
   }
 
   .premium-table-row {
@@ -123,13 +128,17 @@
   }
 
   .brand-gradient {
-    background-image: linear-gradient(135deg, var(--dostawio-forest) 0%, var(--dostawio-teal-dark) 100%);
+    background-image: linear-gradient(135deg, var(--dostawio-graphite) 0%, var(--dostawio-ink) 100%);
   }
 
   .brand-button {
     @apply inline-flex items-center justify-center gap-2 rounded-lg font-black text-white shadow-sm transition-all hover:-translate-y-0.5 active:scale-95 disabled:translate-y-0 disabled:opacity-40;
-    background-image: linear-gradient(135deg, var(--dostawio-forest) 0%, var(--dostawio-teal-dark) 100%);
-    box-shadow: 0 8px 18px rgba(15, 77, 56, 0.11);
+    background-image: linear-gradient(135deg, var(--dostawio-graphite) 0%, var(--dostawio-ink) 100%);
+    box-shadow: 0 8px 18px rgba(29, 33, 37, 0.12);
+  }
+
+  .brand-button:hover {
+    box-shadow: 0 10px 22px rgba(224, 138, 43, 0.18);
   }
 
   .motion-card {
@@ -162,16 +171,16 @@
 
   @keyframes card-added {
     0% {
-      box-shadow: 0 8px 22px rgba(48, 48, 48, 0.045);
+      box-shadow: 0 8px 18px rgba(29, 33, 37, 0.035);
     }
 
     22% {
-      box-shadow: 0 8px 22px rgba(48, 48, 48, 0.045), 0 0 0 3px rgba(39, 199, 195, 0.18);
+      box-shadow: 0 8px 18px rgba(29, 33, 37, 0.035), 0 0 0 3px rgba(224, 138, 43, 0.20);
       transform: translateY(-2px);
     }
 
     100% {
-      box-shadow: 0 8px 22px rgba(48, 48, 48, 0.045);
+      box-shadow: 0 8px 18px rgba(29, 33, 37, 0.035);
     }
   }
 

@@ -41,7 +41,7 @@ export default async function ProductsPage({
         title="Produkty"
         description={`${products?.length ?? 0} produktów`}
         action={
-          <Link href={`/${tenantSlug}/products/new`} className="inline-flex items-center gap-2 bg-[#0F4D38] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#083B2B] transition-colors">
+          <Link href={`/${tenantSlug}/products/new`} className="inline-flex items-center gap-2 bg-[#1D2125] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#16191C] transition-colors">
             <Plus className="h-4 w-4" /> Dodaj produkt
           </Link>
         }
@@ -118,7 +118,7 @@ export default async function ProductsPage({
                       </Badge>
                     </td>
                     <td className="px-4 py-3">
-                      <Link href={`/${tenantSlug}/products/${product.id}`} className="text-sm text-[#0F4D38] hover:underline">
+                      <Link href={`/${tenantSlug}/products/${product.id}`} className="text-sm text-[#1D2125] hover:underline">
                         Edytuj
                       </Link>
                     </td>

@@ -46,7 +46,7 @@ export default async function ShopDashboardPage({ params }: { params: Promise<{ 
     .single()
 
   const base = shopBasePath
-  const brandColor = resolveBrandColor(tenantInfo?.brand_color ?? '#303030')
+  const brandColor = resolveBrandColor(tenantInfo?.brand_color ?? '#1D2125')
   const orderTotal = recentOrders?.reduce((sum, order) => sum + (order.total_gross || 0), 0) ?? 0
 
   return (
@@ -97,14 +97,14 @@ export default async function ShopDashboardPage({ params }: { params: Promise<{ 
           icon={<PackageSearch className="h-5 w-5" />}
           title="Przeglądaj katalog"
           description="Produkty, ceny i dostępność"
-          color="from-[#0F4D38] to-[#27C7C3]"
+          color="from-[#1D2125] to-[#E08A2B]"
         />
         <ActionLink
           href={`${base}/zamowienia`}
           icon={<ClipboardList className="h-5 w-5" />}
           title="Historia zamówień"
           description="Statusy i szczegóły dostaw"
-          color="from-[#27C7C3] to-[#19AFA9]"
+          color="from-[#E08A2B] to-[#C7741F]"
         />
         {lastOrder ? (
           <ActionLink
@@ -112,7 +112,7 @@ export default async function ShopDashboardPage({ params }: { params: Promise<{ 
             icon={<RotateCcw className="h-5 w-5" />}
             title="Zamów ponownie"
             description="Powtórz ostatni koszyk"
-            color="from-[#303030] to-[#0F4D38]"
+            color="from-[#1D2125] to-[#1D2125]"
           />
         ) : (
           <ActionLink
@@ -120,7 +120,7 @@ export default async function ShopDashboardPage({ params }: { params: Promise<{ 
             icon={<ShoppingCart className="h-5 w-5" />}
             title="Pierwsze zamówienie"
             description="Rozpocznij od katalogu"
-            color="from-[#303030] to-[#4A4A4A]"
+            color="from-[#1D2125] to-[#363A3D]"
           />
         )}
       </section>

@@ -10,10 +10,10 @@ export function DemoRequestForm() {
   const [state, action, pending] = useActionState(requestDemoAction, initialState)
 
   return (
-    <form id="demo" action={action} className="rounded-lg border border-[#E8E4DC] bg-white p-4 shadow-sm sm:p-5">
+    <form id="demo" action={action} className="rounded-lg border border-[#E2DCD0] bg-white p-4 shadow-sm sm:p-5">
       <div>
-        <div className="text-xs font-black uppercase tracking-[0.18em] text-[#0F4D38]">Demo dla hurtowni</div>
-        <h2 className="mt-2 text-2xl font-black tracking-tight text-[#303030]">Poproś o dostęp do demo</h2>
+        <div className="text-xs font-black uppercase tracking-[0.18em] text-[#1D2125]">Demo dla hurtowni</div>
+        <h2 className="mt-2 text-2xl font-black tracking-tight text-[#1D2125]">Poproś o dostęp do demo</h2>
         <p className="mt-2 text-sm leading-6 text-slate-500">
           Dane logowania nie są publiczne. Wyślę je po krótkim kontakcie i sprawdzeniu potrzeb hurtowni.
         </p>
@@ -49,7 +49,7 @@ export function DemoRequestForm() {
         </p>
       )}
       {state?.success && (
-        <p className="mt-3 rounded-lg border border-[#BFEDEA] bg-[#E9FAF8] px-3 py-2 text-sm font-semibold text-[#0F4D38]">
+        <p className="mt-3 rounded-lg border border-[#F0D3B3] bg-[#FFF7ED] px-3 py-2 text-sm font-semibold text-[#1D2125]">
           {state.success}
         </p>
       )}
