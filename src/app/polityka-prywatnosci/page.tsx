@@ -45,24 +45,24 @@ export default function PrivacyPolicyPage() {
         </thead>
         <tbody>
           <tr>
-            <td>Obsługa zgłoszenia demo, kontakt sprzedażowy i przygotowanie oferty.</td>
-            <td>Art. 6 ust. 1 lit. f RODO, czyli prawnie uzasadniony interes administratora.</td>
+            <td data-label="Cel">Obsługa zgłoszenia demo, kontakt sprzedażowy i przygotowanie oferty.</td>
+            <td data-label="Podstawa prawna">Art. 6 ust. 1 lit. f RODO, czyli prawnie uzasadniony interes administratora.</td>
           </tr>
           <tr>
-            <td>Założenie i prowadzenie konta hurtowni, klienta B2B lub administratora.</td>
-            <td>Art. 6 ust. 1 lit. b RODO, czyli wykonanie umowy lub działania przed jej zawarciem.</td>
+            <td data-label="Cel">Założenie i prowadzenie konta hurtowni, klienta B2B lub administratora.</td>
+            <td data-label="Podstawa prawna">Art. 6 ust. 1 lit. b RODO, czyli wykonanie umowy lub działania przed jej zawarciem.</td>
           </tr>
           <tr>
-            <td>Realizacja zamówień B2B, historia zamówień, obsługa płatności i dostaw.</td>
-            <td>Art. 6 ust. 1 lit. b RODO oraz art. 6 ust. 1 lit. c RODO, gdy wynika to z obowiązków prawnych.</td>
+            <td data-label="Cel">Realizacja zamówień B2B, historia zamówień, obsługa płatności i dostaw.</td>
+            <td data-label="Podstawa prawna">Art. 6 ust. 1 lit. b RODO oraz art. 6 ust. 1 lit. c RODO, gdy wynika to z obowiązków prawnych.</td>
           </tr>
           <tr>
-            <td>Bezpieczeństwo, diagnostyka błędów, przeciwdziałanie nadużyciom i utrzymanie infrastruktury.</td>
-            <td>Art. 6 ust. 1 lit. f RODO.</td>
+            <td data-label="Cel">Bezpieczeństwo, diagnostyka błędów, przeciwdziałanie nadużyciom i utrzymanie infrastruktury.</td>
+            <td data-label="Podstawa prawna">Art. 6 ust. 1 lit. f RODO.</td>
           </tr>
           <tr>
-            <td>Opcjonalna analityka lub marketing, jeżeli zostaną wdrożone.</td>
-            <td>Art. 6 ust. 1 lit. a RODO, czyli zgoda użytkownika.</td>
+            <td data-label="Cel">Opcjonalna analityka lub marketing, jeżeli zostaną wdrożone.</td>
+            <td data-label="Podstawa prawna">Art. 6 ust. 1 lit. a RODO, czyli zgoda użytkownika.</td>
           </tr>
         </tbody>
       </table>
@@ -126,11 +126,11 @@ export default function PrivacyPolicyPage() {
         <tbody>
           {cookieCategories.map(category => (
             <tr key={category.name}>
-              <td>{category.name}</td>
-              <td>{category.status}</td>
-              <td>{category.purpose}</td>
-              <td>{category.examples}</td>
-              <td>{category.retention}</td>
+              <td data-label="Kategoria">{category.name}</td>
+              <td data-label="Status">{category.status}</td>
+              <td data-label="Cel">{category.purpose}</td>
+              <td data-label="Przykłady">{category.examples}</td>
+              <td data-label="Okres">{category.retention}</td>
             </tr>
           ))}
         </tbody>
@@ -151,4 +151,3 @@ export default function PrivacyPolicyPage() {
     </LegalPageShell>
   )
 }
-

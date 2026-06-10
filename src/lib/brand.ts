@@ -12,7 +12,9 @@ export const DOSTAWIO_BRAND = {
 const LEGACY_BRAND_COLORS = new Set([
   '#020617',
   '#0f172a',
-  '#1D2125',
+  '#1d2125',
+  '#16191c',
+  '#363a3d',
   '#1d4ed8',
   '#2563eb',
   '#3b82f6',
