@@ -1,11 +1,11 @@
 import { cn } from '@/lib/utils'
 
 const BRAND_ASSETS = {
-  logo: '/brand/dostawio-connect-logo.jpg',
-  logoTagline: '/brand/dostawio-connect-logo-tagline.jpg',
-  logoMono: '/brand/dostawio-connect-logo-mono.jpg',
-  icon: '/brand/dostawio-connect-icon.jpg',
-  iconMono: '/brand/dostawio-connect-icon-mono.jpg',
+  logo: '/brand/dostawio-horizontal-color.svg',
+  logoTagline: '/brand/dostawio-full-color.svg',
+  logoMono: '/brand/dostawio-horizontal-mono.svg',
+  icon: '/brand/dostawio-icon-color.svg',
+  iconMono: '/brand/dostawio-icon-mono.svg',
 } as const
 
 interface DostawioMarkProps {
@@ -24,8 +24,8 @@ export function DostawioMark({ className, monochrome = false }: DostawioMarkProp
     <img
       src={monochrome ? BRAND_ASSETS.iconMono : BRAND_ASSETS.icon}
       alt="Dostawio Connect"
-      width={1280}
-      height={1280}
+      width={64}
+      height={64}
       className={cn('h-10 w-10 shrink-0 rounded-lg object-contain', className)}
     />
   )
@@ -36,12 +36,15 @@ export function DostawioLogo({ className, compact = false, monochrome = false, w
     return <DostawioMark monochrome={monochrome} className={className} />
   }
 
+  const src = monochrome ? BRAND_ASSETS.logoMono : withTagline ? BRAND_ASSETS.logoTagline : BRAND_ASSETS.logo
+  const dimensions = withTagline ? { width: 1600, height: 520 } : { width: 1600, height: 410 }
+
   return (
     <img
-      src={monochrome ? BRAND_ASSETS.logoMono : withTagline ? BRAND_ASSETS.logoTagline : BRAND_ASSETS.logo}
+      src={src}
       alt="Dostawio Connect"
-      width={1280}
-      height={427}
+      width={dimensions.width}
+      height={dimensions.height}
       className={cn('h-auto w-[190px] object-contain sm:w-[250px]', className)}
     />
   )

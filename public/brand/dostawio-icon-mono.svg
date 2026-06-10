@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Dostawio icon">
+  <defs>
+    <style>
+      .d-main{fill:none;stroke:#2B2B2B;stroke-width:74;stroke-linecap:butt;stroke-linejoin:round}
+      .link-line{stroke:#2B2B2B;stroke-width:24;stroke-linecap:round}
+      .node-teal{fill:white;stroke:#2B2B2B;stroke-width:24}
+      .node-green{fill:white;stroke:#2B2B2B;stroke-width:24}
+    </style>
+  </defs>
+  <path class="d-main" d="M128 92H294C399 92 468 160 468 256C468 352 399 420 294 420H218"/>
+  <path class="d-main" d="M128 92V292"/>
+  <path class="link-line" d="M168 336L300 232"/>
+  <circle class="node-teal" cx="154" cy="348" r="42"/>
+  <circle class="node-green" cx="318" cy="218" r="38"/>
+</svg>

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 410" role="img" aria-label="Dostawio logo">
+  <defs>
+    <style>
+      .d-main{fill:none;stroke:#2B2B2B;stroke-width:74;stroke-linecap:butt;stroke-linejoin:round}
+      .link-line{stroke:#00523A;stroke-width:24;stroke-linecap:round}
+      .node-teal{fill:white;stroke:#12BFC4;stroke-width:24}
+      .node-green{fill:white;stroke:#00523A;stroke-width:24}
+    </style>
+  </defs>
+  <g transform="translate(55 55) scale(0.86)">
+    <path class="d-main" d="M128 92H294C399 92 468 160 468 256C468 352 399 420 294 420H218"/>
+    <path class="d-main" d="M128 92V292"/>
+    <path class="link-line" d="M168 336L300 232"/>
+    <circle class="node-teal" cx="154" cy="348" r="42"/>
+    <circle class="node-green" cx="318" cy="218" r="38"/>
+  </g>
+  <text x="610" y="270" font-family="Inter, Arial, Helvetica, sans-serif" font-size="174" font-weight="700" fill="#2B2B2B">Dostawio</text>
+  <circle cx="1389" cy="128" r="18" fill="#12BFC4"/>
+  <line x1="640" y1="332" x2="820" y2="332" stroke="#12BFC4" stroke-width="8" stroke-linecap="round"/>
+  <text x="950" y="356" font-family="Inter, Arial, Helvetica, sans-serif" font-size="70" font-weight="700" letter-spacing="34" fill="#00523A" text-anchor="middle">CONNECT</text>
+  <line x1="1080" y1="332" x2="1260" y2="332" stroke="#12BFC4" stroke-width="8" stroke-linecap="round"/>
+</svg>

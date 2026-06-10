@@ -194,10 +194,10 @@ function MarketingLanding() {
 
           <div className="rounded-lg border border-[#E8E4DC] bg-white p-4 shadow-sm">
             <img
-              src="/brand/dostawio-connect-logo-tagline.jpg"
+              src="/brand/dostawio-full-color.svg"
               alt="Dostawio Connect - platforma zamówień B2B dla hurtowni"
-              width={1280}
-              height={427}
+              width={1600}
+              height={520}
               className="mx-auto h-auto w-full max-w-xl rounded-md object-contain"
             />
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
