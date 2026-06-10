@@ -380,9 +380,11 @@ function MarketingLanding() {
       <footer className="border-t border-[#E2DCD0] bg-white px-5 py-8 lg:px-8">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <DostawioLogo className="w-[180px]" />
-          <a href={contactHref} className="text-sm font-bold text-[#1D2125] hover:underline">
-            kontakt@dostawio.pl
-          </a>
+          <div className="flex flex-col gap-2 text-sm font-semibold text-slate-600 sm:flex-row sm:items-center sm:gap-5">
+            <a href="/polityka-prywatnosci" className="hover:text-[#1D2125] hover:underline">Polityka prywatności</a>
+            <a href="/regulamin" className="hover:text-[#1D2125] hover:underline">Regulamin</a>
+            <a href={contactHref} className="text-[#1D2125] hover:underline">kontakt@dostawio.pl</a>
+          </div>
         </div>
       </footer>
     </main>

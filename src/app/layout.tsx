@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Sora } from 'next/font/google'
 import { Toaster } from 'sonner'
+import { CookieConsent } from '@/components/legal/cookie-consent'
 import './globals.css'
 
 const sora = Sora({
@@ -30,6 +31,7 @@ export default function RootLayout({
     <html lang="pl">
       <body className={sora.className}>
         {children}
+        <CookieConsent />
         <Toaster richColors position="top-right" />
       </body>
     </html>

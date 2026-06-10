@@ -96,7 +96,7 @@ export async function middleware(request: NextRequest) {
 
   const tenantSlug = getTenantSlugFromHost(host)
   const isMarketingLanding = isPlatformMarketingHost(host) && pathname === '/'
-  const publicRoutes = ['/login', '/reset-password', '/invite']
+  const publicRoutes = ['/login', '/reset-password', '/invite', '/polityka-prywatnosci', '/regulamin']
   const isPublicRoute = publicRoutes.some(r => pathname.startsWith(r))
 
   if (isPublicRoute || isMarketingLanding) {
