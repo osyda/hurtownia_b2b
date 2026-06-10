@@ -45,7 +45,6 @@ export default async function CatalogPage({
     .eq('status', 'active')
     .order('name')
 
-  if (q) productQuery = productQuery.ilike('name', `%${q}%`)
   if (category) productQuery = productQuery.eq('category_id', category)
 
   const { data: products } = await productQuery

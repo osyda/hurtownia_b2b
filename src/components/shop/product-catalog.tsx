@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { AlertCircle, Check, Search, ShoppingCart } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 import { useCart } from '@/lib/cart-store'
 import { resolveAccentColor, resolveBrandColor } from '@/lib/brand'
 import { cn, formatCurrency } from '@/lib/utils'
@@ -39,6 +39,30 @@ interface Props {
   shopBasePath: string
 }
 
+function normalizeSearch(value: string) {
+  return value
+    .toLocaleLowerCase('pl-PL')
+    .replace(/ł/g, 'l')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim()
+}
+
+function productMatchesSearch(product: Product, query: string) {
+  const terms = normalizeSearch(query).split(/\s+/).filter(Boolean)
+  if (!terms.length) return true
+
+  const haystack = normalizeSearch([
+    product.name,
+    product.sku,
+    product.category_name,
+    product.unit,
+  ].filter(Boolean).join(' '))
+
+  return terms.every(term => haystack.includes(term))
+}
+
 export function ProductCatalog({ brandColor, categories, products, searchQuery, activeCategory, shopBasePath }: Props) {
   const router = useRouter()
   const { addItem } = useCart()
@@ -46,9 +70,30 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
   const resolvedAccentColor = resolveAccentColor(brandColor)
   const addedResetTimer = useRef<number | null>(null)
   const [addedProductId, setAddedProductId] = useState<string | null>(null)
+  const [liveSearch, setLiveSearch] = useState(searchQuery ?? '')
+  const deferredSearch = useDeferredValue(liveSearch)
   const [quantities, setQuantities] = useState<Record<string, number>>(() =>
     Object.fromEntries(products.map(p => [p.id, p.min_order_qty]))
   )
+
+  const visibleProducts = useMemo(
+    () => products.filter(product => productMatchesSearch(product, deferredSearch)),
+    [products, deferredSearch]
+  )
+
+  useEffect(() => {
+    setLiveSearch(searchQuery ?? '')
+  }, [searchQuery])
+
+  useEffect(() => {
+    setQuantities(prev => {
+      const next = { ...prev }
+      products.forEach(product => {
+        if (next[product.id] === undefined) next[product.id] = product.min_order_qty
+      })
+      return next
+    })
+  }, [products])
 
   useEffect(() => {
     return () => {
@@ -113,7 +158,7 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
           <div className="space-y-1 p-3">
             <button
               type="button"
-              onClick={() => navigate({ q: searchQuery })}
+              onClick={() => navigate({ q: liveSearch || undefined })}
               className={cn(
                 'w-full rounded-lg px-3 py-2.5 text-left text-sm font-bold transition-all active:scale-95',
                 !activeCategory ? 'text-white shadow-sm' : 'text-slate-600 hover:bg-[#F4F1EC] hover:text-slate-950'
@@ -126,7 +171,7 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
               <button
                 key={cat.id}
                 type="button"
-                onClick={() => navigate({ q: searchQuery, category: cat.id })}
+                onClick={() => navigate({ q: liveSearch || undefined, category: cat.id })}
                 className={cn(
                   'w-full rounded-lg px-3 py-2.5 text-left text-sm font-bold transition-all active:scale-95',
                   activeCategory === cat.id ? 'text-white shadow-sm' : 'text-slate-600 hover:bg-[#F4F1EC] hover:text-slate-950'
@@ -146,14 +191,13 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
             <div>
               <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 sm:text-xs">Katalog produktów</div>
               <h1 className="mt-0.5 text-lg font-black tracking-tight text-slate-950 sm:mt-1 sm:text-2xl">
-                {products.length} pozycji w ofercie
+                {visibleProducts.length} z {products.length} pozycji w ofercie
               </h1>
             </div>
             <form
               onSubmit={e => {
                 e.preventDefault()
-                const q = (e.currentTarget.elements.namedItem('q') as HTMLInputElement).value
-                navigate({ q, category: activeCategory })
+                navigate({ q: liveSearch || undefined, category: activeCategory })
               }}
               className="flex min-w-0 gap-2 md:w-[420px]"
             >
@@ -161,9 +205,11 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                 <input
                   name="q"
-                  defaultValue={searchQuery}
-                  placeholder="Szukaj produktu, SKU, kategorii..."
+                  value={liveSearch}
+                  onChange={event => setLiveSearch(event.target.value)}
+                  placeholder="Wpisz np. ml, jablko, SKU..."
                   className="premium-input h-9 w-full pl-9 sm:h-10"
+                  autoComplete="off"
                 />
               </div>
               <button type="submit" className="brand-button px-3 py-1.5 text-xs sm:px-4 sm:py-2.5 sm:text-sm">
@@ -176,7 +222,7 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
         <div className="-mx-3 flex gap-1.5 overflow-x-auto px-3 pb-1 lg:hidden">
           <button
             type="button"
-            onClick={() => navigate({ q: searchQuery })}
+            onClick={() => navigate({ q: liveSearch || undefined })}
             className={cn(
               'whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-black transition-all active:scale-95',
               !activeCategory ? 'text-white shadow-sm' : 'border border-[#E2DCD0] bg-white text-slate-600 shadow-sm'
@@ -189,7 +235,7 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
             <button
               key={cat.id}
               type="button"
-              onClick={() => navigate({ q: searchQuery, category: cat.id })}
+              onClick={() => navigate({ q: liveSearch || undefined, category: cat.id })}
               className={cn(
                 'whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-black transition-all active:scale-95',
                 activeCategory === cat.id ? 'text-white shadow-sm' : 'border border-[#E2DCD0] bg-white text-slate-600 shadow-sm'
@@ -201,9 +247,9 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
           ))}
         </div>
 
-        {products.length ? (
+        {visibleProducts.length ? (
           <div className="grid grid-cols-1 gap-2.5 sm:gap-4 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
-            {products.map((product, index) => {
+            {visibleProducts.map((product, index) => {
               const unavailable = product.stock_status === 'unavailable'
               const limited = product.stock_status === 'limited'
               const justAdded = addedProductId === product.id
