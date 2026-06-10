@@ -5,7 +5,7 @@ import Link from 'next/link'
 import type { ReactNode } from 'react'
 import { ChevronRight, ClipboardList, PackageSearch, RotateCcw, ShoppingCart, Sparkles } from 'lucide-react'
 import { getShopBasePath } from '@/lib/shop-routing'
-import { resolveBrandColor } from '@/lib/brand'
+import { resolveAccentColor } from '@/lib/brand'
 import { formatCurrency, formatDate, ORDER_STATUS_COLORS, ORDER_STATUS_LABELS } from '@/lib/utils'
 
 export default async function ShopDashboardPage({ params }: { params: Promise<{ tenant: string }> }) {
@@ -46,7 +46,7 @@ export default async function ShopDashboardPage({ params }: { params: Promise<{ 
     .single()
 
   const base = shopBasePath
-  const brandColor = resolveBrandColor(tenantInfo?.brand_color ?? '#1D2125')
+  const accentColor = resolveAccentColor(tenantInfo?.brand_color ?? '#1D2125')
   const orderTotal = recentOrders?.reduce((sum, order) => sum + (order.total_gross || 0), 0) ?? 0
 
   return (
@@ -67,8 +67,8 @@ export default async function ShopDashboardPage({ params }: { params: Promise<{ 
             <div className="mt-5 flex flex-col gap-2.5 sm:flex-row">
               <Link
                 href={`${base}/katalog`}
-                className="inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-black text-white shadow-sm transition hover:-translate-y-0.5"
-                style={{ backgroundColor: brandColor }}
+                className="inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-black text-white shadow-[0_10px_24px_rgba(224,138,43,0.26)] ring-1 ring-white/20 transition hover:-translate-y-0.5 hover:brightness-105"
+                style={{ backgroundColor: accentColor }}
               >
                 <ShoppingCart className="h-4 w-4" />
                 Złóż zamówienie

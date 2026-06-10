@@ -6,7 +6,7 @@ import { ClipboardList, LogOut, Package, ShoppingCart, User } from 'lucide-react
 import { useCart } from '@/lib/cart-store'
 import { createClient } from '@/lib/supabase/client'
 import { resolveAccentColor, resolveBrandColor } from '@/lib/brand'
-import { cn } from '@/lib/utils'
+import { cn, formatCurrency } from '@/lib/utils'
 import { useEffect, useRef, useState } from 'react'
 
 interface Props {
@@ -21,8 +21,9 @@ interface Props {
 export function ShopHeader({ tenantSlug, tenantName, brandColor, logoUrl, customerName, shopBasePath }: Props) {
   const pathname = usePathname()
   const router = useRouter()
-  const { itemCount, setTenant } = useCart()
+  const { itemCount, setTenant, totalNet } = useCart()
   const count = itemCount()
+  const cartTotal = totalNet()
   const resolvedBrandColor = resolveBrandColor(brandColor)
   const resolvedAccentColor = resolveAccentColor(brandColor)
   const previousCount = useRef(count)
@@ -101,19 +102,28 @@ export function ShopHeader({ tenantSlug, tenantName, brandColor, logoUrl, custom
             <Link
               href={`${base}/koszyk`}
               className={cn(
-                'brand-gradient relative flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-black text-white shadow-lg shadow-slate-900/10 transition-all hover:-translate-y-0.5',
+                'brand-gradient flex min-h-10 items-center gap-2 rounded-lg px-2.5 py-2 text-sm font-black text-white shadow-lg shadow-slate-900/10 transition-all hover:-translate-y-0.5 sm:px-3',
                 cartBump && 'cart-bump'
               )}
             >
-              <ShoppingCart className="h-4 w-4" />
-              <span className="hidden sm:inline">Koszyk</span>
-              {count > 0 && (
-                <span
-                  className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-xs font-black text-white ring-2 ring-white"
-                  style={{ backgroundColor: resolvedAccentColor }}
-                >
-                  {count}
+              <ShoppingCart className="h-4 w-4 shrink-0" />
+              {count > 0 ? (
+                <span className="flex min-w-0 flex-col leading-none">
+                  <span className="flex items-center gap-1">
+                    <span
+                      className="rounded-full px-1.5 py-0.5 text-[10px] font-black leading-none text-white ring-1 ring-white/35"
+                      style={{ backgroundColor: resolvedAccentColor }}
+                    >
+                      {count}
+                    </span>
+                    <span className="hidden sm:inline">Koszyk</span>
+                  </span>
+                  <span className="mt-1 text-[10px] font-semibold leading-none text-white/72">
+                    {formatCurrency(cartTotal)}
+                  </span>
                 </span>
+              ) : (
+                <span className="hidden sm:inline">Koszyk</span>
               )}
             </Link>
 
@@ -133,7 +143,7 @@ export function ShopHeader({ tenantSlug, tenantName, brandColor, logoUrl, custom
           </div>
         </div>
 
-        <nav className="flex gap-1.5 overflow-x-auto pb-2 md:hidden">
+        <nav className="no-scrollbar flex gap-1.5 overflow-x-auto pb-2 md:hidden">
           {navItems.map(item => {
             const active = item.exact ? pathname === item.href : pathname.startsWith(item.href)
             return (

@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { AlertCircle, Check, LayoutGrid, List, Search, ShoppingCart, Table2 } from 'lucide-react'
+import { AlertCircle, Check, LayoutGrid, Search, ShoppingCart, Table2 } from 'lucide-react'
 import type { ComponentType } from 'react'
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 import { useCart } from '@/lib/cart-store'
@@ -41,12 +41,12 @@ interface Props {
   shopBasePath: string
 }
 
-type CatalogViewMode = 'cards' | 'list' | 'table'
+type CatalogViewMode = 'cards' | 'table'
 
 const VIEW_MODE_KEY = 'dostawio-catalog-view'
 
 function isCatalogViewMode(value: string | null): value is CatalogViewMode {
-  return value === 'cards' || value === 'list' || value === 'table'
+  return value === 'cards' || value === 'table'
 }
 
 function normalizeSearch(value: string) {
@@ -228,79 +228,6 @@ function ProductCard({
   )
 }
 
-function ProductListItem({
-  product,
-  index,
-  shopBasePath,
-  qty,
-  justAdded,
-  resolvedBrandColor,
-  resolvedAccentColor,
-  onQtyChange,
-  onAdd,
-}: {
-  product: Product
-  index: number
-  shopBasePath: string
-  qty: number
-  justAdded: boolean
-  resolvedBrandColor: string
-  resolvedAccentColor: string
-  onQtyChange: (qty: number) => void
-  onAdd: () => void
-}) {
-  const unavailable = product.stock_status === 'unavailable'
-
-  return (
-    <article
-      className={cn(
-        'premium-card motion-card grid gap-3 border-[#E7E1D6] bg-white p-3 transition duration-200 sm:grid-cols-[minmax(0,1fr)_140px_auto] sm:items-center',
-        unavailable && 'opacity-60',
-        justAdded && 'card-added'
-      )}
-      style={{ animationDelay: `${Math.min(index, 8) * 18}ms` }}
-    >
-      <div className="min-w-0">
-        <div className="flex flex-wrap items-center gap-2">
-          {product.category_name ? (
-            <span className="rounded-full bg-[#F8F5EF] px-2.5 py-1 text-[11px] font-semibold text-slate-500">
-              {product.category_name}
-            </span>
-          ) : null}
-          <Link
-            href={`${shopBasePath}/katalog/${product.id}`}
-            className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-400 transition hover:text-slate-700"
-          >
-            Szczegóły
-          </Link>
-          <StockNotice product={product} />
-        </div>
-        <h2 className="mt-2 text-sm font-semibold leading-tight text-slate-900">{product.name}</h2>
-        <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs font-medium text-slate-400">
-          {product.sku ? <span>SKU: {product.sku}</span> : null}
-          <span>VAT {product.vat_rate}%</span>
-          <span>Jedn.: {product.unit}</span>
-        </div>
-      </div>
-
-      <div className="rounded-lg bg-[#FBF8F3] px-3 py-2 sm:text-right">
-        <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">Netto</div>
-        <div className="mt-0.5 text-lg font-semibold text-slate-900">{formatCurrency(product.customer_price)}</div>
-      </div>
-
-      <ProductActions
-        product={product}
-        qty={qty}
-        justAdded={justAdded}
-        resolvedBrandColor={resolvedBrandColor}
-        resolvedAccentColor={resolvedAccentColor}
-        onQtyChange={onQtyChange}
-        onAdd={onAdd}
-      />
-    </article>
-  )
-}
-
 function ProductTableRow({
   product,
   qty,
@@ -460,17 +387,6 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
     }
 
     if (viewMode === 'table') return <ProductTableRow key={product.id} {...sharedProps} />
-    if (viewMode === 'list') {
-      return (
-        <ProductListItem
-          key={product.id}
-          index={index}
-          shopBasePath={shopBasePath}
-          {...sharedProps}
-        />
-      )
-    }
-
     return (
       <ProductCard
         key={product.id}
@@ -483,7 +399,6 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
 
   const viewOptions: Array<{ mode: CatalogViewMode; label: string; icon: ComponentType<{ className?: string }> }> = [
     { mode: 'cards', label: 'Karty', icon: LayoutGrid },
-    { mode: 'list', label: 'Lista', icon: List },
     { mode: 'table', label: 'Tabela', icon: Table2 },
   ]
 
@@ -586,7 +501,7 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
           </div>
         </section>
 
-        <div className="-mx-3 flex gap-1.5 overflow-x-auto px-3 pb-1 lg:hidden">
+        <div className="no-scrollbar -mx-3 flex gap-1.5 overflow-x-auto px-3 pb-1 lg:hidden">
           <button
             type="button"
             onClick={() => navigate({ q: liveSearch || undefined })}
@@ -627,11 +542,7 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
               {visibleProducts.map(renderProduct)}
             </div>
           ) : (
-            <div className={cn(
-              viewMode === 'list'
-                ? 'space-y-2.5'
-                : 'grid grid-cols-1 gap-2.5 sm:gap-4 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3'
-            )}>
+            <div className="grid grid-cols-1 gap-2.5 sm:gap-4 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
               {visibleProducts.map(renderProduct)}
             </div>
           )

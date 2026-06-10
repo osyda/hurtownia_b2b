@@ -134,6 +134,15 @@
     @apply transition duration-150 hover:bg-slate-50/90;
   }
 
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
   .legal-content {
     @apply text-sm leading-7 text-slate-600;
   }

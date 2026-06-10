@@ -158,7 +158,7 @@ function MarketingLanding() {
             <div className="mb-6 inline-flex max-w-full rounded-full border border-[#F0D3B3] bg-[#FFF7ED] px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-[#1D2125] sm:text-xs sm:tracking-[0.18em]">
               Platforma zamówień B2B dla hurtowni
             </div>
-            <h1 className="max-w-4xl text-3xl font-black leading-[1.06] tracking-tight text-[#1D2125] sm:text-5xl lg:text-6xl">
+            <h1 className="max-w-4xl text-3xl font-black leading-[1.16] tracking-tight text-[#1D2125] sm:text-5xl sm:leading-[1.12] lg:text-6xl">
               Własny panel zamówień online dla Twoich klientów B2B.
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">
