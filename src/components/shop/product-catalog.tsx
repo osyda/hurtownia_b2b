@@ -8,6 +8,7 @@ import { useCart } from '@/lib/cart-store'
 import { resolveAccentColor, resolveBrandColor } from '@/lib/brand'
 import { cn, formatCurrency } from '@/lib/utils'
 import { toast } from 'sonner'
+import { QuickCartPanel } from './quick-cart-panel'
 
 interface Product {
   id: string
@@ -102,7 +103,7 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
   }
 
   return (
-    <div className="grid gap-3 lg:grid-cols-[240px_1fr] lg:gap-6">
+    <div className="grid gap-3 lg:grid-cols-[210px_minmax(0,1fr)_310px] lg:gap-4 xl:grid-cols-[230px_minmax(0,1fr)_340px]">
       <aside className="hidden lg:block">
         <div className="premium-card sticky top-24 overflow-hidden">
           <div className="brand-gradient border-b border-slate-200/80 px-4 py-4 text-white">
@@ -201,7 +202,7 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
         </div>
 
         {products.length ? (
-          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 sm:gap-4 xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-2.5 sm:gap-4 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
             {products.map((product, index) => {
               const unavailable = product.stock_status === 'unavailable'
               const limited = product.stock_status === 'limited'
@@ -321,6 +322,8 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
           </div>
         )}
       </div>
+
+      <QuickCartPanel brandColor={brandColor} shopBasePath={shopBasePath} />
     </div>
   )
 }

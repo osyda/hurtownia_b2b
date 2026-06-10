@@ -1,7 +1,7 @@
 'use server'
 
 import { z } from 'zod'
-import { sendDemoRequestEmail } from '@/lib/email'
+import { sendDemoConfirmationEmail, sendDemoRequestEmail } from '@/lib/email'
 
 const demoRequestSchema = z.object({
   company: z.string().min(2, 'Podaj nazwę hurtowni.'),
@@ -30,8 +30,15 @@ export async function requestDemoAction(_: DemoRequestState, formData: FormData)
   try {
     const result = await sendDemoRequestEmail(parsed.data)
     if (result.ok) {
+      const confirmation = await sendDemoConfirmationEmail(parsed.data)
+      if (!confirmation.ok) {
+        console.error('[demo-request] Confirmation email failed', confirmation)
+      }
+
       return {
-        success: 'Dziękuję. Odezwę się z dostępem demo po krótkiej weryfikacji hurtowni.',
+        success: confirmation.ok
+          ? 'Dziękuję. Zgłoszenie dotarło, a potwierdzenie wysłaliśmy na podany e-mail.'
+          : 'Dziękuję. Zgłoszenie dotarło, ale potwierdzenie e-mail nie zostało wysłane automatycznie.',
       }
     }
 

@@ -30,6 +30,12 @@ interface CartStore {
   itemCount: () => number
 }
 
+function sanitizeQty(item: Pick<CartItem, 'minQty'>, qty: number) {
+  const minQty = Number.isFinite(item.minQty) && item.minQty > 0 ? item.minQty : 1
+  const safeQty = Number.isFinite(qty) ? qty : minQty
+  return Number(Math.max(minQty, safeQty).toFixed(3))
+}
+
 export const useCart = create<CartStore>()(
   persist(
     (set, get) => ({
@@ -46,16 +52,16 @@ export const useCart = create<CartStore>()(
           return {
             items: state.items.map(i =>
               i.productId === newItem.productId
-                ? { ...i, qty: i.qty + newItem.qty }
+                ? { ...i, qty: sanitizeQty(i, i.qty + newItem.qty) }
                 : i
             ),
           }
         }
-        return { items: [...state.items, { ...newItem, notes: '' }] }
+        return { items: [...state.items, { ...newItem, qty: sanitizeQty(newItem, newItem.qty), notes: '' }] }
       }),
 
       updateQty: (productId, qty) => set((state) => ({
-        items: state.items.map(i => i.productId === productId ? { ...i, qty } : i),
+        items: state.items.map(i => i.productId === productId ? { ...i, qty: sanitizeQty(i, qty) } : i),
       })),
 
       updateNotes: (productId, notes) => set((state) => ({
@@ -78,7 +84,7 @@ export const useCart = create<CartStore>()(
         return Number(items.reduce((sum, i) => sum + i.price * i.qty * (1 + i.vatRate / 100), 0).toFixed(2))
       },
 
-      itemCount: () => get().items.reduce((sum, i) => sum + i.qty, 0),
+      itemCount: () => Number(get().items.reduce((sum, i) => sum + i.qty, 0).toFixed(3)),
     }),
     {
       name: 'b2b-cart',

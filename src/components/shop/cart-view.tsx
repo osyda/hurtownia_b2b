@@ -10,6 +10,7 @@ import { CheckCircle, Info, ShoppingCart, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import { CustomerAddress } from '@/types/database.types'
+import { CartQuantityControl } from './cart-quantity-control'
 
 interface PaymentMethod { id: string; label: string; type: string }
 
@@ -177,12 +178,13 @@ export function CartView({
             </div>
 
             <div className="mt-3 flex items-center justify-between">
-              <div className="flex items-center overflow-hidden rounded-lg border border-gray-300">
-                <button type="button" onClick={() => updateQty(item.productId, Math.max(item.minQty, item.qty - item.multiple))} className="px-2.5 py-1.5 text-sm font-bold text-gray-600 hover:bg-gray-100">-</button>
-                <span className="min-w-[3rem] border-x border-gray-300 px-3 py-1.5 text-center text-sm">{item.qty}</span>
-                <button type="button" onClick={() => updateQty(item.productId, item.qty + item.multiple)} className="px-2.5 py-1.5 text-sm font-bold text-gray-600 hover:bg-gray-100">+</button>
-                <span className="px-2 text-xs text-gray-400">{item.unit}</span>
-              </div>
+              <CartQuantityControl
+                value={item.qty}
+                min={item.minQty}
+                step={item.multiple}
+                unit={item.unit}
+                onChange={qty => updateQty(item.productId, qty)}
+              />
               <div className="text-right">
                 <div className="font-bold text-gray-900">{formatCurrency(item.price * item.qty)}</div>
                 <div className="text-xs text-gray-400">{formatCurrency(item.price)} / {item.unit} netto</div>

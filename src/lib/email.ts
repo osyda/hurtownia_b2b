@@ -409,3 +409,54 @@ export async function sendDemoRequestEmail({
     tag: 'demo_request',
   })
 }
+
+export async function sendDemoConfirmationEmail({
+  company,
+  nip,
+  name,
+  email,
+}: {
+  company: string
+  nip: string
+  name: string
+  email: string
+}) {
+  const subject = 'Otrzymaliśmy zgłoszenie demo Dostawio'
+  const preview = `Dziękujemy za zgłoszenie ${company}. Dostawio zweryfikuje hurtownię i odezwie się z dostępem demo.`
+  const html = renderEmail({
+    preview,
+    title: 'Zgłoszenie demo przyjęte',
+    intro: `Cześć ${name}, otrzymaliśmy zgłoszenie demo dla ${company}.`,
+    body: `
+      <p style="margin:0 0 16px;color:#334155;line-height:1.65;font-size:15px">
+        Dziękujemy za zainteresowanie Dostawio Connect. Sprawdzimy podstawowe dane hurtowni i wrócimy z informacją o dostępie demo oraz proponowanym wdrożeniu.
+      </p>
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border-top:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;margin:18px 0">
+        ${row('Hurtownia', company)}
+        ${row('NIP hurtowni', nip)}
+        ${row('Osoba kontaktowa', name)}
+        ${row('E-mail', email)}
+      </table>
+      <div style="background:#F4F1EC;border:1px solid #E2DCD0;border-radius:8px;padding:14px;color:#475569;font-size:14px;line-height:1.6">
+        Demo nie jest publiczne. Dane logowania wysyłamy po krótkiej weryfikacji, żeby pokazać panel w kontekście realnej hurtowni i jej procesu zamówień B2B.
+      </div>
+    `,
+    action: button('Wejdź na dostawio.pl', APP_URL),
+  })
+
+  return sendTransactionalEmail({
+    to: email,
+    subject,
+    preview,
+    html,
+    text: [
+      `Cześć ${name},`,
+      `Otrzymaliśmy zgłoszenie demo dla ${company}.`,
+      `NIP hurtowni: ${nip}`,
+      'Sprawdzimy dane i wrócimy z informacją o dostępie demo oraz proponowanym wdrożeniu.',
+      `Strona: ${APP_URL}`,
+    ].join('\n'),
+    idempotencyKey: `demo-confirmation:${email}:${nip}:${company}`,
+    tag: 'demo_confirmation',
+  })
+}
