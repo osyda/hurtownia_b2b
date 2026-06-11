@@ -13,6 +13,8 @@ import {
 } from '@/lib/shop-routing'
 import { isDostawioHost } from '@/lib/supabase/cookies'
 
+const invalidCredentialsMessage = 'Nieprawidłowy e-mail lub hasło'
+
 function platformDashboardRedirect(host: string | null) {
   return isDostawioHost(host) ? getPlatformSiteUrl('/dashboard') : '/dashboard'
 }
@@ -52,7 +54,7 @@ export async function loginAction(
   const { data, error } = await supabase.auth.signInWithPassword({ email, password })
 
   if (error) {
-    return { error: 'Nieprawidłowy e-mail lub hasło' }
+    return { error: invalidCredentialsMessage }
   }
 
   const userId = data.user?.id
@@ -93,6 +95,10 @@ export async function loginAction(
       return signOutWithError(supabase, 'To konto nie ma przypisanej aktywnej hurtowni.')
     }
 
+    if (tenantHostSlug && tenant.slug !== tenantHostSlug) {
+      return signOutWithError(supabase, invalidCredentialsMessage)
+    }
+
     redirect(tenantPanelRedirect(tenant.slug, host))
   }
 
@@ -110,7 +116,7 @@ export async function loginAction(
     }
 
     if (tenantHostSlug && tenantHostSlug !== tenantSlug) {
-      redirect(tenantShopRedirect(tenantSlug, host))
+      return signOutWithError(supabase, invalidCredentialsMessage)
     }
 
     redirect(tenantShopRedirect(tenantSlug, host))
