@@ -543,7 +543,7 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
               {visibleProducts.map(renderProduct)}
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-2.5 sm:gap-4 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
+            <div className="grid grid-cols-1 gap-2.5 sm:gap-4 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
               {visibleProducts.map(renderProduct)}
             </div>
           )
