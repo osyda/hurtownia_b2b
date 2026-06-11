@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { AlertCircle, Check, ImageIcon, LayoutGrid, Search, ShoppingCart, Table2 } from 'lucide-react'
+import { AlertCircle, Check, ImageIcon, LayoutGrid, Search, ShoppingCart, SlidersHorizontal, Table2 } from 'lucide-react'
 import type { ComponentType } from 'react'
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 import { useCart } from '@/lib/cart-store'
@@ -48,6 +48,7 @@ type CatalogViewMode = 'cards' | 'table'
 type CatalogSortMode = 'name_asc' | 'name_desc' | 'price_asc' | 'price_desc'
 
 const VIEW_MODE_KEY = 'dostawio-catalog-view'
+const vatFilterOptions = [5, 8, 23]
 const sortOptions: Array<{ value: CatalogSortMode; label: string }> = [
   { value: 'name_asc', label: 'Nazwa A-Z' },
   { value: 'name_desc', label: 'Nazwa Z-A' },
@@ -81,6 +82,13 @@ function productMatchesSearch(product: Product, query: string) {
   ].filter(Boolean).join(' '))
 
   return terms.every(term => haystack.includes(term))
+}
+
+function parsePriceFilter(value: string) {
+  const normalized = value.replace(',', '.').trim()
+  if (!normalized) return null
+  const parsed = Number(normalized)
+  return Number.isFinite(parsed) ? parsed : null
 }
 
 function sortProducts(products: Product[], mode: CatalogSortMode) {
@@ -327,15 +335,29 @@ export function ProductCatalog({
   const [viewMode, setViewMode] = useState<CatalogViewMode>('cards')
   const [sortMode, setSortMode] = useState<CatalogSortMode>('name_asc')
   const [liveSearch, setLiveSearch] = useState(searchQuery ?? '')
+  const [priceMin, setPriceMin] = useState('')
+  const [priceMax, setPriceMax] = useState('')
+  const [vatRates, setVatRates] = useState<number[]>([])
   const deferredSearch = useDeferredValue(liveSearch)
   const [quantities, setQuantities] = useState<Record<string, number>>(() =>
     Object.fromEntries(products.map(p => [p.id, p.min_order_qty]))
   )
 
   const visibleProducts = useMemo(() => {
-    const filtered = products.filter(product => productMatchesSearch(product, deferredSearch))
+    const min = parsePriceFilter(priceMin)
+    const max = parsePriceFilter(priceMax)
+    const selectedVatRates = new Set(vatRates)
+
+    const filtered = products.filter(product => {
+      if (!productMatchesSearch(product, deferredSearch)) return false
+      if (min !== null && product.customer_price < min) return false
+      if (max !== null && product.customer_price > max) return false
+      if (selectedVatRates.size && !selectedVatRates.has(Number(product.vat_rate))) return false
+      return true
+    })
+
     return sortProducts(filtered, sortMode)
-  }, [products, deferredSearch, sortMode])
+  }, [products, deferredSearch, priceMin, priceMax, vatRates, sortMode])
 
   useEffect(() => {
     const savedViewMode = window.localStorage.getItem(VIEW_MODE_KEY)
@@ -367,6 +389,18 @@ export function ProductCatalog({
   function selectViewMode(mode: CatalogViewMode) {
     setViewMode(mode)
     window.localStorage.setItem(VIEW_MODE_KEY, mode)
+  }
+
+  function toggleVatRate(rate: number) {
+    setVatRates(current =>
+      current.includes(rate) ? current.filter(value => value !== rate) : [...current, rate]
+    )
+  }
+
+  function clearFilters() {
+    setPriceMin('')
+    setPriceMax('')
+    setVatRates([])
   }
 
   function setProductQty(product: Product, qty: number) {
@@ -441,6 +475,7 @@ export function ProductCatalog({
     { mode: 'cards', label: 'Karty', icon: LayoutGrid },
     { mode: 'table', label: 'Tabela', icon: Table2 },
   ]
+  const hasFilters = Boolean(priceMin || priceMax || vatRates.length)
 
   return (
     <div className="grid gap-3 lg:grid-cols-[210px_minmax(0,1fr)_310px] lg:gap-4 xl:grid-cols-[230px_minmax(0,1fr)_340px]">
@@ -552,6 +587,68 @@ export function ProductCatalog({
                   Szukaj
                 </button>
               </form>
+            </div>
+          </div>
+
+          <div className="border-t border-[#EEE7DC] bg-[#FBF8F3]/70 px-3 py-3 sm:px-4">
+            <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
+              <div className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500">
+                <SlidersHorizontal className="h-4 w-4" />
+                Filtry katalogu
+              </div>
+
+              <div className="grid gap-2 sm:grid-cols-[110px_110px_auto_auto] sm:items-center">
+                <label className="sr-only" htmlFor="catalog-price-min">Cena od</label>
+                <input
+                  id="catalog-price-min"
+                  value={priceMin}
+                  onChange={event => setPriceMin(event.target.value)}
+                  inputMode="decimal"
+                  placeholder="Cena od"
+                  className="premium-input h-9 py-1.5 text-xs font-semibold"
+                />
+
+                <label className="sr-only" htmlFor="catalog-price-max">Cena do</label>
+                <input
+                  id="catalog-price-max"
+                  value={priceMax}
+                  onChange={event => setPriceMax(event.target.value)}
+                  inputMode="decimal"
+                  placeholder="Cena do"
+                  className="premium-input h-9 py-1.5 text-xs font-semibold"
+                />
+
+                <div className="flex flex-wrap gap-1.5">
+                  {vatFilterOptions.map(rate => {
+                    const active = vatRates.includes(rate)
+                    return (
+                      <button
+                        key={rate}
+                        type="button"
+                        onClick={() => toggleVatRate(rate)}
+                        className={cn(
+                          'h-9 rounded-lg border px-3 text-xs font-semibold transition active:scale-95',
+                          active ? 'border-transparent text-white shadow-sm' : 'border-[#D9D5CC] bg-white text-slate-500 hover:bg-[#F8F5EF] hover:text-slate-800'
+                        )}
+                        style={active ? { backgroundColor: resolvedBrandColor } : {}}
+                        aria-pressed={active}
+                      >
+                        VAT {rate}%
+                      </button>
+                    )
+                  })}
+                </div>
+
+                {hasFilters ? (
+                  <button
+                    type="button"
+                    onClick={clearFilters}
+                    className="h-9 rounded-lg border border-[#D9D5CC] bg-white px-3 text-xs font-semibold text-slate-500 transition hover:bg-[#F8F5EF] hover:text-slate-800"
+                  >
+                    Wyczyść
+                  </button>
+                ) : null}
+              </div>
             </div>
           </div>
         </section>
