@@ -442,16 +442,17 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
 
       <div className="min-w-0 space-y-3 sm:space-y-5">
         <section className="premium-card overflow-hidden border-[#E7E1D6] bg-white">
-          <div className="grid gap-3 p-3 lg:grid-cols-[1fr_auto] lg:items-center sm:p-4">
-            <div>
+          <div className="flex flex-col gap-3 p-3 sm:p-4 xl:flex-row xl:items-center xl:justify-between">
+            <div className="min-w-0">
               <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400 sm:text-xs">Katalog produktów</div>
-              <h1 className="mt-0.5 text-lg font-semibold tracking-tight text-slate-900 sm:mt-1 sm:text-2xl">
-                {visibleProducts.length} z {products.length} pozycji w ofercie
+              <h1 className="mt-0.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-base font-semibold tracking-tight text-slate-900 sm:text-lg">
+                <span className="whitespace-nowrap">{visibleProducts.length} z {products.length}</span>
+                <span className="whitespace-nowrap text-sm font-medium text-slate-500">pozycji w ofercie</span>
               </h1>
             </div>
 
-            <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-end">
-              <div className="inline-flex w-fit rounded-lg border border-[#D9D5CC] bg-white p-1 shadow-sm">
+            <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center xl:justify-end">
+              <div className="inline-flex w-fit shrink-0 rounded-lg border border-[#D9D5CC] bg-white p-1 shadow-sm">
                 {viewOptions.map(option => {
                   const Icon = option.icon
                   const active = viewMode === option.mode
@@ -480,7 +481,7 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
                   e.preventDefault()
                   navigate({ q: liveSearch || undefined, category: activeCategory })
                 }}
-                className="flex min-w-0 gap-2 md:w-[360px]"
+                className="flex min-w-0 gap-2 sm:w-[340px] xl:w-[360px]"
               >
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
