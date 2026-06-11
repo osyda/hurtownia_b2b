@@ -41,7 +41,11 @@ export default async function CustomerOrderPage({
   if (!order) notFound()
 
   const [{ data: items }, { data: invoices }] = await Promise.all([
-    supabase.from('order_items').select('*').eq('order_id', id).order('created_at'),
+    supabase
+      .from('order_items')
+      .select('*, products(id, name, sku, unit, base_price, vat_rate, min_order_qty, order_multiple, stock_status, status)')
+      .eq('order_id', id)
+      .order('created_at'),
     supabase.from('order_invoices').select('*').eq('order_id', id).order('invoice_date', { ascending: false }),
   ])
 
