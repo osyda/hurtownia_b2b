@@ -36,7 +36,7 @@ export function AdminSidebar() {
   const SidebarContent = () => (
     <aside className="premium-sidebar flex h-full w-64 flex-col">
       <div className="flex items-center justify-between border-b border-white/10 p-6">
-        <DostawioLogo className="w-[170px]" />
+        <DostawioLogo light className="w-[170px]" />
         <button
           onClick={() => setOpen(false)}
           className="rounded-lg p-1 text-slate-400 transition hover:bg-white/10 md:hidden"
