@@ -42,8 +42,15 @@ interface Props {
 }
 
 type CatalogViewMode = 'cards' | 'table'
+type CatalogSortMode = 'name_asc' | 'name_desc' | 'price_asc' | 'price_desc'
 
 const VIEW_MODE_KEY = 'dostawio-catalog-view'
+const sortOptions: Array<{ value: CatalogSortMode; label: string }> = [
+  { value: 'name_asc', label: 'Nazwa A-Z' },
+  { value: 'name_desc', label: 'Nazwa Z-A' },
+  { value: 'price_asc', label: 'Cena rosnąco' },
+  { value: 'price_desc', label: 'Cena malejąco' },
+]
 
 function isCatalogViewMode(value: string | null): value is CatalogViewMode {
   return value === 'cards' || value === 'table'
@@ -71,6 +78,16 @@ function productMatchesSearch(product: Product, query: string) {
   ].filter(Boolean).join(' '))
 
   return terms.every(term => haystack.includes(term))
+}
+
+function sortProducts(products: Product[], mode: CatalogSortMode) {
+  return [...products].sort((a, b) => {
+    if (mode === 'price_asc') return a.customer_price - b.customer_price
+    if (mode === 'price_desc') return b.customer_price - a.customer_price
+
+    const result = a.name.localeCompare(b.name, 'pl-PL', { sensitivity: 'base' })
+    return mode === 'name_desc' ? -result : result
+  })
 }
 
 function StockNotice({ product }: { product: Product }) {
@@ -287,16 +304,17 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
   const addedResetTimer = useRef<number | null>(null)
   const [addedProductId, setAddedProductId] = useState<string | null>(null)
   const [viewMode, setViewMode] = useState<CatalogViewMode>('cards')
+  const [sortMode, setSortMode] = useState<CatalogSortMode>('name_asc')
   const [liveSearch, setLiveSearch] = useState(searchQuery ?? '')
   const deferredSearch = useDeferredValue(liveSearch)
   const [quantities, setQuantities] = useState<Record<string, number>>(() =>
     Object.fromEntries(products.map(p => [p.id, p.min_order_qty]))
   )
 
-  const visibleProducts = useMemo(
-    () => products.filter(product => productMatchesSearch(product, deferredSearch)),
-    [products, deferredSearch]
-  )
+  const visibleProducts = useMemo(() => {
+    const filtered = products.filter(product => productMatchesSearch(product, deferredSearch))
+    return sortProducts(filtered, sortMode)
+  }, [products, deferredSearch, sortMode])
 
   useEffect(() => {
     const savedViewMode = window.localStorage.getItem(VIEW_MODE_KEY)
@@ -475,6 +493,20 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
                   )
                 })}
               </div>
+
+              <label className="sr-only" htmlFor="catalog-sort">Sortowanie produktów</label>
+              <select
+                id="catalog-sort"
+                value={sortMode}
+                onChange={event => setSortMode(event.target.value as CatalogSortMode)}
+                className="premium-input h-9 w-full py-1.5 text-xs font-semibold text-slate-700 sm:h-10 sm:w-[170px]"
+              >
+                {sortOptions.map(option => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
 
               <form
                 onSubmit={e => {
