@@ -24,6 +24,9 @@ export interface Tenant {
   notification_email: string | null
   customer_message: string | null
   terms_text: string | null
+  custom_domain: string | null
+  custom_domain_status: string
+  custom_domain_verified_at: string | null
   created_at: string
   updated_at: string
 }

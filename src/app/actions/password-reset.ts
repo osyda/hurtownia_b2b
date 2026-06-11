@@ -5,7 +5,9 @@ import { z } from 'zod'
 import { createAdminClient } from '@/lib/supabase/server'
 import {
   getTenantSlugFromHost,
+  hostMatchesTenantDomain,
   isLegacyPlatformAppHost,
+  isLikelyCustomDomainHost,
   isPlatformMarketingHost,
 } from '@/lib/shop-routing'
 import { isDostawioHost } from '@/lib/supabase/cookies'
@@ -57,6 +59,7 @@ async function canSendResetForHost(
 ) {
   const tenantHostSlug = getTenantSlugFromHost(host)
   const isPlatformHost = isPlatformMarketingHost(host) || isLegacyPlatformAppHost(host)
+  const isCustomDomainHost = isLikelyCustomDomainHost(host)
 
   const { data: profile } = await adminSupabase
     .from('user_profiles')
@@ -70,22 +73,47 @@ async function canSendResetForHost(
     if ((profile.role === 'tenant_admin' || profile.role === 'tenant_employee') && profile.tenant_id) {
       const { data: tenant } = await adminSupabase
         .from('tenants')
-        .select('slug')
+        .select('slug, custom_domain, custom_domain_status')
         .eq('id', profile.tenant_id)
         .maybeSingle()
 
-      return tenant?.slug === tenantHostSlug
+      return Boolean(tenant && hostMatchesTenantDomain(host, tenant))
     }
 
     if (profile.role === 'customer') {
       const { data: customer } = await adminSupabase
         .from('customers')
-        .select('tenants(slug)')
+        .select('tenants(slug, custom_domain, custom_domain_status)')
         .eq('user_id', userId)
         .maybeSingle()
 
-      const tenantSlug = (customer?.tenants as unknown as { slug: string } | null)?.slug
-      return tenantSlug === tenantHostSlug
+      const tenant = customer?.tenants as unknown as { slug: string; custom_domain?: string | null; custom_domain_status?: string | null } | null
+      return Boolean(tenant && hostMatchesTenantDomain(host, tenant))
+    }
+
+    return false
+  }
+
+  if (isCustomDomainHost) {
+    if ((profile.role === 'tenant_admin' || profile.role === 'tenant_employee') && profile.tenant_id) {
+      const { data: tenant } = await adminSupabase
+        .from('tenants')
+        .select('slug, custom_domain, custom_domain_status')
+        .eq('id', profile.tenant_id)
+        .maybeSingle()
+
+      return Boolean(tenant && hostMatchesTenantDomain(host, tenant))
+    }
+
+    if (profile.role === 'customer') {
+      const { data: customer } = await adminSupabase
+        .from('customers')
+        .select('tenants(slug, custom_domain, custom_domain_status)')
+        .eq('user_id', userId)
+        .maybeSingle()
+
+      const tenant = customer?.tenants as unknown as { slug: string; custom_domain?: string | null; custom_domain_status?: string | null } | null
+      return Boolean(tenant && hostMatchesTenantDomain(host, tenant))
     }
 
     return false

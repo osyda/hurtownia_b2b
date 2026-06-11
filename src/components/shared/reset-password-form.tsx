@@ -4,7 +4,7 @@ import { FormEvent, useActionState, useEffect, useMemo, useState } from 'react'
 import { ArrowLeft, ArrowRight, CheckCircle2, Loader2, Mail, ShieldCheck } from 'lucide-react'
 import { requestPasswordResetAction } from '@/app/actions/password-reset'
 import { createClient } from '@/lib/supabase/client'
-import { getTenantSlugFromHost } from '@/lib/shop-routing'
+import { getTenantSlugFromHost, hostMatchesTenantDomain, isLikelyCustomDomainHost } from '@/lib/shop-routing'
 
 type Mode = 'checking' | 'request' | 'update'
 
@@ -31,6 +31,7 @@ export function ResetPasswordForm({ loginHref = '/login', isTenantContext = fals
   useEffect(() => {
     async function validateRecoveryContext() {
       const tenantHostSlug = getTenantSlugFromHost(window.location.host)
+      const customDomainHost = isLikelyCustomDomainHost(window.location.host)
       const { data: userRes, error: userError } = await supabase.auth.getUser()
       const user = userRes.user
 
@@ -44,26 +45,26 @@ export function ResetPasswordForm({ loginHref = '/login', isTenantContext = fals
 
       if (!profile) return false
 
-      if (tenantHostSlug) {
+      if (tenantHostSlug || customDomainHost) {
         if ((profile.role === 'tenant_admin' || profile.role === 'tenant_employee') && profile.tenant_id) {
           const { data: tenant } = await supabase
             .from('tenants')
-            .select('slug')
+            .select('slug, custom_domain, custom_domain_status')
             .eq('id', profile.tenant_id)
             .maybeSingle()
 
-          return tenant?.slug === tenantHostSlug
+          return Boolean(tenant && hostMatchesTenantDomain(window.location.host, tenant))
         }
 
         if (profile.role === 'customer') {
           const { data: customer } = await supabase
             .from('customers')
-            .select('tenants(slug)')
+            .select('tenants(slug, custom_domain, custom_domain_status)')
             .eq('user_id', user.id)
             .maybeSingle()
 
-          const tenantSlug = (customer?.tenants as unknown as { slug: string } | null)?.slug
-          return tenantSlug === tenantHostSlug
+          const tenant = customer?.tenants as unknown as { slug: string; custom_domain?: string | null; custom_domain_status?: string | null } | null
+          return Boolean(tenant && hostMatchesTenantDomain(window.location.host, tenant))
         }
 
         return false

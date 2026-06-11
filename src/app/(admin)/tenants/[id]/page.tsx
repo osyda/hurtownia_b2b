@@ -28,7 +28,7 @@ export default async function AdminTenantDetailPage({
     assignedPaymentMethodsRes,
   ] = await Promise.all([
     supabase.from('tenants')
-      .select('id, name, slug, brand_color, status, contact_email, contact_phone, created_at')
+      .select('id, name, slug, brand_color, status, contact_email, contact_phone, custom_domain, custom_domain_status, custom_domain_verified_at, created_at')
       .eq('id', id)
       .single(),
     supabase.from('user_profiles')

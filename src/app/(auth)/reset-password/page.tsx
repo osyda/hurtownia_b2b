@@ -4,6 +4,7 @@ import { ArrowLeft, LockKeyhole, MailCheck, ShieldCheck } from 'lucide-react'
 import { DostawioLogo, DostawioMark } from '@/components/brand/dostawio-logo'
 import { ResetPasswordForm } from '@/components/shared/reset-password-form'
 import { getTenantSlugFromHost } from '@/lib/shop-routing'
+import { resolveTenantContextFromHost } from '@/lib/tenant-domain'
 
 export const metadata: Metadata = {
   title: 'Reset hasła - Dostawio Connect',
@@ -19,8 +20,9 @@ function humanizeTenantName(slug: string) {
 
 export default async function ResetPasswordPage() {
   const host = (await headers()).get('host')
-  const tenantSlug = getTenantSlugFromHost(host)
-  const tenantName = tenantSlug ? humanizeTenantName(tenantSlug) : 'Dostawio Connect'
+  const tenantContext = await resolveTenantContextFromHost(host)
+  const tenantSlug = tenantContext?.slug ?? getTenantSlugFromHost(host)
+  const tenantName = tenantContext?.name ?? (tenantSlug ? humanizeTenantName(tenantSlug) : 'Dostawio Connect')
   const isTenantContext = Boolean(tenantSlug)
 
   const context = isTenantContext

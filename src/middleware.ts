@@ -5,6 +5,8 @@ import {
   getTenantPanelUrl,
   getTenantShopUrl,
   getTenantSlugFromHost,
+  hostMatchesTenantDomain,
+  isLikelyCustomDomainHost,
   isLegacyPlatformAppHost,
   isPlatformMarketingHost,
 } from '@/lib/shop-routing'
@@ -67,12 +69,22 @@ function isShopPath(pathname: string) {
   return pathname === '/' || pathname === '/sklep' || pathname.startsWith('/sklep/') || SHOP_SEGMENTS.has(segment)
 }
 
-function tenantPanelDestination(tenantSlug: string, host: string | null) {
-  return isDostawioHost(host) ? getTenantPanelUrl(tenantSlug, 'dashboard') : `/${tenantSlug}/dashboard`
+function tenantPanelDestination(
+  tenant: { slug: string; custom_domain?: string | null; custom_domain_status?: string | null },
+  host: string | null
+) {
+  if (hostMatchesTenantDomain(host, tenant)) return '/dashboard'
+  if (tenant.custom_domain && tenant.custom_domain_status === 'active') return `https://${tenant.custom_domain}/dashboard`
+  return isDostawioHost(host) ? getTenantPanelUrl(tenant.slug, 'dashboard') : `/${tenant.slug}/dashboard`
 }
 
-function tenantShopDestination(tenantSlug: string, host: string | null) {
-  return isDostawioHost(host) ? getTenantShopUrl(tenantSlug) : `/sklep/${tenantSlug}`
+function tenantShopDestination(
+  tenant: { slug: string; custom_domain?: string | null; custom_domain_status?: string | null },
+  host: string | null
+) {
+  if (hostMatchesTenantDomain(host, tenant)) return '/'
+  if (tenant.custom_domain && tenant.custom_domain_status === 'active') return `https://${tenant.custom_domain}`
+  return isDostawioHost(host) ? getTenantShopUrl(tenant.slug) : `/sklep/${tenant.slug}`
 }
 
 function redirectDestination(request: NextRequest, destination: string) {
@@ -138,7 +150,7 @@ export async function middleware(request: NextRequest) {
     return copySupabaseCookies(supabaseResponse, NextResponse.redirect(url), host)
   }
 
-  if (user && tenantSlug) {
+  if (user) {
     const { data: profile } = await supabase
       .from('user_profiles')
       .select('role, tenant_id')
@@ -152,6 +164,8 @@ export async function middleware(request: NextRequest) {
     }
 
     if (profile.role === 'super_admin') {
+      if (!tenantSlug && !isLikelyCustomDomainHost(host)) return supabaseResponse
+
       return copySupabaseCookies(
         supabaseResponse,
         NextResponse.redirect(getPlatformSiteUrl('/dashboard')),
@@ -162,7 +176,7 @@ export async function middleware(request: NextRequest) {
     if ((profile.role === 'tenant_admin' || profile.role === 'tenant_employee') && profile.tenant_id) {
       const { data: tenant } = await supabase
         .from('tenants')
-        .select('slug')
+        .select('slug, custom_domain, custom_domain_status')
         .eq('id', profile.tenant_id)
         .maybeSingle()
 
@@ -172,15 +186,15 @@ export async function middleware(request: NextRequest) {
         return copySupabaseCookies(supabaseResponse, NextResponse.redirect(url), host)
       }
 
-      if (tenant.slug !== tenantSlug) {
+      if (!hostMatchesTenantDomain(host, tenant)) {
         return copySupabaseCookies(
           supabaseResponse,
-          NextResponse.redirect(redirectDestination(request, tenantPanelDestination(tenant.slug, host))),
+          NextResponse.redirect(redirectDestination(request, tenantPanelDestination(tenant, host))),
           host
         )
       }
 
-      const tenantPanelPrefix = `/${tenantSlug}`
+      const tenantPanelPrefix = `/${tenant.slug}`
 
       if (pathname === tenantPanelPrefix || pathname.startsWith(`${tenantPanelPrefix}/`)) {
         const url = request.nextUrl.clone()
@@ -207,22 +221,23 @@ export async function middleware(request: NextRequest) {
 
     const { data: customer } = await supabase
       .from('customers')
-      .select('tenants(slug)')
+      .select('tenants(slug, custom_domain, custom_domain_status)')
       .eq('user_id', user.id)
       .maybeSingle()
 
-    const customerTenantSlug = (customer?.tenants as unknown as { slug: string } | null)?.slug
+    const customerTenant = customer?.tenants as unknown as { slug: string; custom_domain?: string | null; custom_domain_status?: string | null } | null
+    const customerTenantSlug = customerTenant?.slug
 
-    if (!customerTenantSlug) {
+    if (!customerTenant?.slug) {
       const url = request.nextUrl.clone()
       url.pathname = '/login'
       return copySupabaseCookies(supabaseResponse, NextResponse.redirect(url), host)
     }
 
-    if (customerTenantSlug !== tenantSlug) {
+    if (!hostMatchesTenantDomain(host, customerTenant)) {
       return copySupabaseCookies(
         supabaseResponse,
-        NextResponse.redirect(redirectDestination(request, tenantShopDestination(customerTenantSlug, host))),
+        NextResponse.redirect(redirectDestination(request, tenantShopDestination(customerTenant, host))),
         host
       )
     }
@@ -241,7 +256,7 @@ export async function middleware(request: NextRequest) {
       return copySupabaseCookies(supabaseResponse, NextResponse.redirect(url), host)
     }
 
-    if (isTenantPanelPath(pathname, tenantSlug)) {
+    if (isTenantPanelPath(pathname, customerTenant.slug)) {
       const url = request.nextUrl.clone()
       url.pathname = '/'
       return copySupabaseCookies(supabaseResponse, NextResponse.redirect(url), host)

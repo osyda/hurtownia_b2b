@@ -26,6 +26,37 @@ export function normalizeHost(host: string | null | undefined) {
   return (host ?? '').split(':')[0]?.toLowerCase().replace(/\.$/, '') ?? ''
 }
 
+export function normalizeCustomDomain(value: string | null | undefined) {
+  const withoutProtocol = (value ?? '').trim().replace(/^https?:\/\//i, '')
+  const host = normalizeHost(withoutProtocol.split('/')[0])
+
+  if (!host || host.startsWith('*.')) return ''
+  return host
+}
+
+export function isLikelyCustomDomainHost(host: string | null | undefined) {
+  const normalized = normalizeHost(host)
+
+  if (!normalized || normalized === 'localhost' || normalized.endsWith('.localhost')) return false
+  if (normalized === PLATFORM_DOMAIN || normalized.endsWith(`.${PLATFORM_DOMAIN}`)) return false
+  return normalized.includes('.')
+}
+
+export function hostMatchesTenantDomain(
+  host: string | null | undefined,
+  tenant: { slug: string; custom_domain?: string | null; custom_domain_status?: string | null }
+) {
+  const tenantSlug = getTenantSlugFromHost(host)
+  if (tenantSlug === tenant.slug) return true
+
+  const customDomain = normalizeCustomDomain(tenant.custom_domain)
+  return Boolean(
+    customDomain &&
+    tenant.custom_domain_status === 'active' &&
+    normalizeHost(host) === customDomain
+  )
+}
+
 export function isReservedTenantSlug(slug: string) {
   return RESERVED_SUBDOMAINS.has(slug.trim().toLowerCase())
 }
@@ -68,7 +99,7 @@ export function getTenantSlugFromHost(host: string | null | undefined) {
 }
 
 export function getShopBasePath(tenantSlug: string, host: string | null | undefined) {
-  return getTenantSlugFromHost(host) === tenantSlug ? '' : `/sklep/${tenantSlug}`
+  return getTenantSlugFromHost(host) === tenantSlug || isLikelyCustomDomainHost(host) ? '' : `/sklep/${tenantSlug}`
 }
 
 export function getTenantShopUrl(tenantSlug: string, path = '') {
@@ -80,7 +111,7 @@ export function getTenantPanelUrl(tenantSlug: string, path = 'dashboard') {
 }
 
 export function getTenantPanelBasePath(tenantSlug: string, host: string | null | undefined) {
-  return getTenantSlugFromHost(host) === tenantSlug ? '' : `/${tenantSlug}`
+  return getTenantSlugFromHost(host) === tenantSlug || isLikelyCustomDomainHost(host) ? '' : `/${tenantSlug}`
 }
 
 export function shopPath(basePath: string, path = '') {
