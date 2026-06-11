@@ -66,6 +66,8 @@ export function CartView({
   const net = totalNet()
   const gross = totalGross()
   const belowMin = minOrderValue > 0 && net < minOrderValue
+  const minimumMissing = Math.max(0, minOrderValue - net)
+  const minimumProgress = minOrderValue > 0 ? Math.min(100, (net / minOrderValue) * 100) : 0
   const noPaymentMethods = paymentMethods.length === 0
   const paymentMissing = !noPaymentMethods && !paymentMethodId
 
@@ -225,10 +227,29 @@ export function CartView({
             <div className="mt-2 flex justify-between border-t pt-2 text-base font-black text-gray-900"><span>Brutto:</span><span>{formatCurrency(gross)}</span></div>
           </div>
 
-          {belowMin && (
-            <div className="mb-3 flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 p-2.5 text-xs text-red-700">
-              <Info className="mt-0.5 h-3.5 w-3.5 flex-shrink-0" />
-              Minimalna wartość zamówienia: {formatCurrency(minOrderValue)}
+          {minOrderValue > 0 && (
+            <div className="mb-3 rounded-lg border border-[#E2DCD0] bg-[#FBF8F3] p-3">
+              <div className="flex items-start gap-2">
+                <Info className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-slate-400" />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-3 text-xs font-bold text-gray-700">
+                    <span>Minimum logistyczne</span>
+                    <span>{formatCurrency(minOrderValue)}</span>
+                  </div>
+                  <p className={`mt-1 text-xs font-medium ${belowMin ? 'text-amber-700' : 'text-emerald-700'}`}>
+                    {belowMin ? `Brakuje ${formatCurrency(minimumMissing)} do złożenia zamówienia.` : 'Minimum osiągnięte. Możesz złożyć zamówienie.'}
+                  </p>
+                  <div className="mt-2 h-2 overflow-hidden rounded-full bg-white">
+                    <div
+                      className="h-full rounded-full transition-all duration-300"
+                      style={{
+                        width: `${minimumProgress}%`,
+                        backgroundColor: belowMin ? '#D97706' : resolvedBrandColor,
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 

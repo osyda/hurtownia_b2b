@@ -42,6 +42,7 @@ interface Props {
   shopBasePath: string
   deliveryDays: number[]
   cutoffTime: string
+  minOrderValue: number
 }
 
 type CatalogViewMode = 'cards' | 'table'
@@ -325,6 +326,7 @@ export function ProductCatalog({
   shopBasePath,
   deliveryDays,
   cutoffTime,
+  minOrderValue,
 }: Props) {
   const router = useRouter()
   const { addItem } = useCart()
@@ -710,6 +712,7 @@ export function ProductCatalog({
         shopBasePath={shopBasePath}
         deliveryDays={deliveryDays}
         cutoffTime={cutoffTime}
+        minOrderValue={minOrderValue}
       />
     </div>
   )

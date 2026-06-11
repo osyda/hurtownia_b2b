@@ -14,13 +14,14 @@ interface QuickCartPanelProps {
   shopBasePath: string
   deliveryDays: number[]
   cutoffTime: string
+  minOrderValue: number
 }
 
 function formatQty(value: number) {
   return Number(value.toFixed(3)).toString()
 }
 
-export function QuickCartPanel({ brandColor, shopBasePath, deliveryDays, cutoffTime }: QuickCartPanelProps) {
+export function QuickCartPanel({ brandColor, shopBasePath, deliveryDays, cutoffTime, minOrderValue }: QuickCartPanelProps) {
   const {
     items,
     updateQty,
@@ -40,6 +41,10 @@ export function QuickCartPanel({ brandColor, shopBasePath, deliveryDays, cutoffT
   const deliveryDates = getNextDeliveryDates(deliveryDays, cutoffTime)
   const selectedDeliveryDate = deliveryDate || deliveryDates[0] || ''
   const selectedDeliveryWindow = deliveryWindow || DELIVERY_WINDOWS[1]
+  const hasMinimum = minOrderValue > 0
+  const minimumMissing = Math.max(0, minOrderValue - net)
+  const minimumProgress = hasMinimum ? Math.min(100, (net / minOrderValue) * 100) : 0
+  const minimumMet = hasMinimum && minimumMissing <= 0
 
   useEffect(() => {
     if (items.length && !deliveryDate && selectedDeliveryDate) setDeliveryDate(selectedDeliveryDate)
@@ -145,6 +150,26 @@ export function QuickCartPanel({ brandColor, shopBasePath, deliveryDays, cutoffT
                   </select>
                 </div>
               </div>
+
+              {hasMinimum ? (
+                <div className="mb-4 rounded-xl border border-[#E2DCD0] bg-[#FBF8F3] p-3">
+                  <div className="flex items-center justify-between gap-3 text-[11px] font-semibold text-slate-500">
+                    <span>{minimumMet ? 'Minimum logistyczne osiągnięte' : 'Do minimum logistycznego'}</span>
+                    <span className={minimumMet ? 'text-[#0F5B41]' : 'text-amber-700'}>
+                      {minimumMet ? formatCurrency(minOrderValue) : `brakuje ${formatCurrency(minimumMissing)}`}
+                    </span>
+                  </div>
+                  <div className="mt-2 h-2 overflow-hidden rounded-full bg-white">
+                    <div
+                      className="h-full rounded-full transition-all duration-300"
+                      style={{
+                        width: `${minimumProgress}%`,
+                        backgroundColor: minimumMet ? resolvedBrandColor : '#D97706',
+                      }}
+                    />
+                  </div>
+                </div>
+              ) : null}
 
               <div className="space-y-1.5 text-sm">
                 <div className="flex justify-between text-slate-500">

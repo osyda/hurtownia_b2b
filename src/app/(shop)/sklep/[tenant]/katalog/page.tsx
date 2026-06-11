@@ -22,7 +22,7 @@ export default async function CatalogPage({
   // Get customer with price group
   const { data: customer } = await supabase
     .from('customers')
-    .select('id, price_group_id, tenants!inner(id, brand_color, delivery_settings(delivery_days, order_cutoff_time))')
+    .select('id, price_group_id, min_order_value, tenants!inner(id, brand_color, delivery_settings(delivery_days, order_cutoff_time, min_order_value))')
     .eq('user_id', user.id)
     .single()
 
@@ -33,6 +33,7 @@ export default async function CatalogPage({
     delivery_settings: Array<{
       delivery_days: number[]
       order_cutoff_time: string
+      min_order_value: number | null
     }>
   }
   const deliverySettings = tenantInfo.delivery_settings?.[0] ?? null
@@ -102,6 +103,7 @@ export default async function CatalogPage({
       shopBasePath={shopBasePath}
       deliveryDays={deliverySettings?.delivery_days ?? [1, 2, 3, 4, 5]}
       cutoffTime={deliverySettings?.order_cutoff_time ?? '20:00:00'}
+      minOrderValue={Math.max(customer.min_order_value ?? 0, deliverySettings?.min_order_value ?? 0)}
     />
   )
 }
