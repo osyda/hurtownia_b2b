@@ -22,12 +22,20 @@ export default async function CatalogPage({
   // Get customer with price group
   const { data: customer } = await supabase
     .from('customers')
-    .select('id, price_group_id, tenants!inner(id, brand_color)')
+    .select('id, price_group_id, tenants!inner(id, brand_color, delivery_settings(delivery_days, order_cutoff_time))')
     .eq('user_id', user.id)
     .single()
 
   if (!customer) redirect('/login')
-  const tenantInfo = customer.tenants as unknown as { id: string; brand_color: string }
+  const tenantInfo = customer.tenants as unknown as {
+    id: string
+    brand_color: string
+    delivery_settings: Array<{
+      delivery_days: number[]
+      order_cutoff_time: string
+    }>
+  }
+  const deliverySettings = tenantInfo.delivery_settings?.[0] ?? null
 
   // Get categories
   const { data: categories } = await supabase
@@ -92,6 +100,8 @@ export default async function CatalogPage({
       searchQuery={q}
       activeCategory={category}
       shopBasePath={shopBasePath}
+      deliveryDays={deliverySettings?.delivery_days ?? [1, 2, 3, 4, 5]}
+      cutoffTime={deliverySettings?.order_cutoff_time ?? '20:00:00'}
     />
   )
 }

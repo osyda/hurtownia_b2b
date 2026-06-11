@@ -60,7 +60,10 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ te
         </div>
         <div className="premium-card p-4">
           <div className="mb-2 text-xs font-bold uppercase tracking-[0.14em] text-gray-500">Dostawa</div>
-          <div className="font-bold text-gray-900">{order.delivery_date || 'Nie ustalono'}</div>
+          <div className="font-bold text-gray-900">
+            {order.delivery_date || 'Nie ustalono'}
+            {order.delivery_window ? `, ${order.delivery_window}` : ''}
+          </div>
           {deliveryAddress && (
             <div className="mt-1 text-sm text-gray-500">
               <div>{deliveryAddress.street}</div>

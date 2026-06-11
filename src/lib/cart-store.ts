@@ -20,7 +20,11 @@ export interface CartItem {
 interface CartStore {
   items: CartItem[]
   tenantSlug: string | null
+  deliveryDate: string
+  deliveryWindow: string
   setTenant: (slug: string) => void
+  setDeliveryDate: (date: string) => void
+  setDeliveryWindow: (window: string) => void
   addItem: (item: Omit<CartItem, 'notes'>) => void
   updateQty: (productId: string, qty: number) => void
   updateNotes: (productId: string, notes: string) => void
@@ -42,10 +46,16 @@ export const useCart = create<CartStore>()(
     (set, get) => ({
       items: [],
       tenantSlug: null,
+      deliveryDate: '',
+      deliveryWindow: '',
 
       setTenant: (slug) => {
-        if (get().tenantSlug !== slug) set({ items: [], tenantSlug: slug })
+        if (get().tenantSlug !== slug) set({ items: [], deliveryDate: '', deliveryWindow: '', tenantSlug: slug })
       },
+
+      setDeliveryDate: (date) => set({ deliveryDate: date }),
+
+      setDeliveryWindow: (window) => set({ deliveryWindow: window }),
 
       addItem: (newItem) => set((state) => {
         const existing = state.items.find(i => i.productId === newItem.productId)

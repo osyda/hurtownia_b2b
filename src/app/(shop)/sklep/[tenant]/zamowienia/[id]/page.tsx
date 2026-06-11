@@ -74,7 +74,10 @@ export default async function CustomerOrderPage({
           {order.delivery_date && (
             <>
               <div className="mb-1 mt-3 text-xs font-bold uppercase tracking-[0.14em] text-gray-500">Termin dostawy</div>
-              <div className="text-gray-900">{formatDate(order.delivery_date)}</div>
+              <div className="text-gray-900">
+                {formatDate(order.delivery_date)}
+                {order.delivery_window ? `, ${order.delivery_window}` : ''}
+              </div>
             </>
           )}
         </div>

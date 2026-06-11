@@ -154,6 +154,7 @@ export interface Order {
   order_number: string
   status: OrderStatus
   delivery_date: string | null
+  delivery_window: string | null
   delivery_address_id: string | null
   delivery_address: Address | null
   payment_method_id: string | null

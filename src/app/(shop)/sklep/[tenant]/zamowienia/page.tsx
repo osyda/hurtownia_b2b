@@ -33,6 +33,7 @@ export default async function OrderHistoryPage({ params }: { params: Promise<{ t
       total_gross,
       created_at,
       delivery_date,
+      delivery_window,
       payment_methods(label),
       order_items(
         product_id,
@@ -71,7 +72,10 @@ export default async function OrderHistoryPage({ params }: { params: Promise<{ t
                   </div>
                   <div className="min-w-0">
                     <div className="font-mono font-semibold text-gray-900">{order.order_number}</div>
-                    <div className="text-xs text-gray-400 mt-0.5">{formatDate(order.created_at)}{order.delivery_date ? ` · dostawa ${order.delivery_date}` : ''}</div>
+                    <div className="text-xs text-gray-400 mt-0.5">
+                      {formatDate(order.created_at)}
+                      {order.delivery_date ? ` · dostawa ${order.delivery_date}${order.delivery_window ? `, ${order.delivery_window}` : ''}` : ''}
+                    </div>
                     {pm && <div className="text-xs text-gray-400">{pm.label}</div>}
                   </div>
                 </Link>

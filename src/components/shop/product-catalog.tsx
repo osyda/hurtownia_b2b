@@ -40,6 +40,8 @@ interface Props {
   searchQuery?: string
   activeCategory?: string
   shopBasePath: string
+  deliveryDays: number[]
+  cutoffTime: string
 }
 
 type CatalogViewMode = 'cards' | 'table'
@@ -306,7 +308,16 @@ function ProductTableRow({
   )
 }
 
-export function ProductCatalog({ brandColor, categories, products, searchQuery, activeCategory, shopBasePath }: Props) {
+export function ProductCatalog({
+  brandColor,
+  categories,
+  products,
+  searchQuery,
+  activeCategory,
+  shopBasePath,
+  deliveryDays,
+  cutoffTime,
+}: Props) {
   const router = useRouter()
   const { addItem } = useCart()
   const resolvedBrandColor = resolveBrandColor(brandColor)
@@ -597,7 +608,12 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
         )}
       </div>
 
-      <QuickCartPanel brandColor={brandColor} shopBasePath={shopBasePath} />
+      <QuickCartPanel
+        brandColor={brandColor}
+        shopBasePath={shopBasePath}
+        deliveryDays={deliveryDays}
+        cutoffTime={cutoffTime}
+      />
     </div>
   )
 }

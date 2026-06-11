@@ -23,7 +23,7 @@ export default async function OrdersPage({
   if (!profile?.tenant_id) redirect('/login')
 
   let query = supabase.from('orders')
-    .select('id, order_number, status, total_gross, delivery_date, created_at, customers(company_name)')
+    .select('id, order_number, status, total_gross, delivery_date, delivery_window, created_at, customers(company_name)')
     .eq('tenant_id', profile.tenant_id)
     .order('created_at', { ascending: false })
 
@@ -79,7 +79,9 @@ export default async function OrdersPage({
                     <td className="px-4 py-3 font-mono text-sm font-medium text-gray-900">{order.order_number}</td>
                     <td className="px-4 py-3 text-sm text-gray-900">{customer?.company_name}</td>
                     <td className="px-4 py-3 text-sm text-gray-500">{formatDateTime(order.created_at)}</td>
-                    <td className="px-4 py-3 text-sm text-gray-500">{order.delivery_date || '—'}</td>
+                    <td className="px-4 py-3 text-sm text-gray-500">
+                      {order.delivery_date ? `${order.delivery_date}${order.delivery_window ? `, ${order.delivery_window}` : ''}` : '—'}
+                    </td>
                     <td className="px-4 py-3 text-sm font-medium text-gray-900 text-right">{formatCurrency(order.total_gross)}</td>
                     <td className="px-4 py-3">
                       <span className={`text-xs px-2 py-1 rounded-full font-medium ${ORDER_STATUS_COLORS[order.status]}`}>

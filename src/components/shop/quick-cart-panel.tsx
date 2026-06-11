@@ -1,27 +1,50 @@
 'use client'
 
 import Link from 'next/link'
+import { useEffect } from 'react'
 import { ArrowRight, ImageIcon, ShoppingCart, Trash2 } from 'lucide-react'
 import { useCart } from '@/lib/cart-store'
 import { resolveBrandColor } from '@/lib/brand'
 import { formatCurrency } from '@/lib/utils'
+import { DELIVERY_DAY_LABELS, DELIVERY_WINDOWS, getNextDeliveryDates } from '@/lib/delivery'
 import { CartQuantityControl } from './cart-quantity-control'
 
 interface QuickCartPanelProps {
   brandColor: string
   shopBasePath: string
+  deliveryDays: number[]
+  cutoffTime: string
 }
 
 function formatQty(value: number) {
   return Number(value.toFixed(3)).toString()
 }
 
-export function QuickCartPanel({ brandColor, shopBasePath }: QuickCartPanelProps) {
-  const { items, updateQty, removeItem, totalNet, totalGross, itemCount } = useCart()
+export function QuickCartPanel({ brandColor, shopBasePath, deliveryDays, cutoffTime }: QuickCartPanelProps) {
+  const {
+    items,
+    updateQty,
+    removeItem,
+    totalNet,
+    totalGross,
+    itemCount,
+    deliveryDate,
+    deliveryWindow,
+    setDeliveryDate,
+    setDeliveryWindow,
+  } = useCart()
   const resolvedBrandColor = resolveBrandColor(brandColor)
   const net = totalNet()
   const gross = totalGross()
   const count = itemCount()
+  const deliveryDates = getNextDeliveryDates(deliveryDays, cutoffTime)
+  const selectedDeliveryDate = deliveryDate || deliveryDates[0] || ''
+  const selectedDeliveryWindow = deliveryWindow || DELIVERY_WINDOWS[1]
+
+  useEffect(() => {
+    if (items.length && !deliveryDate && selectedDeliveryDate) setDeliveryDate(selectedDeliveryDate)
+    if (items.length && !deliveryWindow) setDeliveryWindow(selectedDeliveryWindow)
+  }, [deliveryDate, deliveryWindow, items.length, selectedDeliveryDate, selectedDeliveryWindow, setDeliveryDate, setDeliveryWindow])
 
   return (
     <aside className="hidden lg:block">
@@ -96,6 +119,33 @@ export function QuickCartPanel({ brandColor, shopBasePath }: QuickCartPanelProps
             </div>
 
             <div className="border-t border-[#E2DCD0] bg-white p-4">
+              <div className="mb-4 grid gap-2">
+                <div>
+                  <label className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">Data dostawy</label>
+                  <select
+                    value={selectedDeliveryDate}
+                    onChange={event => setDeliveryDate(event.target.value)}
+                    className="premium-input h-9 w-full py-1.5 text-xs font-semibold"
+                  >
+                    {deliveryDates.map(date => {
+                      const d = new Date(date)
+                      const dow = d.getDay() === 0 ? 7 : d.getDay()
+                      return <option key={date} value={date}>{date} ({DELIVERY_DAY_LABELS[dow]})</option>
+                    })}
+                  </select>
+                </div>
+                <div>
+                  <label className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">Okno dostawy</label>
+                  <select
+                    value={selectedDeliveryWindow}
+                    onChange={event => setDeliveryWindow(event.target.value)}
+                    className="premium-input h-9 w-full py-1.5 text-xs font-semibold"
+                  >
+                    {DELIVERY_WINDOWS.map(window => <option key={window} value={window}>{window}</option>)}
+                  </select>
+                </div>
+              </div>
+
               <div className="space-y-1.5 text-sm">
                 <div className="flex justify-between text-slate-500">
                   <span>Netto</span>
