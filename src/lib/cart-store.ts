@@ -7,6 +7,7 @@ export interface CartItem {
   productId: string
   name: string
   sku: string | null
+  imageUrl?: string | null
   unit: string
   price: number   // unit price net (customer-specific)
   vatRate: number

@@ -43,7 +43,7 @@ export default async function OrderHistoryPage({ params }: { params: Promise<{ t
         unit_price_net,
         vat_rate,
         line_total_net,
-        products(id, name, sku, unit, base_price, vat_rate, min_order_qty, order_multiple, stock_status, status)
+        products(id, name, sku, image_url, unit, base_price, vat_rate, min_order_qty, order_multiple, stock_status, status)
       )
     `)
     .eq('customer_id', customer.id)

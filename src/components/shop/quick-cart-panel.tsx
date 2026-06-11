@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowRight, ShoppingCart, Trash2 } from 'lucide-react'
+import { ArrowRight, ImageIcon, ShoppingCart, Trash2 } from 'lucide-react'
 import { useCart } from '@/lib/cart-store'
 import { resolveBrandColor } from '@/lib/brand'
 import { formatCurrency } from '@/lib/utils'
@@ -53,6 +53,13 @@ export function QuickCartPanel({ brandColor, shopBasePath }: QuickCartPanelProps
               {items.map(item => (
                 <div key={item.productId} className="rounded-xl border border-[#E2DCD0] bg-white p-3 shadow-sm">
                   <div className="flex items-start gap-2">
+                    <div className="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-lg border border-[#E7E1D6] bg-[#F8F5EF]">
+                      {item.imageUrl ? (
+                        <img src={item.imageUrl} alt={item.name} className="h-full w-full object-cover" loading="lazy" />
+                      ) : (
+                        <ImageIcon className="h-4 w-4 text-slate-300" />
+                      )}
+                    </div>
                     <div className="min-w-0 flex-1">
                       <div className="line-clamp-2 text-sm font-semibold leading-snug text-slate-900">{item.name}</div>
                       <div className="mt-1 flex items-center justify-between gap-2 text-[11px] font-semibold text-slate-400">

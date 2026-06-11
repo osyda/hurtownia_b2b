@@ -25,6 +25,7 @@ interface ImportRow {
   stock_status?: string
   category_name?: string
   description?: string
+  image_url?: string
   min_order_qty?: number
   order_multiple?: number
 }
@@ -85,6 +86,7 @@ export async function importProducts(tenantSlug: string, rows: ImportRow[]) {
       name: row.name,
       sku: row.sku || null,
       description: row.description || null,
+      image_url: row.image_url || null,
       category_id: categoryId,
       unit: row.unit || 'szt',
       base_price: row.base_price ?? 0,

@@ -11,6 +11,7 @@ interface ReorderProduct {
   id: string
   name: string
   sku: string | null
+  image_url?: string | null
   unit: string
   base_price: number
   vat_rate: number
@@ -68,6 +69,7 @@ export function ReorderButton({ brandColor, items, shopBasePath, variant = 'full
         productId: product.id,
         name: product.name,
         sku: product.sku,
+        imageUrl: product.image_url ?? null,
         unit: product.unit,
         price: Number(item.unit_price_net),
         vatRate: Number(product.vat_rate),

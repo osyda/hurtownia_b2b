@@ -6,7 +6,7 @@ import { useCart } from '@/lib/cart-store'
 import { placeOrder } from '@/app/actions/place-order'
 import { resolveBrandColor } from '@/lib/brand'
 import { formatCurrency } from '@/lib/utils'
-import { CheckCircle, Info, ShoppingCart, Trash2 } from 'lucide-react'
+import { CheckCircle, ImageIcon, Info, ShoppingCart, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import { CustomerAddress } from '@/types/database.types'
@@ -168,9 +168,18 @@ export function CartView({
         {items.map(item => (
           <div key={item.productId} className="premium-card p-4">
             <div className="flex items-start justify-between gap-3">
-              <div className="min-w-0 flex-1">
-                <div className="text-sm font-bold text-gray-900">{item.name}</div>
-                {item.sku && <div className="text-xs text-gray-400">SKU: {item.sku}</div>}
+              <div className="flex min-w-0 flex-1 items-start gap-3">
+                <div className="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-lg border border-[#E7E1D6] bg-[#F8F5EF]">
+                  {item.imageUrl ? (
+                    <img src={item.imageUrl} alt={item.name} className="h-full w-full object-cover" loading="lazy" />
+                  ) : (
+                    <ImageIcon className="h-5 w-5 text-slate-300" />
+                  )}
+                </div>
+                <div className="min-w-0">
+                  <div className="text-sm font-bold text-gray-900">{item.name}</div>
+                  {item.sku && <div className="text-xs text-gray-400">SKU: {item.sku}</div>}
+                </div>
               </div>
               <button type="button" onClick={() => removeItem(item.productId)} className="flex-shrink-0 text-gray-300 transition-colors hover:text-red-500" aria-label="Usuń produkt">
                 <Trash2 className="h-4 w-4" />

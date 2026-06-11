@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { AlertCircle, Check, LayoutGrid, Search, ShoppingCart, Table2 } from 'lucide-react'
+import { AlertCircle, Check, ImageIcon, LayoutGrid, Search, ShoppingCart, Table2 } from 'lucide-react'
 import type { ComponentType } from 'react'
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 import { useCart } from '@/lib/cart-store'
@@ -16,6 +16,7 @@ interface Product {
   id: string
   name: string
   sku: string | null
+  image_url: string | null
   unit: string
   base_price: number
   vat_rate: number
@@ -207,9 +208,18 @@ function ProductCard({
               Szczegóły
             </Link>
           </div>
-          <h2 className="line-clamp-2 min-h-[2.25rem] text-sm font-semibold leading-tight text-slate-900">
-            {product.name}
-          </h2>
+          <div className="flex items-start gap-3">
+            <div className="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-lg border border-[#E7E1D6] bg-[#F8F5EF]">
+              {product.image_url ? (
+                <img src={product.image_url} alt={product.name} className="h-full w-full object-cover" loading="lazy" />
+              ) : (
+                <ImageIcon className="h-5 w-5 text-slate-300" />
+              )}
+            </div>
+            <h2 className="line-clamp-2 min-h-[2.25rem] text-sm font-semibold leading-tight text-slate-900">
+              {product.name}
+            </h2>
+          </div>
           <div className="mt-2 flex items-center justify-between gap-2 text-[11px] font-medium text-slate-400 sm:text-xs">
             {product.sku ? <span className="truncate">SKU: {product.sku}</span> : <span />}
             <span>VAT {product.vat_rate}%</span>
@@ -365,6 +375,7 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
       productId: product.id,
       name: product.name,
       sku: product.sku,
+      imageUrl: product.image_url,
       unit: product.unit,
       price: product.customer_price,
       vatRate: product.vat_rate,

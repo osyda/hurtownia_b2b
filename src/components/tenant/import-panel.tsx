@@ -24,7 +24,7 @@ type ImportMode = 'products' | 'stock'
 type ImportRecord = Record<string, unknown>
 
 const PRODUCTS_TEMPLATE = [
-  ['sku', 'name', 'unit', 'base_price', 'vat_rate', 'category_name', 'description', 'min_order_qty', 'order_multiple', 'stock_qty', 'stock_status'],
+  ['sku', 'name', 'unit', 'base_price', 'vat_rate', 'category_name', 'description', 'image_url', 'min_order_qty', 'order_multiple', 'stock_qty', 'stock_status'],
   ['P001', 'Przykładowy produkt', 'szt', 10.50, 23, 'Kategoria', 'Opis produktu', 1, 1, 100, 'available'],
 ]
 
@@ -139,6 +139,7 @@ export function ImportPanel({
             stock_status: String(r.stock_status || 'available'),
             category_name: String(r.category_name || ''),
             description: String(r.description || ''),
+            image_url: String(r.image_url || ''),
             min_order_qty: parseFloat(String(r.min_order_qty)) || 1,
             order_multiple: parseFloat(String(r.order_multiple)) || 1,
           })))
@@ -206,7 +207,7 @@ export function ImportPanel({
         <div className="p-5 space-y-4">
           <div className="text-sm text-gray-500">
             {mode === 'products'
-              ? 'Kolumny: sku, name*, unit, base_price, vat_rate, category_name, description, min_order_qty, order_multiple, stock_qty, stock_status. Jeśli SKU już istnieje — produkt zostanie zaktualizowany.'
+              ? 'Kolumny: sku, name*, unit, base_price, vat_rate, category_name, description, image_url, min_order_qty, order_multiple, stock_qty, stock_status. Jeśli SKU już istnieje — produkt zostanie zaktualizowany.'
               : 'Kolumny: sku*, stock_qty*, stock_status. Aktualizuje stany dla istniejących produktów po SKU.'}
           </div>
 
