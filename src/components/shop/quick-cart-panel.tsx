@@ -1,27 +1,55 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowRight, ShoppingCart, Trash2 } from 'lucide-react'
+import { useEffect } from 'react'
+import { ArrowRight, ImageIcon, ShoppingCart, Trash2 } from 'lucide-react'
 import { useCart } from '@/lib/cart-store'
 import { resolveBrandColor } from '@/lib/brand'
 import { formatCurrency } from '@/lib/utils'
+import { DELIVERY_DAY_LABELS, DELIVERY_WINDOWS, getNextDeliveryDates } from '@/lib/delivery'
 import { CartQuantityControl } from './cart-quantity-control'
 
 interface QuickCartPanelProps {
   brandColor: string
   shopBasePath: string
+  deliveryDays: number[]
+  cutoffTime: string
+  minOrderValue: number
 }
 
 function formatQty(value: number) {
   return Number(value.toFixed(3)).toString()
 }
 
-export function QuickCartPanel({ brandColor, shopBasePath }: QuickCartPanelProps) {
-  const { items, updateQty, removeItem, totalNet, totalGross, itemCount } = useCart()
+export function QuickCartPanel({ brandColor, shopBasePath, deliveryDays, cutoffTime, minOrderValue }: QuickCartPanelProps) {
+  const {
+    items,
+    updateQty,
+    removeItem,
+    totalNet,
+    totalGross,
+    itemCount,
+    deliveryDate,
+    deliveryWindow,
+    setDeliveryDate,
+    setDeliveryWindow,
+  } = useCart()
   const resolvedBrandColor = resolveBrandColor(brandColor)
   const net = totalNet()
   const gross = totalGross()
   const count = itemCount()
+  const deliveryDates = getNextDeliveryDates(deliveryDays, cutoffTime)
+  const selectedDeliveryDate = deliveryDate || deliveryDates[0] || ''
+  const selectedDeliveryWindow = deliveryWindow || DELIVERY_WINDOWS[1]
+  const hasMinimum = minOrderValue > 0
+  const minimumMissing = Math.max(0, minOrderValue - net)
+  const minimumProgress = hasMinimum ? Math.min(100, (net / minOrderValue) * 100) : 0
+  const minimumMet = hasMinimum && minimumMissing <= 0
+
+  useEffect(() => {
+    if (items.length && !deliveryDate && selectedDeliveryDate) setDeliveryDate(selectedDeliveryDate)
+    if (items.length && !deliveryWindow) setDeliveryWindow(selectedDeliveryWindow)
+  }, [deliveryDate, deliveryWindow, items.length, selectedDeliveryDate, selectedDeliveryWindow, setDeliveryDate, setDeliveryWindow])
 
   return (
     <aside className="hidden lg:block">
@@ -53,6 +81,13 @@ export function QuickCartPanel({ brandColor, shopBasePath }: QuickCartPanelProps
               {items.map(item => (
                 <div key={item.productId} className="rounded-xl border border-[#E2DCD0] bg-white p-3 shadow-sm">
                   <div className="flex items-start gap-2">
+                    <div className="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-lg border border-[#E7E1D6] bg-[#F8F5EF]">
+                      {item.imageUrl ? (
+                        <img src={item.imageUrl} alt={item.name} className="h-full w-full object-cover" loading="lazy" />
+                      ) : (
+                        <ImageIcon className="h-4 w-4 text-slate-300" />
+                      )}
+                    </div>
                     <div className="min-w-0 flex-1">
                       <div className="line-clamp-2 text-sm font-semibold leading-snug text-slate-900">{item.name}</div>
                       <div className="mt-1 flex items-center justify-between gap-2 text-[11px] font-semibold text-slate-400">
@@ -89,6 +124,53 @@ export function QuickCartPanel({ brandColor, shopBasePath }: QuickCartPanelProps
             </div>
 
             <div className="border-t border-[#E2DCD0] bg-white p-4">
+              <div className="mb-4 grid gap-2">
+                <div>
+                  <label className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">Data dostawy</label>
+                  <select
+                    value={selectedDeliveryDate}
+                    onChange={event => setDeliveryDate(event.target.value)}
+                    className="premium-input h-9 w-full py-1.5 text-xs font-semibold"
+                  >
+                    {deliveryDates.map(date => {
+                      const d = new Date(date)
+                      const dow = d.getDay() === 0 ? 7 : d.getDay()
+                      return <option key={date} value={date}>{date} ({DELIVERY_DAY_LABELS[dow]})</option>
+                    })}
+                  </select>
+                </div>
+                <div>
+                  <label className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">Okno dostawy</label>
+                  <select
+                    value={selectedDeliveryWindow}
+                    onChange={event => setDeliveryWindow(event.target.value)}
+                    className="premium-input h-9 w-full py-1.5 text-xs font-semibold"
+                  >
+                    {DELIVERY_WINDOWS.map(window => <option key={window} value={window}>{window}</option>)}
+                  </select>
+                </div>
+              </div>
+
+              {hasMinimum ? (
+                <div className="mb-4 rounded-xl border border-[#E2DCD0] bg-[#FBF8F3] p-3">
+                  <div className="flex items-center justify-between gap-3 text-[11px] font-semibold text-slate-500">
+                    <span>{minimumMet ? 'Minimum logistyczne osiągnięte' : 'Do minimum logistycznego'}</span>
+                    <span className={minimumMet ? 'text-[#0F5B41]' : 'text-amber-700'}>
+                      {minimumMet ? formatCurrency(minOrderValue) : `brakuje ${formatCurrency(minimumMissing)}`}
+                    </span>
+                  </div>
+                  <div className="mt-2 h-2 overflow-hidden rounded-full bg-white">
+                    <div
+                      className="h-full rounded-full transition-all duration-300"
+                      style={{
+                        width: `${minimumProgress}%`,
+                        backgroundColor: minimumMet ? resolvedBrandColor : '#D97706',
+                      }}
+                    />
+                  </div>
+                </div>
+              ) : null}
+
               <div className="space-y-1.5 text-sm">
                 <div className="flex justify-between text-slate-500">
                   <span>Netto</span>

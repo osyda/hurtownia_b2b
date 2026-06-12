@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import type { CartItem } from '@/lib/cart-store'
 import { sendNewOrderEmail } from '@/lib/email'
+import { isPastDeliveryDate } from '@/lib/delivery'
 import { getTenantPanelUrl } from '@/lib/shop-routing'
 
 interface PlaceOrderInput {
@@ -12,6 +13,7 @@ interface PlaceOrderInput {
   customerId: string
   items: CartItem[]
   deliveryDate: string
+  deliveryWindow: string
   deliveryAddressId: string | null
   deliveryAddress: { street: string; city: string; postal_code: string; country: string } | null
   paymentMethodId: string | null
@@ -28,6 +30,7 @@ export async function placeOrder(input: PlaceOrderInput) {
     tenantSlug,
     items,
     deliveryDate,
+    deliveryWindow,
     deliveryAddressId,
     deliveryAddress,
     paymentMethodId,
@@ -35,6 +38,9 @@ export async function placeOrder(input: PlaceOrderInput) {
   } = input
 
   if (!items.length) return { error: 'Koszyk jest pusty' }
+  if (isPastDeliveryDate(deliveryDate)) {
+    return { error: 'Nie można wybrać daty dostawy z przeszłości' }
+  }
 
   const { data: customer } = await supabase
     .from('customers')
@@ -226,6 +232,7 @@ export async function placeOrder(input: PlaceOrderInput) {
         order_number: orderNumber,
         status: 'new',
         delivery_date: deliveryDate || null,
+        delivery_window: deliveryWindow || null,
         delivery_address_id: deliveryAddressId || null,
         delivery_address: deliveryAddress,
         payment_method_id: paymentMethodId,

@@ -8,10 +8,14 @@ import {
   getTenantPanelUrl,
   getTenantShopUrl,
   getTenantSlugFromHost,
+  hostMatchesTenantDomain,
+  isLikelyCustomDomainHost,
   isLegacyPlatformAppHost,
   isPlatformMarketingHost,
 } from '@/lib/shop-routing'
 import { isDostawioHost } from '@/lib/supabase/cookies'
+
+const invalidCredentialsMessage = 'Nieprawidłowy e-mail lub hasło'
 
 function platformDashboardRedirect(host: string | null) {
   return isDostawioHost(host) ? getPlatformSiteUrl('/dashboard') : '/dashboard'
@@ -27,6 +31,24 @@ function tenantShopRedirect(tenantSlug: string, host: string | null) {
   if (getTenantSlugFromHost(host) === tenantSlug) return '/'
 
   return isDostawioHost(host) ? getTenantShopUrl(tenantSlug) : `/sklep/${tenantSlug}`
+}
+
+function tenantPanelRedirectForHost(
+  tenant: { slug: string; custom_domain?: string | null; custom_domain_status?: string | null },
+  host: string | null
+) {
+  if (hostMatchesTenantDomain(host, tenant)) return '/dashboard'
+  if (tenant.custom_domain && tenant.custom_domain_status === 'active') return `https://${tenant.custom_domain}/dashboard`
+  return tenantPanelRedirect(tenant.slug, host)
+}
+
+function tenantShopRedirectForHost(
+  tenant: { slug: string; custom_domain?: string | null; custom_domain_status?: string | null },
+  host: string | null
+) {
+  if (hostMatchesTenantDomain(host, tenant)) return '/'
+  if (tenant.custom_domain && tenant.custom_domain_status === 'active') return `https://${tenant.custom_domain}`
+  return tenantShopRedirect(tenant.slug, host)
 }
 
 async function signOutWithError(supabase: Awaited<ReturnType<typeof createClient>>, error: string) {
@@ -52,7 +74,7 @@ export async function loginAction(
   const { data, error } = await supabase.auth.signInWithPassword({ email, password })
 
   if (error) {
-    return { error: 'Nieprawidłowy e-mail lub hasło' }
+    return { error: invalidCredentialsMessage }
   }
 
   const userId = data.user?.id
@@ -85,7 +107,7 @@ export async function loginAction(
   if ((profile.role === 'tenant_admin' || profile.role === 'tenant_employee') && profile.tenant_id) {
     const { data: tenant } = await supabase
       .from('tenants')
-      .select('slug')
+      .select('slug, custom_domain, custom_domain_status')
       .eq('id', profile.tenant_id)
       .maybeSingle()
 
@@ -93,27 +115,31 @@ export async function loginAction(
       return signOutWithError(supabase, 'To konto nie ma przypisanej aktywnej hurtowni.')
     }
 
-    redirect(tenantPanelRedirect(tenant.slug, host))
+    if ((tenantHostSlug || isLikelyCustomDomainHost(host)) && !hostMatchesTenantDomain(host, tenant)) {
+      return signOutWithError(supabase, invalidCredentialsMessage)
+    }
+
+    redirect(tenantPanelRedirectForHost(tenant, host))
   }
 
   if (profile.role === 'customer') {
     const { data: customer } = await supabase
       .from('customers')
-      .select('tenants(slug)')
+      .select('tenants(slug, custom_domain, custom_domain_status)')
       .eq('user_id', userId)
       .maybeSingle()
 
-    const tenantSlug = (customer?.tenants as unknown as { slug: string } | null)?.slug
+    const tenant = customer?.tenants as unknown as { slug: string; custom_domain?: string | null; custom_domain_status?: string | null } | null
 
-    if (!tenantSlug) {
+    if (!tenant?.slug) {
       return signOutWithError(supabase, 'To konto klienta nie jest przypisane do hurtowni.')
     }
 
-    if (tenantHostSlug && tenantHostSlug !== tenantSlug) {
-      redirect(tenantShopRedirect(tenantSlug, host))
+    if ((tenantHostSlug || isLikelyCustomDomainHost(host)) && !hostMatchesTenantDomain(host, tenant)) {
+      return signOutWithError(supabase, invalidCredentialsMessage)
     }
 
-    redirect(tenantShopRedirect(tenantSlug, host))
+    redirect(tenantShopRedirectForHost(tenant, host))
   }
 
   return signOutWithError(supabase, 'Nieobsługiwana rola konta.')

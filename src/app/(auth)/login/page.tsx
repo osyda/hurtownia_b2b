@@ -19,6 +19,7 @@ import {
 import { LoginForm } from '@/components/shared/login-form'
 import { DostawioLogo, DostawioMark } from '@/components/brand/dostawio-logo'
 import { getTenantSlugFromHost } from '@/lib/shop-routing'
+import { resolveTenantContextFromHost } from '@/lib/tenant-domain'
 
 function humanizeTenantName(slug: string) {
   return slug
@@ -30,8 +31,9 @@ function humanizeTenantName(slug: string) {
 
 export default async function LoginPage() {
   const host = (await headers()).get('host')
-  const tenantSlug = getTenantSlugFromHost(host)
-  const tenantName = tenantSlug ? humanizeTenantName(tenantSlug) : 'Dostawio'
+  const tenantContext = await resolveTenantContextFromHost(host)
+  const tenantSlug = tenantContext?.slug ?? getTenantSlugFromHost(host)
+  const tenantName = tenantContext?.name ?? (tenantSlug ? humanizeTenantName(tenantSlug) : 'Dostawio')
   const isTenantLogin = Boolean(tenantSlug)
 
   const context = isTenantLogin

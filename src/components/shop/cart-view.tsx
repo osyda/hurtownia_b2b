@@ -1,12 +1,13 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useEffect, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { useCart } from '@/lib/cart-store'
 import { placeOrder } from '@/app/actions/place-order'
 import { resolveBrandColor } from '@/lib/brand'
 import { formatCurrency } from '@/lib/utils'
-import { CheckCircle, Info, ShoppingCart, Trash2 } from 'lucide-react'
+import { DELIVERY_DAY_LABELS, DELIVERY_WINDOWS, getNextDeliveryDates, isPastDeliveryDate } from '@/lib/delivery'
+import { CheckCircle, ImageIcon, Info, ShoppingCart, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import { CustomerAddress } from '@/types/database.types'
@@ -27,8 +28,6 @@ interface Props {
   shopBasePath: string
 }
 
-const DAYS = ['', 'Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Niedz']
-
 export function CartView({
   tenantSlug,
   brandColor,
@@ -42,13 +41,24 @@ export function CartView({
   shopBasePath,
 }: Props) {
   const router = useRouter()
-  const { items, updateQty, updateNotes, removeItem, clear, totalNet, totalGross } = useCart()
+  const {
+    items,
+    updateQty,
+    updateNotes,
+    removeItem,
+    clear,
+    totalNet,
+    totalGross,
+    deliveryDate,
+    deliveryWindow,
+    setDeliveryDate,
+    setDeliveryWindow,
+  } = useCart()
   const resolvedBrandColor = resolveBrandColor(brandColor)
   const [pending, startTransition] = useTransition()
   const [submitted, setSubmitted] = useState(false)
   const [submittedOrder, setSubmittedOrder] = useState<{ id: string; number: string } | null>(null)
 
-  const [deliveryDate, setDeliveryDate] = useState('')
   const [addressId, setAddressId] = useState(addresses.find(a => a.is_default)?.id ?? addresses[0]?.id ?? '')
   const [paymentMethodId, setPaymentMethodId] = useState(paymentMethods[0]?.id ?? '')
   const [notes, setNotes] = useState('')
@@ -56,28 +66,19 @@ export function CartView({
   const net = totalNet()
   const gross = totalGross()
   const belowMin = minOrderValue > 0 && net < minOrderValue
+  const minimumMissing = Math.max(0, minOrderValue - net)
+  const minimumProgress = minOrderValue > 0 ? Math.min(100, (net / minOrderValue) * 100) : 0
   const noPaymentMethods = paymentMethods.length === 0
   const paymentMissing = !noPaymentMethods && !paymentMethodId
 
-  function getNextDeliveryDates() {
-    const dates: string[] = []
-    const now = new Date()
-    const [hh, mm] = cutoffTime.split(':').map(Number)
-    const cutoff = new Date(now)
-    cutoff.setHours(hh, mm, 0, 0)
+  const deliveryDates = getNextDeliveryDates(deliveryDays, cutoffTime)
+  const selectedDeliveryDate = deliveryDate || deliveryDates[0] || ''
+  const selectedDeliveryWindow = deliveryWindow || DELIVERY_WINDOWS[1]
 
-    const d = new Date(now)
-    if (now >= cutoff) d.setDate(d.getDate() + 1)
-
-    while (dates.length < 7) {
-      const dow = d.getDay() === 0 ? 7 : d.getDay()
-      if (deliveryDays.includes(dow)) dates.push(d.toISOString().slice(0, 10))
-      d.setDate(d.getDate() + 1)
-    }
-    return dates
-  }
-
-  const deliveryDates = getNextDeliveryDates()
+  useEffect(() => {
+    if (items.length && !deliveryDate && selectedDeliveryDate) setDeliveryDate(selectedDeliveryDate)
+    if (items.length && !deliveryWindow) setDeliveryWindow(selectedDeliveryWindow)
+  }, [deliveryDate, deliveryWindow, items.length, selectedDeliveryDate, selectedDeliveryWindow, setDeliveryDate, setDeliveryWindow])
 
   function handleSubmit() {
     if (!items.length) return
@@ -91,6 +92,10 @@ export function CartView({
     }
     if (!paymentMethodId) {
       toast.error('Wybierz formę płatności.')
+      return
+    }
+    if (isPastDeliveryDate(selectedDeliveryDate)) {
+      toast.error('Nie można wybrać daty dostawy z przeszłości.')
       return
     }
 
@@ -107,7 +112,8 @@ export function CartView({
         tenantSlug,
         customerId,
         items,
-        deliveryDate,
+        deliveryDate: selectedDeliveryDate,
+        deliveryWindow: selectedDeliveryWindow,
         deliveryAddressId: addressId || null,
         deliveryAddress,
         paymentMethodId,
@@ -168,9 +174,18 @@ export function CartView({
         {items.map(item => (
           <div key={item.productId} className="premium-card p-4">
             <div className="flex items-start justify-between gap-3">
-              <div className="min-w-0 flex-1">
-                <div className="text-sm font-bold text-gray-900">{item.name}</div>
-                {item.sku && <div className="text-xs text-gray-400">SKU: {item.sku}</div>}
+              <div className="flex min-w-0 flex-1 items-start gap-3">
+                <div className="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-lg border border-[#E7E1D6] bg-[#F8F5EF]">
+                  {item.imageUrl ? (
+                    <img src={item.imageUrl} alt={item.name} className="h-full w-full object-cover" loading="lazy" />
+                  ) : (
+                    <ImageIcon className="h-5 w-5 text-slate-300" />
+                  )}
+                </div>
+                <div className="min-w-0">
+                  <div className="text-sm font-bold text-gray-900">{item.name}</div>
+                  {item.sku && <div className="text-xs text-gray-400">SKU: {item.sku}</div>}
+                </div>
               </div>
               <button type="button" onClick={() => removeItem(item.productId)} className="flex-shrink-0 text-gray-300 transition-colors hover:text-red-500" aria-label="Usuń produkt">
                 <Trash2 className="h-4 w-4" />
@@ -212,24 +227,49 @@ export function CartView({
             <div className="mt-2 flex justify-between border-t pt-2 text-base font-black text-gray-900"><span>Brutto:</span><span>{formatCurrency(gross)}</span></div>
           </div>
 
-          {belowMin && (
-            <div className="mb-3 flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 p-2.5 text-xs text-red-700">
-              <Info className="mt-0.5 h-3.5 w-3.5 flex-shrink-0" />
-              Minimalna wartość zamówienia: {formatCurrency(minOrderValue)}
+          {minOrderValue > 0 && (
+            <div className="mb-3 rounded-lg border border-[#E2DCD0] bg-[#FBF8F3] p-3">
+              <div className="flex items-start gap-2">
+                <Info className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-slate-400" />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-3 text-xs font-bold text-gray-700">
+                    <span>Minimum logistyczne</span>
+                    <span>{formatCurrency(minOrderValue)}</span>
+                  </div>
+                  <p className={`mt-1 text-xs font-medium ${belowMin ? 'text-amber-700' : 'text-emerald-700'}`}>
+                    {belowMin ? `Brakuje ${formatCurrency(minimumMissing)} do złożenia zamówienia.` : 'Minimum osiągnięte. Możesz złożyć zamówienie.'}
+                  </p>
+                  <div className="mt-2 h-2 overflow-hidden rounded-full bg-white">
+                    <div
+                      className="h-full rounded-full transition-all duration-300"
+                      style={{
+                        width: `${minimumProgress}%`,
+                        backgroundColor: belowMin ? '#D97706' : resolvedBrandColor,
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 
           <div className="mb-3 space-y-1">
             <label className="block text-xs font-bold text-gray-700">Termin dostawy</label>
-            <select value={deliveryDate} onChange={e => setDeliveryDate(e.target.value)} className="premium-input w-full">
-              <option value="">Do ustalenia</option>
+            <select value={selectedDeliveryDate} onChange={e => setDeliveryDate(e.target.value)} className="premium-input w-full">
               {deliveryDates.map(d => {
                 const date = new Date(d)
                 const dow = date.getDay() === 0 ? 7 : date.getDay()
-                return <option key={d} value={d}>{d} ({DAYS[dow]})</option>
+                return <option key={d} value={d}>{d} ({DELIVERY_DAY_LABELS[dow]})</option>
               })}
             </select>
             {deliveryInfo && <p className="text-xs text-gray-400">{deliveryInfo}</p>}
+          </div>
+
+          <div className="mb-3 space-y-1">
+            <label className="block text-xs font-bold text-gray-700">Okno dostawy</label>
+            <select value={selectedDeliveryWindow} onChange={e => setDeliveryWindow(e.target.value)} className="premium-input w-full">
+              {DELIVERY_WINDOWS.map(window => <option key={window} value={window}>{window}</option>)}
+            </select>
           </div>
 
           {addresses.length > 0 && (

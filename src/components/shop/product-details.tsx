@@ -50,6 +50,7 @@ export function ProductDetails({ brandColor, backHref, product }: Props) {
       productId: product.id,
       name: product.name,
       sku: product.sku,
+      imageUrl: product.image_url,
       unit: product.unit,
       price: product.customer_price,
       vatRate: product.vat_rate,

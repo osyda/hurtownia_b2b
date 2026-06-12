@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { AlertCircle, Check, LayoutGrid, Search, ShoppingCart, Table2 } from 'lucide-react'
+import { AlertCircle, Check, ImageIcon, LayoutGrid, Search, ShoppingCart, SlidersHorizontal, Table2 } from 'lucide-react'
 import type { ComponentType } from 'react'
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 import { useCart } from '@/lib/cart-store'
@@ -16,6 +16,7 @@ interface Product {
   id: string
   name: string
   sku: string | null
+  image_url: string | null
   unit: string
   base_price: number
   vat_rate: number
@@ -39,11 +40,22 @@ interface Props {
   searchQuery?: string
   activeCategory?: string
   shopBasePath: string
+  deliveryDays: number[]
+  cutoffTime: string
+  minOrderValue: number
 }
 
 type CatalogViewMode = 'cards' | 'table'
+type CatalogSortMode = 'name_asc' | 'name_desc' | 'price_asc' | 'price_desc'
 
 const VIEW_MODE_KEY = 'dostawio-catalog-view'
+const vatFilterOptions = [5, 8, 23]
+const sortOptions: Array<{ value: CatalogSortMode; label: string }> = [
+  { value: 'name_asc', label: 'Nazwa A-Z' },
+  { value: 'name_desc', label: 'Nazwa Z-A' },
+  { value: 'price_asc', label: 'Cena rosnąco' },
+  { value: 'price_desc', label: 'Cena malejąco' },
+]
 
 function isCatalogViewMode(value: string | null): value is CatalogViewMode {
   return value === 'cards' || value === 'table'
@@ -71,6 +83,23 @@ function productMatchesSearch(product: Product, query: string) {
   ].filter(Boolean).join(' '))
 
   return terms.every(term => haystack.includes(term))
+}
+
+function parsePriceFilter(value: string) {
+  const normalized = value.replace(',', '.').trim()
+  if (!normalized) return null
+  const parsed = Number(normalized)
+  return Number.isFinite(parsed) ? parsed : null
+}
+
+function sortProducts(products: Product[], mode: CatalogSortMode) {
+  return [...products].sort((a, b) => {
+    if (mode === 'price_asc') return a.customer_price - b.customer_price
+    if (mode === 'price_desc') return b.customer_price - a.customer_price
+
+    const result = a.name.localeCompare(b.name, 'pl-PL', { sensitivity: 'base' })
+    return mode === 'name_desc' ? -result : result
+  })
 }
 
 function StockNotice({ product }: { product: Product }) {
@@ -190,9 +219,18 @@ function ProductCard({
               Szczegóły
             </Link>
           </div>
-          <h2 className="line-clamp-2 min-h-[2.25rem] text-sm font-semibold leading-tight text-slate-900">
-            {product.name}
-          </h2>
+          <div className="flex items-start gap-3">
+            <div className="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-lg border border-[#E7E1D6] bg-[#F8F5EF]">
+              {product.image_url ? (
+                <img src={product.image_url} alt={product.name} className="h-full w-full object-cover" loading="lazy" />
+              ) : (
+                <ImageIcon className="h-5 w-5 text-slate-300" />
+              )}
+            </div>
+            <h2 className="line-clamp-2 min-h-[2.25rem] text-sm font-semibold leading-tight text-slate-900">
+              {product.name}
+            </h2>
+          </div>
           <div className="mt-2 flex items-center justify-between gap-2 text-[11px] font-medium text-slate-400 sm:text-xs">
             {product.sku ? <span className="truncate">SKU: {product.sku}</span> : <span />}
             <span>VAT {product.vat_rate}%</span>
@@ -277,7 +315,17 @@ function ProductTableRow({
   )
 }
 
-export function ProductCatalog({ brandColor, categories, products, searchQuery, activeCategory, shopBasePath }: Props) {
+export function ProductCatalog({
+  brandColor,
+  categories,
+  products,
+  searchQuery,
+  activeCategory,
+  shopBasePath,
+  deliveryDays,
+  cutoffTime,
+  minOrderValue,
+}: Props) {
   const router = useRouter()
   const { addItem } = useCart()
   const resolvedBrandColor = resolveBrandColor(brandColor)
@@ -285,16 +333,31 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
   const addedResetTimer = useRef<number | null>(null)
   const [addedProductId, setAddedProductId] = useState<string | null>(null)
   const [viewMode, setViewMode] = useState<CatalogViewMode>('cards')
+  const [sortMode, setSortMode] = useState<CatalogSortMode>('name_asc')
   const [liveSearch, setLiveSearch] = useState(searchQuery ?? '')
+  const [priceMin, setPriceMin] = useState('')
+  const [priceMax, setPriceMax] = useState('')
+  const [vatRates, setVatRates] = useState<number[]>([])
   const deferredSearch = useDeferredValue(liveSearch)
   const [quantities, setQuantities] = useState<Record<string, number>>(() =>
     Object.fromEntries(products.map(p => [p.id, p.min_order_qty]))
   )
 
-  const visibleProducts = useMemo(
-    () => products.filter(product => productMatchesSearch(product, deferredSearch)),
-    [products, deferredSearch]
-  )
+  const visibleProducts = useMemo(() => {
+    const min = parsePriceFilter(priceMin)
+    const max = parsePriceFilter(priceMax)
+    const selectedVatRates = new Set(vatRates)
+
+    const filtered = products.filter(product => {
+      if (!productMatchesSearch(product, deferredSearch)) return false
+      if (min !== null && product.customer_price < min) return false
+      if (max !== null && product.customer_price > max) return false
+      if (selectedVatRates.size && !selectedVatRates.has(Number(product.vat_rate))) return false
+      return true
+    })
+
+    return sortProducts(filtered, sortMode)
+  }, [products, deferredSearch, priceMin, priceMax, vatRates, sortMode])
 
   useEffect(() => {
     const savedViewMode = window.localStorage.getItem(VIEW_MODE_KEY)
@@ -328,6 +391,18 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
     window.localStorage.setItem(VIEW_MODE_KEY, mode)
   }
 
+  function toggleVatRate(rate: number) {
+    setVatRates(current =>
+      current.includes(rate) ? current.filter(value => value !== rate) : [...current, rate]
+    )
+  }
+
+  function clearFilters() {
+    setPriceMin('')
+    setPriceMax('')
+    setVatRates([])
+  }
+
   function setProductQty(product: Product, qty: number) {
     setQuantities(prev => ({
       ...prev,
@@ -345,6 +420,7 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
       productId: product.id,
       name: product.name,
       sku: product.sku,
+      imageUrl: product.image_url,
       unit: product.unit,
       price: product.customer_price,
       vatRate: product.vat_rate,
@@ -399,6 +475,7 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
     { mode: 'cards', label: 'Karty', icon: LayoutGrid },
     { mode: 'table', label: 'Tabela', icon: Table2 },
   ]
+  const hasFilters = Boolean(priceMin || priceMax || vatRates.length)
 
   return (
     <div className="grid gap-3 lg:grid-cols-[210px_minmax(0,1fr)_310px] lg:gap-4 xl:grid-cols-[230px_minmax(0,1fr)_340px]">
@@ -442,35 +519,52 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
         <section className="premium-card overflow-hidden border-[#E7E1D6] bg-white">
           <div className="space-y-2.5 p-3 sm:space-y-3 sm:p-4">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <div>
+              <div className="min-w-0">
                 <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400 sm:text-xs">Katalog produktów</div>
-                <h1 className="mt-0.5 text-lg font-semibold tracking-tight text-slate-900 sm:mt-1 sm:text-2xl">
-                  {visibleProducts.length} z {products.length} pozycji w ofercie
+                <h1 className="mt-0.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-base font-semibold tracking-tight text-slate-900 sm:text-lg">
+                  <span className="whitespace-nowrap">{visibleProducts.length} z {products.length}</span>
+                  <span className="whitespace-nowrap text-sm font-medium text-slate-500">pozycji w ofercie</span>
                 </h1>
               </div>
 
-              <div className="inline-flex w-fit rounded-lg border border-[#D9D5CC] bg-white p-1 shadow-sm">
-                {viewOptions.map(option => {
-                  const Icon = option.icon
-                  const active = viewMode === option.mode
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                <div className="inline-flex w-fit shrink-0 rounded-lg border border-[#D9D5CC] bg-white p-1 shadow-sm">
+                  {viewOptions.map(option => {
+                    const Icon = option.icon
+                    const active = viewMode === option.mode
 
-                  return (
-                    <button
-                      key={option.mode}
-                      type="button"
-                      onClick={() => selectViewMode(option.mode)}
-                      className={cn(
-                        'inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-xs font-semibold transition',
-                        active ? 'text-white shadow-sm' : 'text-slate-500 hover:bg-[#F8F5EF] hover:text-slate-800'
-                      )}
-                      style={active ? { backgroundColor: resolvedBrandColor } : {}}
-                      aria-pressed={active}
-                    >
-                      <Icon className="h-3.5 w-3.5" />
+                    return (
+                      <button
+                        key={option.mode}
+                        type="button"
+                        onClick={() => selectViewMode(option.mode)}
+                        className={cn(
+                          'inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-xs font-semibold transition',
+                          active ? 'text-white shadow-sm' : 'text-slate-500 hover:bg-[#F8F5EF] hover:text-slate-800'
+                        )}
+                        style={active ? { backgroundColor: resolvedBrandColor } : {}}
+                        aria-pressed={active}
+                      >
+                        <Icon className="h-3.5 w-3.5" />
+                        {option.label}
+                      </button>
+                    )
+                  })}
+                </div>
+
+                <label className="sr-only" htmlFor="catalog-sort">Sortowanie produktów</label>
+                <select
+                  id="catalog-sort"
+                  value={sortMode}
+                  onChange={event => setSortMode(event.target.value as CatalogSortMode)}
+                  className="premium-input h-8 w-full py-1 text-xs font-semibold text-slate-700 sm:w-[170px]"
+                >
+                  {sortOptions.map(option => (
+                    <option key={option.value} value={option.value}>
                       {option.label}
-                    </button>
-                  )
-                })}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 
@@ -496,6 +590,68 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
                 Szukaj
               </button>
             </form>
+          </div>
+
+          <div className="border-t border-[#EEE7DC] bg-[#FBF8F3]/70 px-3 py-3 sm:px-4">
+            <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
+              <div className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500">
+                <SlidersHorizontal className="h-4 w-4" />
+                Filtry katalogu
+              </div>
+
+              <div className="grid gap-2 sm:grid-cols-[110px_110px_auto_auto] sm:items-center">
+                <label className="sr-only" htmlFor="catalog-price-min">Cena od</label>
+                <input
+                  id="catalog-price-min"
+                  value={priceMin}
+                  onChange={event => setPriceMin(event.target.value)}
+                  inputMode="decimal"
+                  placeholder="Cena od"
+                  className="premium-input h-9 py-1.5 text-xs font-semibold"
+                />
+
+                <label className="sr-only" htmlFor="catalog-price-max">Cena do</label>
+                <input
+                  id="catalog-price-max"
+                  value={priceMax}
+                  onChange={event => setPriceMax(event.target.value)}
+                  inputMode="decimal"
+                  placeholder="Cena do"
+                  className="premium-input h-9 py-1.5 text-xs font-semibold"
+                />
+
+                <div className="flex flex-wrap gap-1.5">
+                  {vatFilterOptions.map(rate => {
+                    const active = vatRates.includes(rate)
+                    return (
+                      <button
+                        key={rate}
+                        type="button"
+                        onClick={() => toggleVatRate(rate)}
+                        className={cn(
+                          'h-9 rounded-lg border px-3 text-xs font-semibold transition active:scale-95',
+                          active ? 'border-transparent text-white shadow-sm' : 'border-[#D9D5CC] bg-white text-slate-500 hover:bg-[#F8F5EF] hover:text-slate-800'
+                        )}
+                        style={active ? { backgroundColor: resolvedBrandColor } : {}}
+                        aria-pressed={active}
+                      >
+                        VAT {rate}%
+                      </button>
+                    )
+                  })}
+                </div>
+
+                {hasFilters ? (
+                  <button
+                    type="button"
+                    onClick={clearFilters}
+                    className="h-9 rounded-lg border border-[#D9D5CC] bg-white px-3 text-xs font-semibold text-slate-500 transition hover:bg-[#F8F5EF] hover:text-slate-800"
+                  >
+                    Wyczyść
+                  </button>
+                ) : null}
+              </div>
+            </div>
           </div>
         </section>
 
@@ -538,7 +694,7 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
               {visibleProducts.map(renderProduct)}
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-2.5 sm:gap-4 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
+            <div className="grid grid-cols-1 gap-2.5 sm:gap-4 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
               {visibleProducts.map(renderProduct)}
             </div>
           )
@@ -549,7 +705,13 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
         )}
       </div>
 
-      <QuickCartPanel brandColor={brandColor} shopBasePath={shopBasePath} />
+      <QuickCartPanel
+        brandColor={brandColor}
+        shopBasePath={shopBasePath}
+        deliveryDays={deliveryDays}
+        cutoffTime={cutoffTime}
+        minOrderValue={minOrderValue}
+      />
     </div>
   )
 }

@@ -5,6 +5,7 @@ import {
   CheckCircle2,
   Clock3,
   CreditCard,
+  Globe2,
   PackageCheck,
   PlugZap,
   ShieldCheck,
@@ -103,6 +104,7 @@ function MarketingLanding() {
     'klienci B2B, grupy cenowe i indywidualne ceny',
     'formy płatności przypisywane do klienta',
     'koszyk, historia zamówień i e-maile',
+    'własna domena klienta w wyższym pakiecie',
     'API pod system sprzedażowy i magazynowy',
   ]
 
@@ -125,12 +127,12 @@ function MarketingLanding() {
       featured: true,
     },
     {
-      name: 'Integracje',
+      name: 'Premium',
       price: 'od 1 190 zł',
       period: 'miesięcznie netto',
-      badge: 'ERP i automatyzacje',
-      description: 'Dla hurtowni, która chce połączyć Dostawio z systemem sprzedażowym, magazynem lub fakturami.',
-      features: ['API integracyjne', 'statusy i faktury', 'synchronizacja stanów', 'indywidualny konektor'],
+      badge: 'Własna domena i integracje',
+      description: 'Dla hurtowni, która chce panel B2B pod własną domeną oraz przygotowanie pod system sprzedażowy, magazyn lub faktury.',
+      features: ['własna domena klienta', 'API integracyjne', 'statusy i faktury', 'indywidualny konektor'],
     },
   ]
 
@@ -279,6 +281,38 @@ function MarketingLanding() {
                 <div className="text-sm font-semibold leading-6 text-slate-700">{item}</div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-5 pb-14 lg:px-8">
+        <div className="mx-auto max-w-7xl rounded-lg border border-[#1D2125] bg-[#1D2125] p-5 text-white shadow-[0_18px_42px_rgba(29,33,37,0.12)] md:p-7">
+          <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
+            <div>
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#E08A2B]/35 bg-[#E08A2B]/10 px-3 py-1 text-xs font-black uppercase tracking-[0.16em] text-[#F4D1A4]">
+                <Globe2 className="h-3.5 w-3.5" />
+                Pakiet Premium
+              </div>
+              <h2 className="text-2xl font-black tracking-tight sm:text-4xl">
+                Panel zamówień pod domeną Twojej hurtowni.
+              </h2>
+              <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-300">
+                Klient może zamawiać przez adres typu <span className="font-mono font-bold text-white">zamowienia.twojahurtownia.pl</span>.
+                To wzmacnia markę hurtowni i wygląda jak własny kanał sprzedaży B2B, a nie zewnętrzny sklep.
+              </p>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-3">
+              {[
+                ['Własny adres', 'bez widocznego dostawio.pl'],
+                ['SSL i DNS', 'konfiguracja manualna'],
+                ['Sprzedaż premium', 'wyższy pakiet usługi'],
+              ].map(([label, value]) => (
+                <div key={label} className="rounded-lg border border-white/10 bg-white/[0.06] p-4">
+                  <div className="text-[11px] font-black uppercase tracking-[0.14em] text-white/45">{label}</div>
+                  <div className="mt-2 text-sm font-black leading-6 text-white">{value}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>

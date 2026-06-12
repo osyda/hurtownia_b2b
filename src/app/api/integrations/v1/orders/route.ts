@@ -23,6 +23,7 @@ export async function GET(request: Request) {
       order_number,
       status,
       delivery_date,
+      delivery_window,
       delivery_address,
       customer_notes,
       subtotal_net,

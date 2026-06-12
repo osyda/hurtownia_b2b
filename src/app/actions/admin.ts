@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { sendCustomerInviteEmail, sendTenantAdminWelcomeEmail } from '@/lib/email'
 import { slugify } from '@/lib/utils'
 import { createAdminClient, createClient } from '@/lib/supabase/server'
-import { getTenantPanelUrl, getTenantShopUrl, isReservedTenantSlug } from '@/lib/shop-routing'
+import { getTenantPanelUrl, getTenantShopUrl, isReservedTenantSlug, normalizeCustomDomain, PLATFORM_DOMAIN } from '@/lib/shop-routing'
 
 const defaultPaymentMethods = [
   { type: 'transfer_7', label: 'Przelew 7 dni', sort_order: 10 },
@@ -46,6 +46,8 @@ const adminUserSchema = z.object({
   password: z.string().min(8, 'Hasło musi mieć min. 8 znaków'),
   full_name: z.string().min(1, 'Imię i nazwisko jest wymagane'),
 })
+
+const customDomainStatusSchema = z.enum(['not_configured', 'pending_dns', 'active', 'error'])
 
 export async function createTenant(formData: FormData) {
   if (!process.env.SUPABASE_SECRET_KEY) {
@@ -176,6 +178,70 @@ export async function updateTenantStatus(tenantId: string, status: 'active' | 'i
 
   revalidatePath('/dashboard')
   revalidatePath('/tenants')
+  return { success: true }
+}
+
+export async function updateTenantCustomDomain(tenantId: string, formData: FormData) {
+  if (!process.env.SUPABASE_SECRET_KEY) {
+    return { error: 'Brak SUPABASE_SECRET_KEY w konfiguracji serwera.' }
+  }
+
+  await requireSuperAdmin()
+  const adminSupabase = await createAdminClient()
+
+  const domain = normalizeCustomDomain(String(formData.get('custom_domain') || ''))
+  const status = customDomainStatusSchema.safeParse(String(formData.get('custom_domain_status') || 'not_configured'))
+  if (!status.success) return { error: 'Nieprawidłowy status domeny.' }
+
+  if (!domain) {
+    const { error } = await adminSupabase
+      .from('tenants')
+      .update({
+        custom_domain: null,
+        custom_domain_status: 'not_configured',
+        custom_domain_verified_at: null,
+      })
+      .eq('id', tenantId)
+
+    if (error) return { error: error.message }
+    revalidatePath('/tenants')
+    revalidatePath(`/tenants/${tenantId}`)
+    return { success: true }
+  }
+
+  if (domain === PLATFORM_DOMAIN || domain.endsWith(`.${PLATFORM_DOMAIN}`)) {
+    return { error: 'Domeny dostawio.pl są obsługiwane przez slug hurtowni. Tutaj wpisz wyłącznie domenę klienta.' }
+  }
+
+  if (!domain.includes('.')) {
+    return { error: 'Podaj pełną domenę, np. zamowienia.hurtownia.pl.' }
+  }
+
+  const { data: existing } = await adminSupabase
+    .from('tenants')
+    .select('id, name')
+    .eq('custom_domain', domain)
+    .neq('id', tenantId)
+    .maybeSingle()
+
+  if (existing) {
+    return { error: `Ta domena jest już przypisana do hurtowni: ${existing.name}.` }
+  }
+
+  const nextStatus = status.data === 'not_configured' ? 'pending_dns' : status.data
+  const { error } = await adminSupabase
+    .from('tenants')
+    .update({
+      custom_domain: domain,
+      custom_domain_status: nextStatus,
+      custom_domain_verified_at: nextStatus === 'active' ? new Date().toISOString() : null,
+    })
+    .eq('id', tenantId)
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/tenants')
+  revalidatePath(`/tenants/${tenantId}`)
   return { success: true }
 }
 

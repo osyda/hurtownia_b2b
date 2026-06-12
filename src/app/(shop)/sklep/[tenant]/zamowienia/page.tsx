@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { ClipboardList, ChevronRight } from 'lucide-react'
 import { getShopBasePath } from '@/lib/shop-routing'
 import { formatCurrency, formatDate, ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from '@/lib/utils'
+import { ReorderButton, type ReorderOrderItem } from '@/components/shop/reorder-button'
 
 export default async function OrderHistoryPage({ params }: { params: Promise<{ tenant: string }> }) {
   const { tenant: tenantSlug } = await params
@@ -16,15 +17,36 @@ export default async function OrderHistoryPage({ params }: { params: Promise<{ t
 
   const { data: customer } = await supabase
     .from('customers')
-    .select('id')
+    .select('id, tenants!inner(brand_color)')
     .eq('user_id', user.id)
     .single()
 
   if (!customer) redirect('/login')
+  const brandColor = (customer.tenants as unknown as { brand_color: string }).brand_color
 
   const { data: orders } = await supabase
     .from('orders')
-    .select('id, order_number, status, total_gross, created_at, delivery_date, payment_methods(label)')
+    .select(`
+      id,
+      order_number,
+      status,
+      total_gross,
+      created_at,
+      delivery_date,
+      delivery_window,
+      payment_methods(label),
+      order_items(
+        product_id,
+        product_name,
+        product_sku,
+        product_unit,
+        ordered_qty,
+        unit_price_net,
+        vat_rate,
+        line_total_net,
+        products(id, name, sku, image_url, unit, base_price, vat_rate, min_order_qty, order_multiple, stock_status, status)
+      )
+    `)
     .eq('customer_id', customer.id)
     .order('created_at', { ascending: false })
 
@@ -36,32 +58,48 @@ export default async function OrderHistoryPage({ params }: { params: Promise<{ t
         <div className="space-y-3">
           {orders.map(order => {
             const pm = order.payment_methods as unknown as { label: string } | null
+            const items = (order.order_items ?? []) as unknown as ReorderOrderItem[]
+            const canReorder = order.status === 'delivered' && items.length > 0
+
             return (
-              <Link
+              <div
                 key={order.id}
-                href={`${shopBasePath}/zamowienia/${order.id}`}
-                className="flex items-center justify-between premium-card p-4 hover:border-[#E08A2B] hover:shadow-sm transition-all"
+                className="premium-card flex flex-col gap-3 p-4 transition-all hover:border-[#E08A2B] hover:shadow-sm sm:flex-row sm:items-center sm:justify-between"
               >
-                <div className="flex items-center gap-4">
+                <Link href={`${shopBasePath}/zamowienia/${order.id}`} className="flex min-w-0 flex-1 items-center gap-4">
                   <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center flex-shrink-0">
                     <ClipboardList className="h-5 w-5 text-gray-400" />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <div className="font-mono font-semibold text-gray-900">{order.order_number}</div>
-                    <div className="text-xs text-gray-400 mt-0.5">{formatDate(order.created_at)}{order.delivery_date ? ` · dostawa ${order.delivery_date}` : ''}</div>
+                    <div className="text-xs text-gray-400 mt-0.5">
+                      {formatDate(order.created_at)}
+                      {order.delivery_date ? ` · dostawa ${order.delivery_date}${order.delivery_window ? `, ${order.delivery_window}` : ''}` : ''}
+                    </div>
                     {pm && <div className="text-xs text-gray-400">{pm.label}</div>}
                   </div>
-                </div>
-                <div className="flex items-center gap-4">
+                </Link>
+                <div className="flex items-center justify-between gap-4 sm:justify-end">
                   <div className="text-right">
                     <div className="font-semibold text-gray-900">{formatCurrency(order.total_gross)}</div>
                     <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${ORDER_STATUS_COLORS[order.status]}`}>
                       {ORDER_STATUS_LABELS[order.status]}
                     </span>
                   </div>
-                  <ChevronRight className="h-4 w-4 text-gray-400" />
+                  {canReorder ? (
+                    <ReorderButton
+                      brandColor={brandColor}
+                      items={items}
+                      shopBasePath={shopBasePath}
+                      variant="compact"
+                    />
+                  ) : (
+                    <Link href={`${shopBasePath}/zamowienia/${order.id}`} className="rounded-lg p-2 text-gray-400 transition hover:bg-gray-50 hover:text-gray-700">
+                      <ChevronRight className="h-4 w-4" />
+                    </Link>
+                  )}
                 </div>
-              </Link>
+              </div>
             )
           })}
         </div>

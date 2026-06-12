@@ -65,6 +65,14 @@ export function ProductForm({ tenantSlug, categories, product, onSubmit }: Props
             placeholder="Opcjonalny opis produktu..."
           />
         </div>
+
+        <Input
+          label="URL zdjęcia produktu"
+          name="image_url"
+          type="url"
+          defaultValue={product?.image_url ?? ''}
+          placeholder="https://..."
+        />
       </div>
 
       <div className="premium-card p-6 space-y-4">

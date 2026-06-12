@@ -24,6 +24,9 @@ export interface Tenant {
   notification_email: string | null
   customer_message: string | null
   terms_text: string | null
+  custom_domain: string | null
+  custom_domain_status: string
+  custom_domain_verified_at: string | null
   created_at: string
   updated_at: string
 }
@@ -154,6 +157,7 @@ export interface Order {
   order_number: string
   status: OrderStatus
   delivery_date: string | null
+  delivery_window: string | null
   delivery_address_id: string | null
   delivery_address: Address | null
   payment_method_id: string | null

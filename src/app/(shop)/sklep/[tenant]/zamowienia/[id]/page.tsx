@@ -41,7 +41,11 @@ export default async function CustomerOrderPage({
   if (!order) notFound()
 
   const [{ data: items }, { data: invoices }] = await Promise.all([
-    supabase.from('order_items').select('*').eq('order_id', id).order('created_at'),
+    supabase
+      .from('order_items')
+      .select('*, products(id, name, sku, image_url, unit, base_price, vat_rate, min_order_qty, order_multiple, stock_status, status)')
+      .eq('order_id', id)
+      .order('created_at'),
     supabase.from('order_invoices').select('*').eq('order_id', id).order('invoice_date', { ascending: false }),
   ])
 
@@ -70,7 +74,10 @@ export default async function CustomerOrderPage({
           {order.delivery_date && (
             <>
               <div className="mb-1 mt-3 text-xs font-bold uppercase tracking-[0.14em] text-gray-500">Termin dostawy</div>
-              <div className="text-gray-900">{formatDate(order.delivery_date)}</div>
+              <div className="text-gray-900">
+                {formatDate(order.delivery_date)}
+                {order.delivery_window ? `, ${order.delivery_window}` : ''}
+              </div>
             </>
           )}
         </div>
