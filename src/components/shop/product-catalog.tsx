@@ -115,7 +115,7 @@ function ProductActions({
   const unavailable = product.stock_status === 'unavailable'
 
   return (
-    <div className={cn('flex items-center gap-2', compact && 'gap-1.5')}>
+    <div className={cn('flex items-center gap-2', compact && 'gap-3')}>
       <CartQuantityControl
         value={qty}
         min={product.min_order_qty}
@@ -249,7 +249,7 @@ function ProductTableRow({
 
   return (
     <div className={cn(
-      'grid min-w-[760px] grid-cols-[minmax(230px,1.5fr)_110px_80px_120px_190px] items-center gap-3 border-t border-[#EEE7DC] px-3 py-2.5 text-sm',
+      'grid grid-cols-[minmax(150px,1fr)_100px_250px] items-center gap-3 border-t border-[#EEE7DC] px-3 py-2.5 text-sm',
       unavailable && 'opacity-60'
     )}>
       <div className="min-w-0">
@@ -259,8 +259,6 @@ function ProductTableRow({
           <StockNotice product={product} />
         </div>
       </div>
-      <div className="truncate text-xs font-medium text-slate-500">{product.sku || '-'}</div>
-      <div className="text-xs font-medium text-slate-500">VAT {product.vat_rate}%</div>
       <div>
         <div className="font-semibold text-slate-900">{formatCurrency(product.customer_price)}</div>
         <div className="text-[11px] text-slate-400">/ {product.unit}</div>
@@ -442,15 +440,15 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
 
       <div className="min-w-0 space-y-3 sm:space-y-5">
         <section className="premium-card overflow-hidden border-[#E7E1D6] bg-white">
-          <div className="grid gap-3 p-3 lg:grid-cols-[1fr_auto] lg:items-center sm:p-4">
-            <div>
-              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400 sm:text-xs">Katalog produktów</div>
-              <h1 className="mt-0.5 text-lg font-semibold tracking-tight text-slate-900 sm:mt-1 sm:text-2xl">
-                {visibleProducts.length} z {products.length} pozycji w ofercie
-              </h1>
-            </div>
+          <div className="space-y-2.5 p-3 sm:space-y-3 sm:p-4">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400 sm:text-xs">Katalog produktów</div>
+                <h1 className="mt-0.5 text-lg font-semibold tracking-tight text-slate-900 sm:mt-1 sm:text-2xl">
+                  {visibleProducts.length} z {products.length} pozycji w ofercie
+                </h1>
+              </div>
 
-            <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-end">
               <div className="inline-flex w-fit rounded-lg border border-[#D9D5CC] bg-white p-1 shadow-sm">
                 {viewOptions.map(option => {
                   const Icon = option.icon
@@ -474,30 +472,30 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
                   )
                 })}
               </div>
-
-              <form
-                onSubmit={e => {
-                  e.preventDefault()
-                  navigate({ q: liveSearch || undefined, category: activeCategory })
-                }}
-                className="flex min-w-0 gap-2 md:w-[360px]"
-              >
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                  <input
-                    name="q"
-                    value={liveSearch}
-                    onChange={event => setLiveSearch(event.target.value)}
-                    placeholder="Wpisz np. ml, jablko, SKU..."
-                    className="premium-input h-9 w-full pl-9 sm:h-10"
-                    autoComplete="off"
-                  />
-                </div>
-                <button type="submit" className="brand-button px-3 py-1.5 text-xs font-semibold sm:px-4 sm:py-2.5 sm:text-sm">
-                  Szukaj
-                </button>
-              </form>
             </div>
+
+            <form
+              onSubmit={e => {
+                e.preventDefault()
+                navigate({ q: liveSearch || undefined, category: activeCategory })
+              }}
+              className="flex gap-2"
+            >
+              <div className="relative flex-1">
+                <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
+                <input
+                  name="q"
+                  value={liveSearch}
+                  onChange={event => setLiveSearch(event.target.value)}
+                  placeholder="Wpisz np. ml, jablko, SKU..."
+                  className="premium-input h-8 w-full pl-8 text-sm"
+                  autoComplete="off"
+                />
+              </div>
+              <button type="submit" className="brand-button px-3 py-1.5 text-xs font-semibold">
+                Szukaj
+              </button>
+            </form>
           </div>
         </section>
 
@@ -532,11 +530,9 @@ export function ProductCatalog({ brandColor, categories, products, searchQuery, 
         {visibleProducts.length ? (
           viewMode === 'table' ? (
             <div className="premium-card overflow-x-auto border-[#E7E1D6] bg-white">
-              <div className="grid min-w-[760px] grid-cols-[minmax(230px,1.5fr)_110px_80px_120px_190px] gap-3 bg-[#F8F5EF] px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+              <div className="grid grid-cols-[minmax(150px,1fr)_100px_250px] gap-3 bg-[#F8F5EF] px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
                 <span>Produkt</span>
-                <span>SKU</span>
-                <span>VAT</span>
-                <span>Cena</span>
+                <span>Cena netto</span>
                 <span>Ilość</span>
               </div>
               {visibleProducts.map(renderProduct)}
