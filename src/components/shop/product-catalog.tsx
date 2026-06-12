@@ -287,7 +287,7 @@ function ProductTableRow({
 
   return (
     <div className={cn(
-      'grid grid-cols-[minmax(150px,1fr)_100px_250px] items-center gap-3 border-t border-[#EEE7DC] px-3 py-2.5 text-sm',
+      'flex flex-col gap-2 border-t border-[#EEE7DC] px-3 py-2.5 text-sm sm:grid sm:grid-cols-[minmax(150px,1fr)_100px_250px] sm:items-center sm:gap-3',
       unavailable && 'opacity-60'
     )}>
       <div className="min-w-0">
@@ -297,20 +297,23 @@ function ProductTableRow({
           <StockNotice product={product} />
         </div>
       </div>
-      <div>
-        <div className="font-semibold text-slate-900">{formatCurrency(product.customer_price)}</div>
-        <div className="text-[11px] text-slate-400">/ {product.unit}</div>
+      <div className="flex items-center justify-between gap-2 sm:contents">
+        <div>
+          <div className="text-[10px] font-medium text-slate-400 sm:hidden">Cena netto</div>
+          <div className="font-semibold text-slate-900">{formatCurrency(product.customer_price)}</div>
+          <div className="text-[11px] text-slate-400">/ {product.unit}</div>
+        </div>
+        <ProductActions
+          product={product}
+          qty={qty}
+          justAdded={justAdded}
+          compact
+          resolvedBrandColor={resolvedBrandColor}
+          resolvedAccentColor={resolvedAccentColor}
+          onQtyChange={onQtyChange}
+          onAdd={onAdd}
+        />
       </div>
-      <ProductActions
-        product={product}
-        qty={qty}
-        justAdded={justAdded}
-        compact
-        resolvedBrandColor={resolvedBrandColor}
-        resolvedAccentColor={resolvedAccentColor}
-        onQtyChange={onQtyChange}
-        onAdd={onAdd}
-      />
     </div>
   )
 }
@@ -686,7 +689,7 @@ export function ProductCatalog({
         {visibleProducts.length ? (
           viewMode === 'table' ? (
             <div className="premium-card overflow-x-auto border-[#E7E1D6] bg-white">
-              <div className="grid grid-cols-[minmax(150px,1fr)_100px_250px] gap-3 bg-[#F8F5EF] px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+              <div className="hidden bg-[#F8F5EF] px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400 sm:grid sm:grid-cols-[minmax(150px,1fr)_100px_250px] sm:gap-3">
                 <span>Produkt</span>
                 <span>Cena netto</span>
                 <span>Ilość</span>
